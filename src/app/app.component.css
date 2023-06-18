@@ -1,0 +1,22 @@
+.tab-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 80px;
+  }
+  
+  .tab-box {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .tab-box:hover {
+    background-color: #c3f0c9;
+  }
+  
+  .tab-box a {
+    color: white;
+    text-decoration: none;
+  }
+    
