@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 
+
 @Component({
   selector: 'app-tab1',
   templateUrl: './tab1.component.html',
@@ -11,10 +12,10 @@ export class Tab1Component implements AfterViewInit  {
   constructor() {}
 
   ngAfterViewInit(): void {
-    this.createGraph();
+    this.createGraph(this.process("test"));
   }
 
-  createGraph(): void {
+  createGraph(data:any): void {
     // Get the graph container element
     const container = d3.select('#graph-container');
 
@@ -29,5 +30,10 @@ export class Tab1Component implements AfterViewInit  {
       .attr('cy', 100)
       .attr('r', 50)
       .attr('fill', 'blue');
+  }
+
+  process(data:any):number{
+    console.log(data);
+    return data;
   }
 }
