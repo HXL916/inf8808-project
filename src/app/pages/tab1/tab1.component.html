@@ -1,3 +1,7 @@
 <p>tab1 works!</p>
 <div id="graph-container"></div>
 <div class="graph"></div>
+<div *ngFor="let item of itemList">
+    <div class="class2"> {{item.name}}</div>
+</div>
+<div *ngIf="itemList[0].name == 'asd'"></div>
