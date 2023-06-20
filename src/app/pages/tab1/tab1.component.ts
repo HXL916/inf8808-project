@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
-
+import * as preproc from './preprocessTab1'
 
 @Component({
   selector: 'app-tab1',
@@ -16,6 +16,10 @@ export class Tab1Component implements AfterViewInit  {
   ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       console.log(data)
+      let parties:string[] = preproc.getPartiesNames(data)
+      console.log(parties)
+      let nbInterventionsByParty:{ [key: string]: number } = preproc.getPartyCounts(data)
+      console.log(nbInterventionsByParty)
       this.createGraph(data)
     })
   }
