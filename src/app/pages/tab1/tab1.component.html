@@ -1,7 +1,16 @@
 <p>tab1 works!</p>
-<div id="graph-container"></div>
-<div class="graph"></div>
-<div *ngFor="let item of itemList">
-    <div class="class2"> {{item.name}}</div>
+<div id="topPart">
+    <div id="graphContainer">
+        <div class="graph">
+            <svg id="waffleChart">
+
+            </svg>
+        </div>
+    <!-- <div *ngFor="let item of itemList">
+        <div class="class2"> {{item.name}}</div>
+    </div> -->
+    </div>
+    <div id="statsBlock">
+
+    </div>
 </div>
-<div *ngIf="itemList[0].name == 'asd'"></div>

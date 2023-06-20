@@ -8,33 +8,38 @@ import * as d3 from 'd3';
   styleUrls: ['./tab1.component.css']
 })
 export class Tab1Component implements AfterViewInit  {
-  itemList: any;
+  itemList!: any;
+  data!: any;
 
   constructor() {}
 
   ngAfterViewInit(): void {
-    this.createGraph(this.process(this.itemList));
+    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
+      console.log(data)
+      this.createGraph(data)
+    })
   }
 
-  createGraph(data:number): void {
+  createGraph (data: any): void {
     // Get the graph container element
-    const container = d3.select('#graph-container');
+    const container = d3.select('#waffleChart');
 
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
-    container
-      .append('svg')
-      .attr('width', 200)
-      .attr('height', 200)
-      .append('circle')
-      .attr('cx', 100)
-      .attr('cy', 100)
-      .attr('r', 50)
-      .attr('fill', 'blue');
-  }
-  // This function is just an example of how you can process your data
-  process(data:any):number{
-    console.log(data);
-    return data;
+
+    console.log(data)
+    d3.select('#waffleChart').selectAll('.tile')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('class','tile')
   }
 }
+
+
+  // This function is just an example of how you can process your data
+// process(data:any):number{
+//   console.log(data);
+//   return data;
+// }
+
