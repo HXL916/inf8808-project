@@ -73,12 +73,7 @@ div.tooltip {
 	margin-right: 10px;
 }
 
-//////// radio buttons styling
-$md-radio-checked-color: rgb(51, 122, 183);
-$md-radio-border-color: rgba(0, 0, 0, 0.54);
-$md-radio-size: 16px;
-$md-radio-checked-size: 8px;
-$md-radio-ripple-size: 11px;
+
 
 @keyframes ripple {
   0% {

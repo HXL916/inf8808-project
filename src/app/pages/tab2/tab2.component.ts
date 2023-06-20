@@ -12,9 +12,11 @@ export class Tab2Component  implements AfterViewInit   {
   constructor() {}
 
   ngAfterViewInit(): void {
-    let data = d3.json('./assets/data/deputesLegislatures.json');
-    console.log(data);
-    this.createGraph(this.process(data));
+    d3.json('./assets/data/deputesLegislatures.json').then( (data)=>{
+      console.log(data);
+      this.createGraph(this.process(data));
+    });
+    
   }
 
   createGraph(data:any): void {
