@@ -56,3 +56,10 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     padding: 10px;
     background-color: #44f
 }
+#legendContainer{
+    display: flex;
+    width: 15%;
+    height: 100%;
+    padding: 10px;
+    background-color: rgb(251, 251, 252)
+}
