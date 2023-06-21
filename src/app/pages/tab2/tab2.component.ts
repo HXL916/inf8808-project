@@ -13,17 +13,13 @@ export class Tab2Component  implements AfterViewInit   {
   wantedLegislature:number;
   
   constructor() {
-    //this.wantedKey = "genre";
-    this.wantedKey = "province";
-    //this.wantedKey = "parti";
-
+    this.wantedKey = "genre";
     this.wantedLegislature = 44;
   }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
       let sortedData = preprocess.splitByLegislature(data);
-      //console.log(sortedData);
       this.createGraph(this.process(data));
     });
     
@@ -31,7 +27,6 @@ export class Tab2Component  implements AfterViewInit   {
 
   updateWantedKey(key:string):void{
     this.wantedKey=key;
-    console.log(this.wantedKey);
     this.ngAfterViewInit();
   }
 
