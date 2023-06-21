@@ -41,6 +41,15 @@ export class Tab1Component implements AfterViewInit  {
         const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
 
         preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+
+        const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
+        const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 
+        console.log(increaseWomen)
+        const statSpan3: HTMLSpanElement | null = document.getElementById("stat3") as HTMLSpanElement;
+        if (statSpan3) {
+          // Inject the value into the <span> element
+          statSpan3.textContent = increaseWomen;
+        }
       })
     })
   }

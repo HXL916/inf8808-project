@@ -88,8 +88,6 @@ export function getInterventionsLegislature(data: { [key: string]: any }[], legi
 
 
 export function getMPsLegislature(listeDeputes:{ [key: string]: any }[], legislature:string){
-  console.log("44")
-  console.log(listeDeputes)
   const filteredData: { [key: string]: any }[] = listeDeputes.filter(obj => obj["legislature"] == legislature);
   return filteredData;
 }
@@ -118,4 +116,17 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
   return result;
 }
 
+
+export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ [key: string]: any }[]):string{
+  const previousNumberOfWomen:number = previousMPs.filter(obj => obj["genre"] === "F").length;
+  const newNumberOfWomen:number = newMPs.filter(obj => obj["genre"] === "F").length;
+  const increase:number = newNumberOfWomen - previousNumberOfWomen;
+  console.log(previousNumberOfWomen, newNumberOfWomen)
+  if(increase<0){
+    return increase.toString();
+  }
+  else{
+    return "+"+increase.toString();
+  }
+}
 

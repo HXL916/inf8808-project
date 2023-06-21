@@ -75,3 +75,8 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     font-weight: 500;
     margin: 4em
 }
+
+.statValue{
+    font-weight: 700;
+    font-size: 2.5em;
+}
