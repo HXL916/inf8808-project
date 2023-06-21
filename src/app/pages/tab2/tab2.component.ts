@@ -9,7 +9,12 @@ import * as d3 from 'd3';
 })
 export class Tab2Component  implements AfterViewInit   {
   colorScale!: any;
-  constructor() {}
+  wantedKey:string;
+  constructor() {
+    this.wantedKey = "genre";
+    //this.wantedKey = "Province / Territoire";
+    //this.wantedKey = "Affiliation Politique";
+  }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
@@ -43,12 +48,6 @@ export class Tab2Component  implements AfterViewInit   {
 
         width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
         height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
-
-    // Get color scale
-    this.colorScale = d3.scaleOrdinal() // D3 Version 4
-      .domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind.", "Autres", "FCC", "PPC"])
-      .range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
-
     
     // Get the graph container element and create the svg
     const container = d3.select('#graph-container');
@@ -68,7 +67,7 @@ export class Tab2Component  implements AfterViewInit   {
       .attr("class", function(d,i){
         return 'seat-'+String(i);
       })
-      .attr("fill", (d)=>this.colorScale(d["Affiliation politique"]))
+      .attr("fill", (d)=>this.colorScale(d[this.wantedKey]))
       .attr("x", function(d, i) {
         let col = i % nbCol;
         return col * (squareSize+smallGap);
@@ -109,11 +108,25 @@ export class Tab2Component  implements AfterViewInit   {
  * @returns {object[]} output The data filtered
  */
   process(data: { [key: string]: any }[]):{ [key: string]: any }[]{
+    
+    switch (this.wantedKey){
+      case "genre":
+        this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
+        break;
+      case "Affiliation Politique":
+        this.colorScale = d3.scaleOrdinal().domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind.", "Autres", "FCC", "PPC"]).range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
+        break;
+      case "Province / Territoire":
+        let provinces = data.map(obj => obj["Province"]).sort();
+        this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
+        break;
+    } 
 
     // Get the wanted Legislature from the slide button
     var wantedLegislature = 44;
 
     // Filter the MPs from this legislature
-    return data.filter((d)=>d['legislature'] == wantedLegislature);
+    return data.filter((d)=>d['legislature'] == wantedLegislature)
+               .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
 }
