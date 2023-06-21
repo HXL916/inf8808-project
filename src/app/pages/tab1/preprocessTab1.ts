@@ -68,7 +68,18 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
       summarizedData.push( {"TypeIntervention": element, "Count": typeInterventionCount[element]})
       console.log(element)
     });
-    console.log("Salut")
-    console.log(summarizedData)
     return summarizedData;
+  }
+
+
+  export function getPopularInterventionTypes(summarizedData: {[key: string]: any}[]): {[key: string]: any}[]{
+    const sortedData = summarizedData.sort((a, b) => b["Count"] - a["Count"]);
+    const topParties = sortedData.slice(0, 6);
+    // Sum the counts of the remaining parties
+    const otherCount = sortedData.slice(6).reduce((sum, data) => sum + data["Count"], 0);
+
+    // Create the new array with the top parties and the "Other" party
+    const newData = [...topParties, { TypeIntervention: "Other", count: otherCount }];
+    console.log(newData);
+    return newData;
   }

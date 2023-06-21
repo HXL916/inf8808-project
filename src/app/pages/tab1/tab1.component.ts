@@ -26,6 +26,7 @@ export class Tab1Component implements AfterViewInit  {
       console.log(nbInterventionsByParty)
 
       let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
+      let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
 
       this.createGraph(nbInterventionsByParty, parties)
 
