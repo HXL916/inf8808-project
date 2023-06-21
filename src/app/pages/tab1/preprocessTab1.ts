@@ -22,7 +22,7 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
  * @returns {{ [key: string]: number }}  A table of objects with keys 'parti',  containing
  * the name of the number of interventions for each party in the dataset
  */
-  export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]: number } {
+  export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
     const partyCounts: { [key: string]: number } = {};
     for (const obj of data) {
       if (obj.hasOwnProperty('parti')) {
@@ -34,7 +34,13 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
         }
       }
     }
-    return partyCounts;
+
+    const summarizedData : { [key: string]: any }[] = [];
+    Object.keys(partyCounts).forEach(element => {
+      summarizedData.push( {"Parti": element, "Count": partyCounts[element]})
+      console.log(element)
+    });
+    return summarizedData;
   }
 
   
