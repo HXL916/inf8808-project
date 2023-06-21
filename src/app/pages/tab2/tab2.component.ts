@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
 //import { setPartyColorScale } from 'src/app/utils/scales';
 import * as preprocess from './preprocessTab2';
@@ -10,24 +10,28 @@ import * as preprocess from './preprocessTab2';
 export class Tab2Component  implements AfterViewInit   {
   colorScale!: any;
   wantedKey:string;
+  wantedLegislature:number;
+  
   constructor() {
-    this.wantedKey = "genre";
-    //this.wantedKey = "Province / Territoire";
-    //this.wantedKey = "Affiliation Politique";
+    //this.wantedKey = "genre";
+    this.wantedKey = "province";
+    //this.wantedKey = "parti";
+
+    this.wantedLegislature = 44;
   }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
       let sortedData = preprocess.splitByLegislature(data);
-      console.log(sortedData);
+      //console.log(sortedData);
       this.createGraph(this.process(data));
     });
     
   }
 
   updateWantedKey(key:string):void{
-    console.log('here');
     this.wantedKey=key;
+    console.log(this.wantedKey);
     this.ngAfterViewInit();
   }
 
@@ -55,19 +59,12 @@ export class Tab2Component  implements AfterViewInit   {
 
         width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
         height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
-    
-    // Define Tooltip
-    //const tip = d3Tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents(d) })
-    //g.call(tip)
+
 
     // Get the graph container element and create the svg
     const container = d3.select('#graph-container');
-    const svg = container
-      .append("svg")
-      .attr('class', 'waffle')
-      .attr("width", width)
-      .attr("height", height);
-
+    const svg = container.select('svg');
+    svg.selectAll('rect').remove();         //Clean the svg before plotting new rect (for update purpose)
     // Draw the squares of the waffle
     svg.selectAll('rect')
       .data(data)
@@ -104,11 +101,9 @@ export class Tab2Component  implements AfterViewInit   {
           d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
           .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
         }
-      }
-      
-      
-              
+      }           
   }
+
 
   /**
  * Keeps only the MPs from the selected Legislature.
@@ -117,28 +112,22 @@ export class Tab2Component  implements AfterViewInit   {
  * @returns {object[]} output The data filtered
  */
   process(data: { [key: string]: any }[]):{ [key: string]: any }[]{
-    let affiliations = preprocess.getPartiesNames(data);
-    console.log(affiliations);
     switch (this.wantedKey){
       case "genre":
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
       case "parti":
-
-        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
+        let affiliations = preprocess.getPartiesNames(data);
+        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
         break;
       case "province":
         let provinces = data.map(obj => obj["province"]).sort();
-        console.log(provinces);
         this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
         break;
     } 
 
-    // Get the wanted Legislature from the slide button
-    var wantedLegislature = 44;
-
     // Filter the MPs from this legislature
-    return data.filter((d)=>d['legislature'] == wantedLegislature)
+    return data.filter((d)=>d['legislature'] == this.wantedLegislature)
                .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
 

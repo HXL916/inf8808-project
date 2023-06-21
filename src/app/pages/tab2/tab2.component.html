@@ -1,11 +1,11 @@
 <div id="graph-container" style="text-align:center;">
+
   <div class="flex-container button-group"> 
     <div style="margin-right: 50px;">Classer par:</div>
-    <button onclick="updateWantedKey('genre');">Genre</button>
-    <button onclick="updateWantedKey('Affiliation Politique');">Parti Politique</button>
-    <button onclick="updateWantedKey('Province / Territoire');">Province</button>
+    <button (click)="updateWantedKey('genre')" >Genre</button>
+    <button (click)="updateWantedKey('parti')">Parti Politique</button>
+    <button (click)="updateWantedKey('province')">Province</button>
   </div> 
-</div>
 
- 
- 
+  <svg class="waffle" width="1000" height="1000"></svg>
+</div>
