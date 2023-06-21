@@ -1,143 +1,70 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,600');
-
 body {
   background-color: #fffcf9;
   font-family: 'Open Sans', sans-serif;
 }
 
-div.tooltip { 
-    position: absolute;
-    text-align: left;
-    width: 90px;
-    padding: 6px;
-    font: 1.4rem sans-serif;
-    background: white;
-    border: 1px solid lightgrey;
-    pointer-events: none;
-    opacity: 0.5;  
+.button-group button {
+  /* Aesthetic */
+  border: none;
+  color: white;
+  background-color: #8AB476;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 50px;
+  border-radius: 10px;
+
+  /* Hover */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+.button-group button:hover {
+  background-color: #3D7021;
 }
 
-.waffle {
-    margin: 10px;
-}
+.flex-container{
+  display: flex;
+  float: right;                 /* Container on the right side of the page */
+  justify-content: flex-start;  /* Buttons on the left side of the container */  
+  flex-direction: column;       /* Vertical Placement */
+  flex: 1 auto;                 /* Width adapts button content*/
 
-.waffle-chart-legend--items {
-    display: inline-block;
-}
-
-.waffle-chart-legend--text {
-    display: inline-block;
-    margin-right: 10px;
-}
-
-.waffle-chart-legend--items:last-child .waffle-chart-legend--text:after {
-  content: " *";
-}
-
-.data-path {
-  &:hover {
-    cursor: pointer;
-  }
-}
-.data-text {
-  transition: transform .2s ease-in-out;
-  fill: #666;
-  &__value {
-    font-size: 2.5rem;
-    transform: translateY(-.5rem);
-    opacity: 0;
-  }
-  &--show {
-    transform: translateY(0);
-    animation: fadeGraphTextIn .5s forwards
-  }
-  &:hover {
-    user-select: none;
-  }
-}
-.legend-text {
-  fill: #666;
-}
-@keyframes fadeGraphTextIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.rect {
-	width: 20px;
-	float: left;
-	margin-right: 10px;
 }
 
 
-
-@keyframes ripple {
-  0% {
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.0);
-  }
-  50% {
-    box-shadow: 0px 0px 0px $md-radio-ripple-size rgba(0, 0, 0, 0.1);
-  }
-  100% {
-    box-shadow: 0px 0px 0px $md-radio-ripple-size rgba(0, 0, 0, 0);
-  }
+.slider {
+  -webkit-appearance: none;
+  width: 75%;
+  height: 5px;
+  border-radius: 5px;  
+  background: #000000;      
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
 }
 
-.button {
-    margin: 5px 0;
-
-    &.button-inline {
-        display: inline-block;
-    }
-
-    input[type="radio"] {
-        display: none;
-        &:checked + label:before {
-            border-color: $md-radio-checked-color;
-            animation: ripple 0.2s linear forwards;
-        }
-        &:checked + label:after {
-            transform: scale(1);
-        }
-    }
-
-    label {
-        display: inline-block;
-        height:$md-radio-size;
-        position: relative;
-        padding: 0 ($md-radio-size + 10px);
-        margin-bottom: 0;
-        cursor: pointer;
-        vertical-align: bottom;
-        &:before, &:after {
-            position: absolute;
-            content: '';
-            border-radius: 50%;
-            transition: all .3s ease;
-            transition-property: transform, border-color;
-        }
-        &:before {
-            left: 0;
-            top: 0;
-            width: $md-radio-size;
-            height: $md-radio-size;
-            border: 2px solid $md-radio-border-color;
-        }
-        &:after {
-            top: $md-radio-size / 2 - $md-radio-checked-size / 2;
-            left: $md-radio-size / 2 - $md-radio-checked-size / 2;
-            width:$md-radio-checked-size;
-            height:$md-radio-checked-size;
-            transform: scale(0);
-            background:$md-radio-checked-color;
-        }
-    }
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; 
+  background: #04AA6D;        /*Insert background url to put an image on the cursor*/
+  cursor: pointer;
 }
 
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04AA6D;
+  cursor: pointer;
+}
+
+<<<<<<< HEAD
 
 
 // *************************************
@@ -146,3 +73,5 @@ div.tooltip {
 *, *:before, *:after {
   box-sizing: border-box;
 }
+=======
+>>>>>>> 001721b60329370226500ddb7347450c19e659b4

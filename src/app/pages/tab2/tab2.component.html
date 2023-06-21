@@ -1,18 +1,15 @@
-<div id="graph-container" style="text-align:center;"></div>
- 
-  <div class="buttons-container">
-     <div class="button button-inline">
-       <input type="radio" id="radio-BA" name="radio-class" value="BA" checked/>
-         <label for="radio-BA">Option 1</label>
-     </div>
-     <div class="button button-inline">
-       <input type="radio" id="radio-BEng" name="radio-class" value="BEng" />
-         <label for="radio-BEng">Option 2</label>
-     </div>
-   <div class="button button-inline">
-      <input type="radio" id="radio-BMus" name="radio-class" value="BMus" />
-         <label for="radio-BMus">Option 3</label>
-     </div>
- </div>
- 
- 
+<div id="graph-container" style="text-align:center;">
+
+  <div class="flex-container button-group"> 
+    <div style="margin-right: 50px;">Classer par:</div>
+    <button (click)="updateWantedKey('genre')" >Genre</button>
+    <button (click)="updateWantedKey('parti')">Parti Politique</button>
+    <button (click)="updateWantedKey('province')">Province</button>
+  </div> 
+
+  <svg class="waffle" width="1000" height="600"></svg>
+
+  <div class="slidecontainer">
+    <input type="range" min="41" max="44" value="44" class="slider" id="myRange" >
+  </div>
+</div>

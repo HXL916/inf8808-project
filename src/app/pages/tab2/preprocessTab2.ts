@@ -23,7 +23,7 @@ export function splitByLegislature(data: { [key: string]: any }[]): { [key: numb
  * @returns {string[]} The names of the parties in the data set
  */
 export function getPartiesNames(data: { [key: string]: any }[]): string[] {
-    return Array.from(new Set(data.map(obj => obj["Affiliation politique"]))).sort();
+    return Array.from(new Set(data.map(obj => obj["parti"]))).sort();
 }
 
 
