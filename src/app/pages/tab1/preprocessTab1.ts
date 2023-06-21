@@ -1,4 +1,3 @@
-
 /**
  * Gets the names of the political parties (as written in debatsCommunes.csv).
  *
@@ -103,24 +102,20 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
     nameCounts[name] = (nameCounts[name] || 0) + 1;
   });
   
-  const nameCountArray = Object.entries(nameCounts).map(([name, count]) => ({ name, count }));
-
-  // Sort the nameCountEntries based on the count in descending order
-  nameCountArray.sort((a, b) => b.count - a.count);
-  
-  // Get the top 3 entries
-  const topEntries = nameCountArray.slice(0, 80);
-  const flopEntries = nameCountArray.slice(-3);
-
   const listeDeputesWithCount = listeDeputes.map(obj => ({
     ...obj,
     count: nameCounts[obj["nom"]] || 0
   }));
-  console.log(topEntries)
-  console.log(flopEntries)
-  console.log(listeDeputes)
   console.log(listeDeputesWithCount)
-  return 0;
+  // sort by count value
+  listeDeputesWithCount.sort((a, b) => b.count - a.count);
+  // Get the top 3 entries with the highest values for "count"
+  const topEntries = listeDeputesWithCount.slice(0, 3);
+  // Get the 3 entries with the lowest values for "count"
+  const lowestEntries = listeDeputesWithCount.slice(-3)
+  const result:{[name: string]: any} = {"topMPs": topEntries, "flopMPS": lowestEntries}
+  console.log(result)
+  return result;
 }
 
 
