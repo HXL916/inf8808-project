@@ -18,18 +18,17 @@
     flex-direction: row;
     justify-content: center;
     align-content: center;
-    background-color: #f4f;
+    padding-top: 2em;
 }
 
 #statsBlock{
-    flex: 1;
-    background-color: #4ff;
+    flex: 2;
     justify-content: center;
     align-items: center;
 }
 
 #graphContainer{
-    flex: 2;
+    flex: 5;
     display: flex;
     border-right: 5px solid black;
     height: 700px;
@@ -56,10 +55,17 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     padding: 10px;
     background-color: #44f
 }
+
 #legendContainer{
     display: flex;
     width: 15%;
     height: 100%;
     padding: 10px;
     background-color: rgb(251, 251, 252)
+}
+
+#statsBlock p{
+    font-size: 1.7em;
+    font-weight: 500;
+    margin: 4em
 }
