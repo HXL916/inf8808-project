@@ -23,12 +23,12 @@ export class Tab1Component implements AfterViewInit  {
       let nbInterventionsByParty:{ [key: string]: number } = preproc.getPartyCounts(data)
       console.log(nbInterventionsByParty)
       this.color;
-      this.createGraph(nbInterventionsByParty,parties)
+      this.createGraph(nbInterventionsByParty, parties)
       this.drawLegend(parties)
     })
   }
 
-  createGraph (data: any,parties:any): void {
+  createGraph (data: any, parties:any): void {
     // Get the graph container element
     const container = d3.select('#waffleChart');
 
