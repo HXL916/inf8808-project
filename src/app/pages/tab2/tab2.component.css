@@ -1,90 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,600');
-
 body {
   background-color: #fffcf9;
   font-family: 'Open Sans', sans-serif;
-}
-
-div.tooltip { 
-    position: absolute;
-    text-align: left;
-    width: 90px;
-    padding: 6px;
-    font: 1.4rem sans-serif;
-    background: white;
-    border: 1px solid lightgrey;
-    pointer-events: none;
-    opacity: 0.5;  
-}
-
-.waffle {
-    margin: 10px;
-}
-
-.waffle-chart-legend--items {
-    display: inline-block;
-}
-
-.waffle-chart-legend--text {
-    display: inline-block;
-    margin-right: 10px;
-}
-
-.waffle-chart-legend--items:last-child .waffle-chart-legend--text:after {
-  content: " *";
-}
-
-.data-path {
-  &:hover {
-    cursor: pointer;
-  }
-}
-.data-text {
-  transition: transform .2s ease-in-out;
-  fill: #666;
-  &__value {
-    font-size: 2.5rem;
-    transform: translateY(-.5rem);
-    opacity: 0;
-  }
-  &--show {
-    transform: translateY(0);
-    animation: fadeGraphTextIn .5s forwards
-  }
-  &:hover {
-    user-select: none;
-  }
-}
-.legend-text {
-  fill: #666;
-}
-@keyframes fadeGraphTextIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.rect {
-	width: 20px;
-	float: left;
-	margin-right: 10px;
-}
-
-
-
-@keyframes ripple {
-  0% {
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.0);
-  }
-  50% {
-    box-shadow: 0px 0px 0px $md-radio-ripple-size rgba(0, 0, 0, 0.1);
-  }
-  100% {
-    box-shadow: 0px 0px 0px $md-radio-ripple-size rgba(0, 0, 0, 0);
-  }
 }
 
 .button-group button {
@@ -117,9 +33,34 @@ div.tooltip {
 
 }
 
-// *************************************
 
-// *************************************
-*, *:before, *:after {
-  box-sizing: border-box;
+.slider {
+  -webkit-appearance: none;
+  width: 75%;
+  height: 5px;
+  border-radius: 5px;  
+  background: #000000;      
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
 }
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; 
+  background: #04AA6D;        /*Insert background url to put an image on the cursor*/
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04AA6D;
+  cursor: pointer;
+}
+

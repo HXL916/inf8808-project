@@ -29,7 +29,13 @@ export class Tab2Component  implements AfterViewInit   {
     this.wantedKey=key;
     this.ngAfterViewInit();
   }
-
+  /*
+  (change)="updateLegislature($event)"
+  updateLegislature(event: React.ChangeEvent<HTMLInputElement>):void{
+    this.wantedLegislature=event.value;
+    this.ngAfterViewInit();
+  }
+  */
 /**
  * Draws the waffle chart
  *
