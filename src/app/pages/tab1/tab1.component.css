@@ -48,13 +48,19 @@
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
 
-#stackedBarChart{
+#stackedBarChartContainer{
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     width: 95%;
     height: 45%;
     padding: 10px;
-    background-color: #44f
+    border-radius: 4px;
+    background-color: #3D7021;
+    color: white;
 }
+
 
 #legendContainer{
     display: flex;
