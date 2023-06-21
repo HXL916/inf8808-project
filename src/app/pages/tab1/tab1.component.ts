@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as preproc from './preprocessTab1'
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
-//import * as d3Legend from 'd3-svg-legend'
+import * as d3Legend from 'd3-svg-legend'
 
 
 @Component({
@@ -25,10 +25,12 @@ export class Tab1Component implements AfterViewInit  {
       let nbInterventionsByParty:{ [key: string]: any }[] = preproc.getPartyCounts(data)
       console.log(nbInterventionsByParty)
 
+      let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
+
       this.createGraph(nbInterventionsByParty, parties)
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
-      //this.drawLegend(parties)
+      this.drawLegend(parties)
     })
   }
 
@@ -54,55 +56,37 @@ export class Tab1Component implements AfterViewInit  {
     console.log(parties)
     // Usually you have a color scale in your chart already
     //this.color = d3.scaleOrdinal().range(d3.schemeTableau10).domain(parties);  
-    // Add one dot in the legend for each name.
-    
-    // var legend = d3
-    // .select('#legendContainer')
-    // .append('svg')
-    // .attr('width', 900)
-    // .attr('height', 1000)
-    // .selectAll('.legend-element')
-    // .data(parties);
-    // legend
-    //   .enter()
-    //   .append("rect")
-    //     .attr("x", 100)
-    //     .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-    //     .attr("width", size)
-    //     .attr("height", size)
-    //     //.attr("fill",function(d){ return color(d)})
-    //     .attr('fill', d=>this.color(d))
+    this.color= partyColorScale
+    console.log(this.color)
+      // Add one dot in the legend for each name.
+    var size = 20
+    var legend = d3
+        .select('#legendContainer')
+        .append('svg')
+        .attr('width', 900)
+        .attr('height', 1000)
+        .selectAll('.legend-element')
+        .data(parties);
+    legend
+      .enter()
+      .append("rect")
+        .attr("x", 100)
+        .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("width", size)
+        .attr("height", size)
+        //.attr("fill",function(d){ return color(d)})
+        .attr('fill', d=>this.color(d))
 
-    // legend
-    // .enter()
-    // .append("text")
-    //   .attr("x", 100 + size*1.2)
-    //   .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-    //   .style("fill", "black")
-    //   .text(parties=>parties)
-    //   .attr("text-anchor", "left")
-    //   .style("alignment-baseline", "middle")
-    //   }
-    /*
-    var container = d3.select("#waffleChart")
-    container.append('g')
-      .attr('class', 'legend')
-      //.attr('transform', 'translate(' + width + ',-20)') 
-
-    console.log(partyColorScale)
-
-    var legend = d3Legend.legendColor()
-      .shape('path', d3.symbol().type(d3.symbolSquare).size(250)()!) // mettre point d'exclamation à la fin parce qu'on sait que c'est non null
-      .title('Legend')
-      .shapePadding(5)
-      .cells(6)
-      .orient('vertical')
-      .scale(partyColorScale)  as any
-
-      container.select('.legend')
-        .call(legend)
-    */
-  }
+    legend
+    .enter()
+    .append("text")
+      .attr("x", 100 + size*1.2)
+      .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+      .style("fill", "black")
+      .text(parties=>parties)
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+    }
 }
 
 

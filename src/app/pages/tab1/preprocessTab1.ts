@@ -19,7 +19,7 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
  * Gets the number of intervention for each political party.
  *
  * @param {{ [key: string]: any }[]} data The data to analyze
- * @returns {{ [key: string]: number }}  A table of objects with keys 'parti',  containing
+ * @returns { [key: string]: any }[]  A table of objects with keys 'parti',  containing
  * the name of the number of interventions for each party in the dataset
  */
   export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
@@ -43,4 +43,32 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
     return summarizedData;
   }
 
-  
+  /**
+ * Gets the number of intervention for each type of intervention.
+ *
+ * @param {{ [key: string]: any }[]} data The data to analyze
+ * @returns { [key: string]: any }[]  A table of objects with keys 'typeIntervention',  containing
+ * the name of the number of interventions for each party in the dataset
+ */
+  export function getTypeInterventionCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
+    const typeInterventionCount: { [key: string]: number } = {};
+    for (const obj of data) {
+      if (obj.hasOwnProperty('typeIntervention')) {
+        const interventionType = obj['typeIntervention'];
+        if (typeInterventionCount.hasOwnProperty(interventionType)) {
+          typeInterventionCount[interventionType]++;
+        } else {
+          typeInterventionCount[interventionType] = 1;
+        }
+      }
+    }
+
+    const summarizedData : { [key: string]: any }[] = [];
+    Object.keys(typeInterventionCount).forEach(element => {
+      summarizedData.push( {"TypeIntervention": element, "Count": typeInterventionCount[element]})
+      console.log(element)
+    });
+    console.log("Salut")
+    console.log(summarizedData)
+    return summarizedData;
+  }
