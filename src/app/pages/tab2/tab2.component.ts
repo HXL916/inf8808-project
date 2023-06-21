@@ -27,7 +27,7 @@ export class Tab2Component  implements AfterViewInit   {
     console.log(data);
     // Define geometry
     let squareSize = 25,
-        smallGap = 12,
+        smallGap = 10,
         nbRowInBloc = 4,
         nbColInBloc = 5,
         nbBlocRow = 4,
@@ -42,16 +42,16 @@ export class Tab2Component  implements AfterViewInit   {
         amountSquareBlocHeight = 4,
         amountSquareBloc = amountSquareBlocHeight*amountSquareBlocWidth,  //20 squares per bloc
 
-        bigGap = 32,
-        alleyGap = 58,
+        bigGap = 25,
+        alleyGap = 30,
         
         amountSquareGlobalWidth = amountSquareBloc*nbBlocCol,  //80 squares per line of bloc
         amountSquareGlobalHeigth = amountSquareBloc*nbBlocRow,  
 
         blocWidth = squareSize*amountSquareBlocWidth+smallGap*(amountSquareBlocWidth-1),  //173
         blocHeight = squareSize*amountSquareBlocHeight+smallGap*(amountSquareBlocHeight-1), //136
-        width = blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
-        height = blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
+        width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
+        height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
 
     // Get color scale
     //let colorScale = setPartyColorScale(data);
@@ -72,25 +72,49 @@ export class Tab2Component  implements AfterViewInit   {
       .append("rect")
       .attr("width", squareSize)
       .attr("height", squareSize)
-      .attr("class", 'seat')
+      .attr("class", function(d,i){
+        return 'seat-'+String(i);
+      })
       .attr("fill", function(d){
         return 'black';
         //return colorScale(d.attribut);
-      }
-        )
-        .attr("x", function(d, i) {
+      })
+      .attr("x", function(d, i) {
           //group n squares for column
-          let col = Math.floor(i / nbRow);
-          return (col * squareSize) + (col * smallGap);
+          let col = i % nbCol;
+          return col * (squareSize+smallGap);
       })
       .attr("y", function(d, i) {
-          let row = i % nbRow;
-          return (nbRow * squareSize) - ((row * squareSize) + (row * smallGap))
+          let row = Math.floor(i / nbCol);
+          return row * (squareSize+smallGap);
+      })
+      .attr('row', function(d,i) {
+        return Math.floor(i / 80);
+      })
+      .attr('col', function(d,i) {
+        return Math.floor(((i%80)%20)/5);
       });
 
       // Improve placement of the squares
-      d3.selectAll("rect[x>='173']")
+      /*
+      d3.selectAll("rect[col='1']")
         .attr('transform','translate(20,0)');
+      
+      d3.selectAll("rect[row='1']")
+        .attr('transform','translate(0,20)');
+      */
+      
+      for (let i=0;i<=3;i++){
+        for (let j=0;j<=1;j++){
+          d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
+          .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
+        }
+        for (let j=2;j<=3;j++){
+          d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
+          .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
+        }
+      }
+      
               
   }
 
