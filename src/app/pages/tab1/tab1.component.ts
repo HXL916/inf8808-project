@@ -28,10 +28,20 @@ export class Tab1Component implements AfterViewInit  {
       let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
       let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
 
+      let recentInterventions = preproc.getInterventionsLegislature(data, "44-1")
+      console.log(recentInterventions)
       this.createGraph(nbInterventionsByParty, parties)
+
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
       this.drawLegend(parties)
+
+
+      d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
+        const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
+
+        preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+      })
     })
   }
 
