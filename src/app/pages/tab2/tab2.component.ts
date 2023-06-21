@@ -8,7 +8,7 @@ import * as d3 from 'd3';
   styleUrls: ['./tab2.component.css']
 })
 export class Tab2Component  implements AfterViewInit   {
-
+  colorScale!: any;
   constructor() {}
 
   ngAfterViewInit(): void {
@@ -26,14 +26,15 @@ export class Tab2Component  implements AfterViewInit   {
   createGraph(data: { [key: string]: any }[]): void {
     console.log(data);
     // Define geometry
-    let squareSize = 25,
-        smallGap = 10,
-        bigGap = 25,
-        alleyGap = 30,
+    let svgPadding = 20,
+        squareSize = 20,
+        smallGap = 5,
+        bigGap = 10,
+        alleyGap = 20,
 
         nbRowInBloc = 4,
         nbColInBloc = 5,
-        nbBlocRow = 4,
+        nbBlocRow = 5,
         nbBlocCol = 4,
 
         nbRow = nbRowInBloc*nbBlocRow,  // 16 rows of squares in total
@@ -44,8 +45,11 @@ export class Tab2Component  implements AfterViewInit   {
         height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
 
     // Get color scale
-    //let colorScale = setPartyColorScale(data);
+    this.colorScale = d3.scaleOrdinal() // D3 Version 4
+      .domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind.", "Autres", "FCC", "PPC"])
+      .range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
 
+    
     // Get the graph container element and create the svg
     const container = d3.select('#graph-container');
     const svg = container
@@ -53,9 +57,8 @@ export class Tab2Component  implements AfterViewInit   {
       .attr('class', 'waffle')
       .attr("width", width)
       .attr("height", height);
-      //.attr('transform', 'translate(0,'+height+'+90+10)');  // 90 is the height of the banner
 
-
+    // Draw the squares of the waffle
     svg.selectAll('rect')
       .data(data)
       .enter()
@@ -65,25 +68,20 @@ export class Tab2Component  implements AfterViewInit   {
       .attr("class", function(d,i){
         return 'seat-'+String(i);
       })
-      .attr("fill", function(d){
-        return 'black';
-        //return colorScale(d.attribut);
-      })
+      .attr("fill", (d)=>this.colorScale(d["Affiliation politique"]))
       .attr("x", function(d, i) {
-          //group n squares for column
-          let col = i % nbCol;
-          return col * (squareSize+smallGap);
+        let col = i % nbCol;
+        return col * (squareSize+smallGap);
       })
       .attr("y", function(d, i) {
           let row = Math.floor(i / nbCol);
-          return row * (squareSize+smallGap);
+          return row * (squareSize+smallGap)+svgPadding;
       })
       .attr('row', function(d,i) {
         return Math.floor(i / (nbSquaresinBloc*nbBlocCol));
       })
       .attr('col', function(d,i) {
         return Math.floor(((i%(nbSquaresinBloc*nbBlocCol))%nbCol)/nbColInBloc);
-        //return Math.floor(((i%80)%20)/5);
       });
 
       // Improve placement of the squares
@@ -97,6 +95,9 @@ export class Tab2Component  implements AfterViewInit   {
           .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
         }
       }
+      // Début de recherche si on voulait mettre les derniers blocs sur le côté plutôt qu'en dessous
+      //d3.selectAll("rect[row='"+String(nbBlocRow-1)+"']")
+      //  .attr('x');
       
               
   }
