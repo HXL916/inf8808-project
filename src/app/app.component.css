@@ -80,3 +80,6 @@ footer a {
   display: flex;
   align-items: center;
 }
+.content{
+  margin-top: 100px;
+}
