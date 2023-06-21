@@ -113,12 +113,12 @@ export class Tab2Component  implements AfterViewInit   {
       case "genre":
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
-      case "Affiliation Politique":
+      case "parti":
 
         this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
         break;
-      case "Province / Territoire":
-        let provinces = data.map(obj => obj["Province"]).sort();
+      case "province":
+        let provinces = data.map(obj => obj["province"]).sort();
         console.log(provinces);
         this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
         break;
