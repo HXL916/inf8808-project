@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as preproc from './preprocessTab1'
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
-import * as d3Legend from 'd3-svg-legend'
+//import * as d3Legend from 'd3-svg-legend'
 
 
 @Component({
@@ -28,7 +28,7 @@ export class Tab1Component implements AfterViewInit  {
       this.createGraph(nbInterventionsByParty, parties)
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
-      this.drawLegend(parties)
+      //this.drawLegend(parties)
     })
   }
 
@@ -83,7 +83,7 @@ export class Tab1Component implements AfterViewInit  {
     //   .attr("text-anchor", "left")
     //   .style("alignment-baseline", "middle")
     //   }
-    
+    /*
     var container = d3.select("#waffleChart")
     container.append('g')
       .attr('class', 'legend')
@@ -101,7 +101,7 @@ export class Tab1Component implements AfterViewInit  {
 
       container.select('.legend')
         .call(legend)
-
+    */
   }
 }
 

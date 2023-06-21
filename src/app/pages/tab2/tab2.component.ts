@@ -28,28 +28,18 @@ export class Tab2Component  implements AfterViewInit   {
     // Define geometry
     let squareSize = 25,
         smallGap = 10,
+        bigGap = 25,
+        alleyGap = 30,
+
         nbRowInBloc = 4,
         nbColInBloc = 5,
         nbBlocRow = 4,
         nbBlocCol = 4,
 
-        nbSquaresInBloc = nbRowInBloc*nbColInBloc,  //20 squares per bloc
         nbRow = nbRowInBloc*nbBlocRow,  // 16 rows of squares in total
         nbCol = nbColInBloc*nbBlocCol,  // 20 columns of squares in total
-        nbSquares = nbRow*nbCol,  //320 squares for now
+        nbSquaresinBloc = nbRowInBloc*nbColInBloc, // 20 squares per bloc
 
-        amountSquareBlocWidth = 5,
-        amountSquareBlocHeight = 4,
-        amountSquareBloc = amountSquareBlocHeight*amountSquareBlocWidth,  //20 squares per bloc
-
-        bigGap = 25,
-        alleyGap = 30,
-        
-        amountSquareGlobalWidth = amountSquareBloc*nbBlocCol,  //80 squares per line of bloc
-        amountSquareGlobalHeigth = amountSquareBloc*nbBlocRow,  
-
-        blocWidth = squareSize*amountSquareBlocWidth+smallGap*(amountSquareBlocWidth-1),  //173
-        blocHeight = squareSize*amountSquareBlocHeight+smallGap*(amountSquareBlocHeight-1), //136
         width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
         height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
 
@@ -89,27 +79,20 @@ export class Tab2Component  implements AfterViewInit   {
           return row * (squareSize+smallGap);
       })
       .attr('row', function(d,i) {
-        return Math.floor(i / 80);
+        return Math.floor(i / (nbSquaresinBloc*nbBlocCol));
       })
       .attr('col', function(d,i) {
-        return Math.floor(((i%80)%20)/5);
+        return Math.floor(((i%(nbSquaresinBloc*nbBlocCol))%nbCol)/nbColInBloc);
+        //return Math.floor(((i%80)%20)/5);
       });
 
       // Improve placement of the squares
-      /*
-      d3.selectAll("rect[col='1']")
-        .attr('transform','translate(20,0)');
-      
-      d3.selectAll("rect[row='1']")
-        .attr('transform','translate(0,20)');
-      */
-      
-      for (let i=0;i<=3;i++){
-        for (let j=0;j<=1;j++){
+      for (let i=0;i<nbBlocCol;i++){
+        for (let j=0;j<Math.floor(nbBlocRow/2);j++){
           d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
           .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
         }
-        for (let j=2;j<=3;j++){
+        for (let j=Math.floor(nbBlocRow/2);j<nbBlocRow;j++){
           d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
           .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
         }
