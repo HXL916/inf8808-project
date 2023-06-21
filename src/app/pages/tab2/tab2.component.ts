@@ -23,13 +23,19 @@ export class Tab2Component  implements AfterViewInit   {
     
   }
 
+  updateWantedKey(key:string):void{
+    console.log('here');
+    this.wantedKey=key;
+    this.ngAfterViewInit();
+  }
+
 /**
  * Draws the waffle chart
  *
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
-    console.log(data);
+
     // Define geometry
     let svgPadding = 20,
         squareSize = 20,
@@ -49,6 +55,10 @@ export class Tab2Component  implements AfterViewInit   {
         width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
         height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
     
+    // Define Tooltip
+    //const tip = d3Tip().attr('class', 'd3-tip').html(function (d) { return tooltip.getContents(d) })
+    //g.call(tip)
+
     // Get the graph container element and create the svg
     const container = d3.select('#graph-container');
     const svg = container
@@ -94,9 +104,7 @@ export class Tab2Component  implements AfterViewInit   {
           .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
         }
       }
-      // Début de recherche si on voulait mettre les derniers blocs sur le côté plutôt qu'en dessous
-      //d3.selectAll("rect[row='"+String(nbBlocRow-1)+"']")
-      //  .attr('x');
+      
       
               
   }

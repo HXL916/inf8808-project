@@ -1,19 +1,11 @@
-<div id="graph-container" style="text-align:center;"></div>
-    <h2>Average number of <span id="degreeValue">BA</span> students per accommodation type</h2>
- 
-  <div class="buttons-container">
-     <div class="button button-inline">
-       <input type="radio" id="radio-BA" name="radio-class" value="BA" checked/>
-         <label for="radio-BA">Option 1</label>
-     </div>
-     <div class="button button-inline">
-       <input type="radio" id="radio-BEng" name="radio-class" value="BEng" />
-         <label for="radio-BEng">Option 2</label>
-     </div>
-   <div class="button button-inline">
-      <input type="radio" id="radio-BMus" name="radio-class" value="BMus" />
-         <label for="radio-BMus">Option 3</label>
-     </div>
- </div>
+<div id="graph-container" style="text-align:center;">
+  <div class="flex-container button-group"> 
+    <div style="margin-right: 50px;">Classer par:</div>
+    <button onclick="updateWantedKey('genre');">Genre</button>
+    <button onclick="updateWantedKey('Affiliation Politique');">Parti Politique</button>
+    <button onclick="updateWantedKey('Province / Territoire');">Province</button>
+  </div> 
+</div>
+
  
  
