@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 //import { setPartyColorScale } from 'src/app/utils/scales';
-
+import * as preprocess from './preprocessTab2';
 @Component({
   selector: 'app-tab2',
   templateUrl: './tab2.component.html',
@@ -18,6 +18,8 @@ export class Tab2Component  implements AfterViewInit   {
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
+      let sortedData = preprocess.splitByLegislature(data);
+      console.log(sortedData);
       this.createGraph(this.process(data));
     });
     
@@ -35,7 +37,6 @@ export class Tab2Component  implements AfterViewInit   {
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
-
     // Define geometry
     let svgPadding = 20,
         squareSize = 20,
@@ -116,16 +117,19 @@ export class Tab2Component  implements AfterViewInit   {
  * @returns {object[]} output The data filtered
  */
   process(data: { [key: string]: any }[]):{ [key: string]: any }[]{
-    
+    let affiliations = preprocess.getPartiesNames(data);
+    console.log(affiliations);
     switch (this.wantedKey){
       case "genre":
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
-      case "Affiliation Politique":
-        this.colorScale = d3.scaleOrdinal().domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind.", "Autres", "FCC", "PPC"]).range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
+      case "parti":
+
+        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
         break;
-      case "Province / Territoire":
-        let provinces = data.map(obj => obj["Province"]).sort();
+      case "province":
+        let provinces = data.map(obj => obj["province"]).sort();
+        console.log(provinces);
         this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
         break;
     } 
@@ -137,4 +141,10 @@ export class Tab2Component  implements AfterViewInit   {
     return data.filter((d)=>d['legislature'] == wantedLegislature)
                .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
+
+
+  
+
+  
+
 }
