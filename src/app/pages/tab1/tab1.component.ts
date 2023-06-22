@@ -17,6 +17,7 @@ export class Tab1Component implements AfterViewInit  {
   color!: any;
   xScale!: any;
   yScale!: any;
+  pourcent!: any;
 
   constructor(private leg:Legend) {}
 
@@ -35,6 +36,7 @@ export class Tab1Component implements AfterViewInit  {
       this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
       this.yScale;
       this.xScale;
+      this.pourcent;
 
       let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
 
@@ -100,7 +102,7 @@ export class Tab1Component implements AfterViewInit  {
 
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
-
+    this.color= partyColorScale
     console.log(data)
     console.log(parties)
     d3.select('#waffleChart').selectAll('.tile')
@@ -111,11 +113,10 @@ export class Tab1Component implements AfterViewInit  {
 
     const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 
-    const width = 300 - margin.left - margin.right;
+    const width = 350 - margin.left - margin.right;
     const height = 100 - margin.top - margin.bottom;
     var total=nbint.reduce((total,arg)=>total+arg['Count'],0);
     
-
     const svgbar=d3.select('#stackedBarChart')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
@@ -124,31 +125,23 @@ export class Tab1Component implements AfterViewInit  {
     this.xScale = d3.scaleLinear()
     .domain([0, d3.max(nbint, d => d['Count'])])
     .range([0, width]);
-    console.log(d3.max(nbint, d => d['Count']))
+    console.log(d3.max(nbint, d => d['Count']/total*100))
   
     this.yScale = d3.scaleBand()
       .domain(nbint.map(d => d['Parti']))
-      .range([0, height])
-      .padding(0.1);
+      .range([0, height]);
 
     // Create and append the bars
     svgbar.selectAll(".bar")
       .data(data)
-      .enter().append("rect")
+      .join("rect")
       .attr("class", "bar")
-      .attr("x", 0)
-      .attr("y", d => this.yScale(d['Count']))
-      .attr("width", d => this.xScale(d['Parti']))
-      .attr("height", this.yScale.bandwidth());
+      .attr('x', d => this.xScale(d['Count']))
+      .attr('y', d => this.yScale(d['Parti']))
+      .attr("width", d => this.xScale(d['Count']))
+      .attr("height", this.yScale.bandwidth())
+      .attr('fill', d=>this.color(d['Parti']));
 
-    // Add x-axis
-    svgbar.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(this.xScale));
-
-    // Add y-axis
-    svgbar.append("g")
-      .call(d3.axisLeft(this.yScale));
 
   }
 
