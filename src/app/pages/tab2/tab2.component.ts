@@ -11,8 +11,9 @@ import * as waffle from 'src/app/utils/waffle';
 })
 export class Tab2Component  implements AfterViewInit   {
   colorScale!: any;
-  wantedKey:string;
-  wantedLegislature:number;
+  wantedKey:string = "genre";
+  wantedLegislature:number = 44;
+  sortedData:any;
   
   constructor() {
     this.wantedKey = "genre";
@@ -21,23 +22,27 @@ export class Tab2Component  implements AfterViewInit   {
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
-      let sortedData = preprocess.splitByLegislature(data);
-      this.createGraph(this.process(data));
+      console.log(data);
+      this.sortedData = preprocess.splitByLegislature(data);
+      console.log(this.sortedData);
+      console.log(this.process(this.sortedData[this.wantedLegislature]));
+      this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     
   }
 
   updateWantedKey(key:string):void{
     this.wantedKey=key;
-    this.ngAfterViewInit();
+    this.updateView();
   }
-  /*
-  (change)="updateLegislature($event)"
-  updateLegislature(event: React.ChangeEvent<HTMLInputElement>):void{
-    this.wantedLegislature=event.value;
-    this.ngAfterViewInit();
+  updateWantedLegislature(event: Event) {
+    this.wantedLegislature=Number((event.target as HTMLInputElement).value);
+    this.updateView();
   }
-  */
+  updateView():void{
+    this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
+  }
+
   /**
  * Keeps only the MPs from the selected Legislature.
  *
@@ -59,9 +64,7 @@ export class Tab2Component  implements AfterViewInit   {
         break;
     } 
 
-    // Filter the MPs from this legislature
-    return data.filter((d)=>d['legislature'] == this.wantedLegislature)
-               .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
+    return data.sort((x, y) => d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
 
 
