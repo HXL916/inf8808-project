@@ -1,5 +1,6 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
+import * as d3Legend from 'd3-svg-legend';
 //import { setPartyColorScale } from 'src/app/utils/scales';
 import * as preprocess from './preprocessTab2';
 @Component({
@@ -42,6 +43,7 @@ export class Tab2Component  implements AfterViewInit   {
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
+
     // Define geometry
     let svgPadding = 20,
         squareSize = 20,
@@ -66,6 +68,22 @@ export class Tab2Component  implements AfterViewInit   {
     const container = d3.select('#graph-container');
     const svg = container.select('svg');
     svg.selectAll('rect').remove();         //Clean the svg before plotting new rect (for update purpose)
+    
+    // Draw Legend
+    svg.append('g')
+      .attr('class', 'legend');
+
+    var legend = d3Legend.legendColor()
+        .title('Légende')
+        .shapePadding(5)
+        .cells(6)
+        .orient('vertical')
+        .scale(this.colorScale) as any;
+  
+    svg.select('.legend')
+        .call(legend);
+    
+    
     // Draw the squares of the waffle
     svg.selectAll('rect')
       .data(data)
@@ -131,10 +149,4 @@ export class Tab2Component  implements AfterViewInit   {
     return data.filter((d)=>d['legislature'] == this.wantedLegislature)
                .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
-
-
-  
-
-  
-
 }

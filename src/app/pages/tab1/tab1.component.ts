@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewEncapsulation  } from '@angular/core';
 import * as d3 from 'd3';
 import * as preproc from './preprocessTab1'
 import { Legend } from "../../utils/legend";
@@ -9,7 +9,8 @@ import * as d3Legend from 'd3-svg-legend'
 @Component({
   selector: 'app-tab1',
   templateUrl: './tab1.component.html',
-  styleUrls: ['./tab1.component.css']
+  styleUrls: ['./tab1.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Tab1Component implements AfterViewInit  {
   itemList!: any;
@@ -28,14 +29,68 @@ export class Tab1Component implements AfterViewInit  {
       console.log(nbInterventionsByParty)
 
       let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
+<<<<<<< HEAD
       console.log(nbInterventionsByType)
 
       this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
       this.yScale;
       this.xScale;
+=======
+      let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
+
+      let recentInterventions = preproc.getInterventionsLegislature(data, "44-1")
+      console.log(recentInterventions)
+      this.createGraph(nbInterventionsByParty, parties)
+>>>>>>> acd0d3cca8b5aaff5b687b8f37fe732200c0904a
+
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
       this.drawLegend(parties)
+
+
+      d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
+        const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
+
+        preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+
+        const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
+        const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 
+        console.log(increaseWomen)
+        const statSpan3: HTMLSpanElement | null = document.getElementById("stat3") as HTMLSpanElement;
+        if (statSpan3) {
+          // Inject the value into the <span> element
+          statSpan3.textContent = increaseWomen;
+        }
+      })
+
+      d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
+        console.log("allo")
+        const changesLegislature44 : { [key: string]: any }[] = preproc.getNbChangesLegislature(listeDeputes, "441")
+        const statSpan2: HTMLSpanElement | null = document.getElementById("stat2") as HTMLSpanElement;
+        if (statSpan2) {
+          const innerStatSpan: HTMLSpanElement = document.createElement("span");
+          innerStatSpan.classList.add("statValue");
+          if(changesLegislature44.length == 0){
+            innerStatSpan.textContent = "Aucun"
+            const textAfter: Text = document.createTextNode(" député n'a")
+            statSpan2.appendChild(innerStatSpan)
+            statSpan2.appendChild(textAfter)
+          }
+          else if(changesLegislature44.length == 1){
+            innerStatSpan.textContent = "1"
+            const textAfter: Text = document.createTextNode("députe ("+changesLegislature44[0]["nom"]+") a")
+            statSpan2.appendChild(innerStatSpan)
+            statSpan2.appendChild(textAfter)
+          }
+          else{
+            //statSpan2.textContent = changesLegislature44.length.toString()+" députés ont";
+            innerStatSpan.textContent = changesLegislature44.length.toString()
+            const textAfter: Text = document.createTextNode(" députés ont")
+            statSpan2.appendChild(innerStatSpan)
+            statSpan2.appendChild(textAfter)
+          }
+        }
+      })
     })
   }
 
