@@ -18,7 +18,7 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
  * Gets the number of intervention for each political party.
  *
  * @param {{ [key: string]: any }[]} data The data to analyze
- * @returns { [key: string]: any }[]  A table of objects with keys 'parti',  containing
+ * @returns {{ [key: string]: any }[]}  A table of objects with keys 'parti',  containing
  * the name of the number of interventions for each party in the dataset
  */
 export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
@@ -47,8 +47,8 @@ export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]:
  * Gets the number of intervention for each type of intervention.
  *
  * @param {{ [key: string]: any }[]} data The data to analyze
- * @returns { [key: string]: any }[]  A table of objects with keys 'typeIntervention',  containing
- * the name of the number of interventions for each party in the dataset
+ * @returns { [key: string]: any }[]  A table of objects with keys 'TypeIntervention',  containing
+ * the name of the number of interventions for each party in the dataset, and 'Count' containing the number of interventions
  */
 export function getTypeInterventionCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
   const typeInterventionCount: { [key: string]: number } = {};
@@ -93,6 +93,12 @@ export function convertToWaffleCompatible(data: { [key: string]: any }[]): { [ke
 
 
 
+/**
+ * Gets the 5 types of interventions with the most intervention, merge the others in "Autres" type
+ * 
+ * @param {{[key: string]: any}[]} summarizedData The data to analyze, has to have keys 'TypeIntervention' and 'Count' for each object
+ * @returns {string[]} An array of objects like in summerizedData, but with only top 6 TypeIntervention + 'Autres'
+ */
 export function getPopularInterventionTypes(summarizedData: {[key: string]: any}[]): {[key: string]: any}[]{
   const sortedData = summarizedData.sort((a, b) => b["Count"] - a["Count"]);
   const topParties = sortedData.slice(0, 6);
@@ -105,19 +111,41 @@ export function getPopularInterventionTypes(summarizedData: {[key: string]: any}
 }
 
 
+
+/**
+ * Filter the data to keep only the interventions for a specified legislature
+ * 
+ * @param {{ [key: string]: any }[]} data The data to analyze (list of interventions)
+ * @param {string} legislature The legislature to keep
+ * @returns {{ [key: string]: any }[]} A filtered list of interventions
+ */
 export function getInterventionsLegislature(data: { [key: string]: any }[], legislature:string):{ [key: string]: any }[]{
   const filteredData: { [key: string]: any }[] = data.filter(obj => obj["legislature"] === legislature);
   return filteredData;
 }
 
 
-export function getMPsLegislature(listeDeputes:{ [key: string]: any }[], legislature:string){
+/**
+ * Filter the list of MPs to keep only the MPs for a specified legislature
+ * 
+ * @param {{ [key: string]: any }[]} listeDeputes The data to analyze (list of MPs)
+ * @param {string} legislature The legislature to keep
+ * @returns {{ [key: string]: any }[]} A filtered list of MPs
+ */
+export function getMPsLegislature(listeDeputes:{ [key: string]: any }[], legislature:string): { [key: string]: any }[]{
   const filteredData: { [key: string]: any }[] = listeDeputes.filter(obj => obj["legislature"] == legislature);
   return filteredData;
 }
 
 
-
+/**
+ * Preprocessing for Top & Flop
+ * 
+ * @param {{ [key: string]: any }[]} listeDeputes the list of MPs (for one legislature)
+ * @param {{ [key: string]: any }[]} interventionsData All the interventions for the same legislature
+ * @returns {any} On object with keys "topMPs" and "flopMPS", each containing an array of 3 objects 
+ *                 representing an MP with all his attributes + "count" being the number of intervention of this MP
+ */
 export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interventionsData:{ [key: string]: any }[]):any{
   const nameCounts: { [name: string]: number } = {};
   interventionsData.forEach(obj => {
@@ -140,7 +168,13 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
 }
 
 
-
+/**
+ * Preprocessing for stat : increase in the number of women
+ * 
+ * @param {{ [key: string]: any }[]} previousMPs the list of MPs (for one legislature)
+ * @param {{ [key: string]: any }[]} newMPs the list of MPs (for another legislature)
+ * @returns {string} A string representing the number (+8, -9, ...), to inject in the DOM
+ */
 export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ [key: string]: any }[]):string{
   const previousNumberOfWomen:number = previousMPs.filter(obj => obj["genre"] === "F").length;
   const newNumberOfWomen:number = newMPs.filter(obj => obj["genre"] === "F").length;
@@ -155,7 +189,13 @@ export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ 
 }
 
 
-
+/**
+ * Preprocessing for stat : number of changes since the beginning of this legislature
+ * 
+ * @param {{ [key: string]: any }[]} listMPs the list of MPs (data from Jean Hugues, with the changes)
+ * @param {{ [key: string]: any }[]} legislature legislature where the changes happened
+ * @returns {{[key: string]: any }[]} An array with all the changes. We can get the number after the preprocessing with array.length
+ */
 export function getNbChangesLegislature(listMPs: { [key: string]: any }[], legislature:string):{ [key: string]: any }[]{
   const filteredData: { [key: string]: any }[] = listMPs.filter(obj => obj["ch1-legislature"] == legislature);
   return filteredData

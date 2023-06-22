@@ -75,12 +75,12 @@ export class Tab1Component implements AfterViewInit  {
       //drawLegend.drawLegend(partyColorScale, 400, parties)
       
 
-
+      // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
         const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
-
+        // preprocessing for top & flop
         preproc.getInterstingMPs(listeDeputes44, recentInterventions)
-
+        // prepcoessing for Key value: increase in number of women
         const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
         const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 
         console.log(increaseWomen)
@@ -91,6 +91,7 @@ export class Tab1Component implements AfterViewInit  {
         }
       })
 
+      // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
       d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
         console.log("allo")
         const changesLegislature44 : { [key: string]: any }[] = preproc.getNbChangesLegislature(listeDeputes, "441")
