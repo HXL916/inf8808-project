@@ -63,13 +63,11 @@ body {
   background: #04AA6D;
   cursor: pointer;
 }
-<<<<<<< HEAD
+
 *, *:before, *:after {
   box-sizing: border-box;
-=======
-
+}
 .legend{
   float:right;  /*Ne fonctionne pas, à modifier pour mieux positionner la légende*/
->>>>>>> acd0d3cca8b5aaff5b687b8f37fe732200c0904a
 }
 

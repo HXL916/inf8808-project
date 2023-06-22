@@ -48,7 +48,6 @@
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
 
-<<<<<<< HEAD
 #waffleChart{
     display: flex;
     width: 85%;
@@ -57,9 +56,6 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
 }
 
 #stackedBarChart{
-=======
-#stackedBarChartContainer{
->>>>>>> acd0d3cca8b5aaff5b687b8f37fe732200c0904a
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -67,7 +63,7 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     width: 95%;
     height: 45%;
     padding: 10px;
-<<<<<<< HEAD
+
 }
 
 #stackedBarChartContainer{
@@ -75,12 +71,10 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     width: 95%;
     height: 35%;
     padding: 10px;
-    background-color: rgb(230, 230, 241)
-=======
+    background-color: rgb(230, 230, 241);
     border-radius: 4px;
     background-color: #3D7021;
     color: white;
->>>>>>> acd0d3cca8b5aaff5b687b8f37fe732200c0904a
 }
 
 

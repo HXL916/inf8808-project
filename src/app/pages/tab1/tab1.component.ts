@@ -29,19 +29,19 @@ export class Tab1Component implements AfterViewInit  {
       console.log(nbInterventionsByParty)
 
       let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
-<<<<<<< HEAD
+
       console.log(nbInterventionsByType)
 
       this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
       this.yScale;
       this.xScale;
-=======
+
       let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
 
       let recentInterventions = preproc.getInterventionsLegislature(data, "44-1")
       console.log(recentInterventions)
-      this.createGraph(nbInterventionsByParty, parties)
->>>>>>> acd0d3cca8b5aaff5b687b8f37fe732200c0904a
+      //this.createGraph(nbInterventionsByParty, parties)
+
 
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
