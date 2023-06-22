@@ -1,8 +1,9 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Legend from 'd3-svg-legend';
-//import { setPartyColorScale } from 'src/app/utils/scales';
 import * as preprocess from './preprocessTab2';
+import * as waffle from 'src/app/utils/waffle';
+
 @Component({
   selector: 'app-tab2',
   templateUrl: './tab2.component.html',
@@ -37,93 +38,6 @@ export class Tab2Component  implements AfterViewInit   {
     this.ngAfterViewInit();
   }
   */
-/**
- * Draws the waffle chart
- *
- * @param {object[]} data The data to use
- */
-  createGraph(data: { [key: string]: any }[]): void {
-
-    // Define geometry
-    let svgPadding = 20,
-        squareSize = 20,
-        smallGap = 5,
-        bigGap = 10,
-        alleyGap = 20,
-
-        nbRowInBloc = 4,
-        nbColInBloc = 5,
-        nbBlocRow = 5,
-        nbBlocCol = 4,
-
-        nbRow = nbRowInBloc*nbBlocRow,  // 16 rows of squares in total
-        nbCol = nbColInBloc*nbBlocCol,  // 20 columns of squares in total
-        nbSquaresinBloc = nbRowInBloc*nbColInBloc, // 20 squares per bloc
-
-        width = 1000,// blocWidth*nbBlocCol+bigGap*(nbBlocCol-1), //788 for now
-        height = 1000; // blocHeight*nbBlocRow+bigGap*(nbBlocRow-2)+alleyGap;  //666 for now
-
-
-    // Get the graph container element and create the svg
-    const container = d3.select('#graph-container');
-    const svg = container.select('svg');
-    svg.selectAll('rect').remove();         //Clean the svg before plotting new rect (for update purpose)
-    
-    // Draw Legend
-    svg.append('g')
-      .attr('class', 'legend');
-
-    var legend = d3Legend.legendColor()
-        .title('Légende')
-        .shapePadding(5)
-        .cells(6)
-        .orient('vertical')
-        .scale(this.colorScale) as any;
-  
-    svg.select('.legend')
-        .call(legend);
-    
-    
-    // Draw the squares of the waffle
-    svg.selectAll('rect')
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("width", squareSize)
-      .attr("height", squareSize)
-      .attr("class", function(d,i){
-        return 'seat-'+String(i);
-      })
-      .attr("fill", (d)=>this.colorScale(d[this.wantedKey]))
-      .attr("x", function(d, i) {
-        let col = i % nbCol;
-        return col * (squareSize+smallGap);
-      })
-      .attr("y", function(d, i) {
-          let row = Math.floor(i / nbCol);
-          return row * (squareSize+smallGap)+svgPadding;
-      })
-      .attr('row', function(d,i) {
-        return Math.floor(i / (nbSquaresinBloc*nbBlocCol));
-      })
-      .attr('col', function(d,i) {
-        return Math.floor(((i%(nbSquaresinBloc*nbBlocCol))%nbCol)/nbColInBloc);
-      });
-
-      // Improve placement of the squares
-      for (let i=0;i<nbBlocCol;i++){
-        for (let j=0;j<Math.floor(nbBlocRow/2);j++){
-          d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
-          .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
-        }
-        for (let j=Math.floor(nbBlocRow/2);j<nbBlocRow;j++){
-          d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
-          .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
-        }
-      }           
-  }
-
-
   /**
  * Keeps only the MPs from the selected Legislature.
  *
@@ -149,4 +63,54 @@ export class Tab2Component  implements AfterViewInit   {
     return data.filter((d)=>d['legislature'] == this.wantedLegislature)
                .sort((x, y)=>d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
+
+
+/**
+ * Draws the waffle chart
+ *
+ * @param {object[]} data The data to use
+ */
+  createGraph(data: { [key: string]: any }[]): void {
+    // Draw each seat 
+    waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
+
+    // Rearrange the seats to make it looks more like the house 
+    this.lookLikeHouseOfCommons();
+
+    /*
+    // Draw Legend
+    svg.append('g')
+      .attr('class', 'legend');
+
+    var legend = d3Legend.legendColor()
+        .title('Légende')
+        .shapePadding(5)
+        .cells(6)
+        .orient('vertical')
+        .scale(this.colorScale) as any;
+  
+    svg.select('.legend')
+        .call(legend);
+    */
+         
+  }
+
+  lookLikeHouseOfCommons(nbBlocCol = 4,nbBlocRow = 5):void{
+    let bigGap = 10,
+        alleyGap = 20;
+    
+    // Improve placement of the squares
+    for (let i=0;i<nbBlocCol;i++){
+      for (let j=0;j<Math.floor(nbBlocRow/2);j++){
+        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
+        .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
+      }
+      for (let j=Math.floor(nbBlocRow/2);j<nbBlocRow;j++){
+        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
+        .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
+      }
+    
+    } 
+  }
+
 }

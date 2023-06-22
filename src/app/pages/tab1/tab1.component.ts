@@ -4,6 +4,7 @@ import * as preproc from './preprocessTab1'
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
 import * as d3Legend from 'd3-svg-legend'
+import * as waffle from 'src/app/utils/waffle';
 
 
 @Component({
@@ -23,15 +24,40 @@ export class Tab1Component implements AfterViewInit  {
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
-      console.log(data)
-      let parties:string[] = preproc.getPartiesNames(data)
-      console.log(parties)
+      // WAFFLE CHART
+      // Preprocess
       let nbInterventionsByParty:{ [key: string]: any }[] = preproc.getPartyCounts(data)
-      console.log(nbInterventionsByParty)
+      let dataWaffle = preproc.convertToWaffleCompatible(nbInterventionsByParty);
+      let parties:string[] = preproc.getPartiesNames(data);
+      // Viz
+      waffle.drawSquares(dataWaffle, '#waffleContainer',partyColorScale,'Parti');
+      this.drawLegend(parties);
+      
+      // BAR CHART
+      // Preprocess
 
+      // Viz
+
+
+      // KEY VALUES
+      // Preprocess
+
+      // Viz
+
+
+      // TOP FLOP
+      // Preprocess
+
+      // Viz
+
+      
+      
+      
+      
+      
+      
       let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
 
-      console.log(nbInterventionsByType)
 
       this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
       this.yScale;
@@ -41,13 +67,13 @@ export class Tab1Component implements AfterViewInit  {
       let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
 
       let recentInterventions = preproc.getInterventionsLegislature(data, "44-1")
-      console.log(recentInterventions)
+
       //this.createGraph(nbInterventionsByParty, parties)
 
 
 
       //drawLegend.drawLegend(partyColorScale, 400, parties)
-      this.drawLegend(parties)
+      
 
 
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
@@ -97,9 +123,6 @@ export class Tab1Component implements AfterViewInit  {
   }
 
   createGraph (data: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
-    // Get the graph container element
-    const container = d3.select('#waffleChart');
-
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
     this.color= partyColorScale

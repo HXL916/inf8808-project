@@ -41,6 +41,8 @@ export function getPartyCounts(data: { [key: string]: any }[]): { [key: string]:
   return summarizedData;
 }
 
+
+
 /**
  * Gets the number of intervention for each type of intervention.
  *
@@ -69,6 +71,28 @@ export function getTypeInterventionCounts(data: { [key: string]: any }[]): { [ke
 }
 
 
+
+/**
+ * Adapts a list of [{'parti','count'}] to the waffle function from utils,
+ * by making it a list of ['parti] with as much elements as thousands in the count
+ *
+ * @param {{ [key: string]: any }[]} data The data to analyze
+ * @returns { [key: string]: any }[]  A table of objects with keys 'Parti', 
+ * each object significates 1000 interventions by this Parti
+ */
+export function convertToWaffleCompatible(data: { [key: string]: any }[]): { [key: string]: any }[] {
+  const summarizedData : { [key: string]: any }[] = [];
+  for (const obj of data) {
+    let thousands = Math.round(obj['Count']/1000);
+    for (let i=0;i<thousands;i++){
+      summarizedData.push( {"Parti": obj['Parti']});
+    }
+  }
+  return summarizedData;
+}
+
+
+
 export function getPopularInterventionTypes(summarizedData: {[key: string]: any}[]): {[key: string]: any}[]{
   const sortedData = summarizedData.sort((a, b) => b["Count"] - a["Count"]);
   const topParties = sortedData.slice(0, 6);
@@ -93,6 +117,7 @@ export function getMPsLegislature(listeDeputes:{ [key: string]: any }[], legisla
 }
 
 
+
 export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interventionsData:{ [key: string]: any }[]):any{
   const nameCounts: { [name: string]: number } = {};
   interventionsData.forEach(obj => {
@@ -104,7 +129,6 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
     ...obj,
     count: nameCounts[obj["nom"]] || 0
   }));
-  console.log(listeDeputesWithCount)
   // sort by count value
   listeDeputesWithCount.sort((a, b) => b.count - a.count);
   // Get the top 3 entries with the highest values for "count"
@@ -112,9 +136,9 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
   // Get the 3 entries with the lowest values for "count"
   const lowestEntries = listeDeputesWithCount.slice(-3)
   const result:{[name: string]: any} = {"topMPs": topEntries, "flopMPS": lowestEntries}
-  console.log(result)
   return result;
 }
+
 
 
 export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ [key: string]: any }[]):string{
@@ -129,6 +153,7 @@ export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ 
     return "+"+increase.toString();
   }
 }
+
 
 
 export function getNbChangesLegislature(listMPs: { [key: string]: any }[], legislature:string):{ [key: string]: any }[]{
