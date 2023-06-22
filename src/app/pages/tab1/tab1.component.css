@@ -41,19 +41,33 @@
 #waffleContainer{
     display: flex;
     width: 95%;
-    height: 55%;
+    height: 65%;
     padding: 10px;
     background-color: #aa2
 }
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
 
+#waffleChart{
+    display: flex;
+    width: 85%;
+    height: 100%;
+
+}
+
 #stackedBarChart{
     display: flex;
     width: 95%;
     height: 45%;
     padding: 10px;
-    background-color: #44f
+}
+
+#stackedBarChartContainer{
+    display: flex;
+    width: 95%;
+    height: 35%;
+    padding: 10px;
+    background-color: rgb(230, 230, 241)
 }
 
 #legendContainer{
