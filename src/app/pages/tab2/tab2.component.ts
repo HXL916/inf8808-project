@@ -11,8 +11,8 @@ import * as waffle from 'src/app/utils/waffle';
 })
 export class Tab2Component  implements AfterViewInit   {
   colorScale!: any;
-  wantedKey:string = "genre";
-  wantedLegislature:number = 44;
+  wantedKey:string;
+  wantedLegislature:number;
   sortedData:any;
   
   constructor() {
@@ -25,7 +25,6 @@ export class Tab2Component  implements AfterViewInit   {
       console.log(data);
       this.sortedData = preprocess.splitByLegislature(data);
       console.log(this.sortedData);
-      console.log(this.process(this.sortedData[this.wantedLegislature]));
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     

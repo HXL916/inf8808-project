@@ -33,7 +33,11 @@ body {
 
 }
 
-
+.slideContainer {
+  width: 100%;
+  margin-top: 20px;
+  align-items: center;
+}
 .slider {
   -webkit-appearance: none;
   width: 75%;
@@ -63,9 +67,27 @@ body {
   background: #04AA6D;
   cursor: pointer;
 }
+
+.slider-values {
+  margin-left: 250px;
+  width: 75%;
+  height: 5px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: -50px; /* Adjust as needed */
+}
+
 .slider-value {
-  display: inline-block;
-  margin-left: 10px;
+  font-size: 20px; /* Adjust as needed */
+  transform: translateX(-50%);
+}
+
+.slider-value:first-child {
+
+}
+
+.slider-value:last-child {
+
 }
 
 *, *:before, *:after {

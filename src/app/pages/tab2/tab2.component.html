@@ -9,9 +9,12 @@
 
   <svg class="waffle" width="1000" height="600"></svg>
 
-  <div class="slidecontainer">
-    <input type="range" min="42" max="44" [value]="this.wantedLegislature" class="slider" id="myRange" (input)="updateWantedLegislature($event)">
-    <span class="slider-value">{{ this.wantedLegislature }}</span>
+  <div class="slideContainer">
+    <input type="range" min="42" max="44" [value]="wantedLegislature" class="slider" id="myRange" (input)="updateWantedLegislature($event)">
+    <div class="slider-values">
+      <span *ngFor="let number of [42, 43, 44]" class="slider-value">{{ number }}</span>
+    </div>
   </div>
+  
   
 </div>
