@@ -21,10 +21,10 @@ export class Tab2Component  implements AfterViewInit   {
   }
 
   ngAfterViewInit(): void {
-    d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{
-      console.log(data);
+    d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
       this.sortedData = preprocess.splitByLegislature(data);
       console.log(this.sortedData);
+      console.log(preprocess.getPartiesNames(data));
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     
@@ -38,7 +38,7 @@ export class Tab2Component  implements AfterViewInit   {
     this.wantedLegislature=Number((event.target as HTMLInputElement).value);
     this.updateView();
   }
-  updateView():void{
+  updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
     this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
   }
 
@@ -114,5 +114,7 @@ export class Tab2Component  implements AfterViewInit   {
     
     } 
   }
-
+  drawLegend():void{    //TODO : utilise preprocess.getPartiesNames(data) pour avoir les noms des partis
+  }
+  
 }
