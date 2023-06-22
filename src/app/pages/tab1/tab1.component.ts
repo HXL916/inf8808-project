@@ -67,10 +67,8 @@ export class Tab1Component implements AfterViewInit  {
             statSpan2.appendChild(textAfter)
           }
           else if(changesLegislature44.length == 1){
-            innerStatSpan.textContent = changesLegislature44[0]["nom"]
-            const textBefore: Text = document.createTextNode("Seul ")
-            const textAfter: Text = document.createTextNode(" a")
-            statSpan2.appendChild(textBefore)
+            innerStatSpan.textContent = "1"
+            const textAfter: Text = document.createTextNode("députe ("+changesLegislature44[0]["nom"]+") a")
             statSpan2.appendChild(innerStatSpan)
             statSpan2.appendChild(textAfter)
           }
