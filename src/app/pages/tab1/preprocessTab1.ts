@@ -130,3 +130,9 @@ export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ 
   }
 }
 
+
+export function getNbChangesLegislature(listMPs: { [key: string]: any }[], legislature:string):{ [key: string]: any }[]{
+  const filteredData: { [key: string]: any }[] = listMPs.filter(obj => obj["ch1-legislature"] == legislature);
+  return filteredData
+}
+
