@@ -21,9 +21,7 @@ export class Tab1Component implements AfterViewInit  {
   pourcent!: any;
   data!:{ [key: string]: any}[];
 
-  constructor(private leg:Legend) {}
-
-  ngAfterViewInit(): void {
+  constructor(private leg:Legend) {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
@@ -126,7 +124,15 @@ export class Tab1Component implements AfterViewInit  {
     })
   }
 
+<<<<<<< HEAD
   createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
+=======
+  ngAfterViewInit(): void {
+    
+  }
+
+  createGraph (data: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
+>>>>>>> bcf007f1eecf38933a7e72f8d8f038a3bf6522d9
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
     this.color= partyColorScale
