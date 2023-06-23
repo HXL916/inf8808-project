@@ -13,15 +13,13 @@ import * as waffle from 'src/app/utils/waffle';
   styleUrls: ['./tab1.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-
 export class Tab1Component implements AfterViewInit  {
   itemList!: any;
   color!: any;
   xScale!: any;
   yScale!: any;
   pourcent!: any;
-  topMPs!: {}[]
-  flopMPs!: {}[]
+  data!:{ [key: string]: any}[];
 
   constructor(private leg:Legend) {}
 
@@ -36,9 +34,11 @@ export class Tab1Component implements AfterViewInit  {
       waffle.drawSquares(dataWaffle, '#waffleContainer',partyColorScale,'Parti');
       this.drawLegend(parties);
       
+    
+      
       // BAR CHART
       // Preprocess
-
+      
       // Viz
 
 
@@ -82,9 +82,7 @@ export class Tab1Component implements AfterViewInit  {
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
         const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
         // preprocessing for top & flop
-        let interestingMPs = preproc.getInterstingMPs(listeDeputes44, recentInterventions)
-        this.topMPs = interestingMPs["topMPs"]
-        this.flopMPs = interestingMPs["flopMPs"]
+        preproc.getInterstingMPs(listeDeputes44, recentInterventions)
         // prepcoessing for Key value: increase in number of women
         const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
         const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 
@@ -128,50 +126,100 @@ export class Tab1Component implements AfterViewInit  {
     })
   }
 
-  createGraph (data: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
+  createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
     this.color= partyColorScale
-    console.log(data)
-    console.log(parties)
+    
     d3.select('#waffleChart').selectAll('.tile')
-      .data(data)
+      .data(nbpart)
       .enter()
       .append('rect')
       .attr('class','tile')
+    //ancien code stacked bar
+
+  
+    // Nouveau code stacked bar
+    let donnees:{ [key: string]: any }={nom:'Type'};
+    let arDonnees:{ [key: string]: any}[]=[];
+    nbint.forEach(nb=>{
+      let newkey:string=Object.values(nb)[0];
+      donnees[newkey] = Object.values(nb)[1] ;
+    })
+    arDonnees.push(donnees);
+    console.log(arDonnees);
 
     const margin = { top: 10, right: 10, bottom: 20, left: 40 };
 
-    const width = 350 - margin.left - margin.right;
-    const height = 100 - margin.top - margin.bottom;
-    var total=nbint.reduce((total,arg)=>total+arg['Count'],0);
-    
-    const svgbar=d3.select('#stackedBarChart')
+    const width = 1200 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select('#stackedBarChart')
+      //.append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
-        .append('g')
+      .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
-    this.xScale = d3.scaleLinear()
-    .domain([0, d3.max(nbint, d => d['Count'])])
-    .range([0, width]);
-    console.log(d3.max(nbint, d => d['Count']/total*100))
-  
-    this.yScale = d3.scaleBand()
-      .domain(nbint.map(d => d['Parti']))
-      .range([0, height]);
 
-    // Create and append the bars
-    svgbar.selectAll(".bar")
-      .data(data)
-      .join("rect")
-      .attr("class", "bar")
-      .attr('x', d => this.xScale(d['Count']))
-      .attr('y', d => this.yScale(d['Parti']))
-      .attr("width", d => this.xScale(d['Count']))
-      .attr("height", this.yScale.bandwidth())
-      .attr('fill', d=>this.color(d['Parti']));
+    // data
+
+    
+
+    const fruit = Object.keys(arDonnees[0]).filter(d => d != "nom");
+    console.log(fruit);
+    const months = arDonnees.map(d => d["nom"]);
+    console.log(months);
+    const stackedData = d3.stack()
+        .keys(fruit)(arDonnees);
+
+    const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
+    // scales
 
 
+    const x = d3.scaleLinear()
+        .domain([0, xMax]).nice()
+        .range([0, width]);
+
+    const y = d3.scaleBand()
+        .domain(months)
+        .range([0, height])
+        //.padding(0.75);
+
+    const colores: any = d3.scaleOrdinal()
+        .domain(fruit)
+        .range(d3.schemeTableau10);
+
+    // axes
+
+    /*const xAxis = d3.axisBottom(x).ticks(5, '~s');
+    const yAxis = d3.axisLeft(y);
+
+    svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(xAxis)
+        .call(g => g.select('.domain').remove());
+
+    svg.append("g")
+        .call(yAxis)
+        .call(g => g.select('.domain').remove());*/
+
+    // draw bars
+
+    // create one group for each fruit
+    const layers = svg.append('g')
+      .selectAll('g')
+      .data(stackedData)
+      .join('g')
+        .attr('fill', d => colores(d.key));
+
+
+
+    layers.selectAll("rect")
+    .data(function(d) { return d; })
+  .enter().append("rect")
+    .attr("x", function(d) { return x(d[0]); })
+    .attr("height", y.bandwidth())
+    .attr("width", function(d) { return x(d[1]) - x(d[0]) });
   }
 
   
