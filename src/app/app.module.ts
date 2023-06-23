@@ -11,7 +11,7 @@ import { FilterButtonComponent } from './components/filter-button/filter-button.
 import { PreprocessingService } from './services/preprocessing.service';
 import { InterventionTypeToggleComponent } from './components/intervention-type-toggle/intervention-type-toggle.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 
 @NgModule({
   declarations: [
