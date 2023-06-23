@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-filter-button',
@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./filter-button.component.css']
 })
 export class FilterButtonComponent implements OnInit {
+  @Output() filterChange = new EventEmitter<string>();
   wantedKey:string;
   
   constructor() {    
@@ -17,6 +18,7 @@ export class FilterButtonComponent implements OnInit {
 
   updateWantedKey(key:string):void{
     this.wantedKey=key;
+    this.filterChange.emit(this.wantedKey);
     // this.updateView(); // based on key
   }
 }

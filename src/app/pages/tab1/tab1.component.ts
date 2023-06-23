@@ -23,9 +23,7 @@ export class Tab1Component implements AfterViewInit  {
   topMPs!: {}[]
   flopMPs!: {}[]
 
-  constructor(private leg:Legend) {}
-
-  ngAfterViewInit(): void {
+  constructor(private leg:Legend) {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
@@ -126,6 +124,10 @@ export class Tab1Component implements AfterViewInit  {
         }
       })
     })
+  }
+
+  ngAfterViewInit(): void {
+    
   }
 
   createGraph (data: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {

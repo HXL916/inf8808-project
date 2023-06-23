@@ -1,6 +1,6 @@
 <div id="graph-container" style="text-align:center;">
 
-  <app-filter-button></app-filter-button>
+  <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
 
   <svg class="waffle" width="1000" height="600"></svg>
 
