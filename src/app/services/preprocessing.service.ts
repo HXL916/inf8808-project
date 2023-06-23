@@ -324,4 +324,66 @@ export class PreprocessingService {
   getPartiesNamesTab2(data: { [key: string]: any }[]): string[] {
     return Array.from(new Set(data.map(obj => obj["parti"]))).sort();
   }
+
+  // TAB 3 PREPROCESSING FUNCTIONS
+
+  // TODO: add description
+    getInterventionsYear(data: { [key: string]: any }[], annee:number):{ [key: string]: any }[]{
+      const filteredData: { [key: string]: any }[] = data.filter(obj => obj["année"] === annee);
+      return filteredData;
+  }
+
+
+  /**
+   * Gets the number of intervention by specific period for each type of intervention.
+   *
+   * @param {{ [key: string]: any }[]} data The data to analyze
+   * @param {number} year The year for which the intervention type should be retrieved
+   * @param {number} month The month for which the intervention type should be retrieved
+   * @param { string } wantedKey The data to analyze
+   * @returns { [key: string]: any }[]  A table of objects with keys 'TypeIntervention',  containing
+   * the name of the number of interventions for each party in the dataset, and 'Count' containing the number of interventions
+   */
+  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
+      const keyCount: { [key: string]: number } = {};
+    
+      for (const obj of data) {
+        if (obj.hasOwnProperty(wantedKey) && obj['année'] === year && obj['month'] === month) {
+          const key = obj[wantedKey];
+          if (keyCount.hasOwnProperty(key)) {
+              keyCount[key]++;
+          } else {
+              keyCount[key] = 1;
+          }
+        }
+      }
+    
+      const summarizedData : { [key: string]: any }[] = [];
+      switch (wantedKey){
+          case "genre":
+              Object.keys(keyCount).forEach(element => {
+                  summarizedData.push( {"Genre": element, "Count": keyCount[element]})
+                });
+              break;
+          case "parti":
+              Object.keys(keyCount).forEach(element => {
+                  summarizedData.push( {"Parti": element, "Count": keyCount[element]})
+                });
+              break;
+          case "province":
+              Object.keys(keyCount).forEach(element => {
+                  summarizedData.push( {"Province": element, "Count": keyCount[element]})
+                });
+              break;
+      } 
+      console.log('typeInterventionCount', keyCount, summarizedData, data);
+      return summarizedData;
+  }
+
+
+  // TODO: add description
+  getInterventionsByType(data: { [key: string]: any }[], interventionType: string):{ [key: string]: any }[]{
+      const filteredData: { [key: string]: any }[] = data.filter(obj => obj["typeIntervention"] === interventionType);
+      return filteredData;
+  }
 }
