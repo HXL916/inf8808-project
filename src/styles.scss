@@ -1,0 +1,82 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$project-inf8808-primary: mat.define-palette(mat.$indigo-palette);
+$project-inf8808-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$project-inf8808-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$project-inf8808-theme: mat.define-light-theme((
+  color: (
+    primary: $project-inf8808-primary,
+    accent: $project-inf8808-accent,
+    warn: $project-inf8808-warn,
+  )
+));
+
+$custom-palette: (
+50: #e8eee4,
+100:#c5d4bc,
+200:#9eb890,
+300:#779b64,
+400:#5a8542,
+500:#3d7021,
+600:#37681d,
+700:#2f5d18,
+800:#275314,
+900:#1a410b,
+A100:#97ff7a,
+A200:#70ff47,
+A400:#48ff14,
+A700:#37f900,
+contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+)
+);
+
+$custom-primary: mat.define-palette($custom-palette, 500);
+$custom-secondary: mat.define-palette($custom-palette, 200);
+$custom-accent: mat.define-palette($custom-palette, 100);
+
+$custom-theme: mat.define-light-theme((
+  color: (
+    primary: $custom-primary,
+    secondary: $custom-secondary,
+    accent: $custom-accent,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+// @include mat.all-component-themes($project-inf8808-theme);
+@include mat.all-component-themes($custom-theme);
+
+/* You can add global styles to this file, and also import other style files */
+//@import './custom-theme.scss';
+
+//html, body { height: 100%; }
+//body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
