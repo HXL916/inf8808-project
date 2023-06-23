@@ -1,5 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
+import { PreprocessingService } from 'src/app/services/preprocessing.service';
 
 @Component({
   selector: 'app-tab3',
@@ -8,7 +9,7 @@ import * as d3 from 'd3';
 })
 export class Tab3Component  implements AfterViewInit  {
 
-  constructor() {}
+  constructor(private preprocessingService: PreprocessingService) {}
 
   ngAfterViewInit(): void {
     this.createGraph(this.process("test"));

@@ -8,6 +8,7 @@ import { Tab2Component } from './pages/tab2/tab2.component';
 import { Tab3Component } from './pages/tab3/tab3.component';
 import { TopFlopComponent } from './pages/tab1/top-flop/top-flop.component';
 import { FilterButtonComponent } from './components/filter-button/filter-button.component';
+import { PreprocessingService } from './services/preprocessing.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,7 @@ import { FilterButtonComponent } from './components/filter-button/filter-button.
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [PreprocessingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
