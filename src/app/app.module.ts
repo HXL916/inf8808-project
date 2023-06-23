@@ -9,6 +9,9 @@ import { Tab3Component } from './pages/tab3/tab3.component';
 import { TopFlopComponent } from './pages/tab1/top-flop/top-flop.component';
 import { FilterButtonComponent } from './components/filter-button/filter-button.component';
 import { PreprocessingService } from './services/preprocessing.service';
+import { InterventionTypeToggleComponent } from './components/intervention-type-toggle/intervention-type-toggle.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -17,11 +20,14 @@ import { PreprocessingService } from './services/preprocessing.service';
     Tab2Component,
     Tab3Component,
     TopFlopComponent,
-    FilterButtonComponent
+    FilterButtonComponent,
+    InterventionTypeToggleComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatChipsModule,
   ],
   providers: [PreprocessingService],
   bootstrap: [AppComponent]

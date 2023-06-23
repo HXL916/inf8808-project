@@ -1,0 +1,10 @@
+@import '~@angular/material/theming';
+@import '~@angular/material/prebuilt-themes/indigo-pink';
+
+$custom-secondary: #8AB476;
+$custom-accent: #BEBEBE;
+
+$custom-theme: mat-light-theme($custom-secondary, $custom-accent);
+
+@include mat-core();
+@include angular-material-theme($custom-theme);
