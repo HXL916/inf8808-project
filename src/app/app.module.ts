@@ -7,6 +7,7 @@ import { Tab1Component } from './pages/tab1/tab1.component';
 import { Tab2Component } from './pages/tab2/tab2.component';
 import { Tab3Component } from './pages/tab3/tab3.component';
 import { TopFlopComponent } from './pages/tab1/top-flop/top-flop.component';
+import { FilterButtonComponent } from './filter-button/filter-button.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { TopFlopComponent } from './pages/tab1/top-flop/top-flop.component';
     Tab1Component,
     Tab2Component,
     Tab3Component,
-    TopFlopComponent
+    TopFlopComponent,
+    FilterButtonComponent
   ],
   imports: [
     BrowserModule,
