@@ -96,3 +96,65 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     font-weight: 700;
     font-size: 1.9em;
 }
+
+
+#bottomPart{
+    width: 40%;
+    margin: auto;
+    padding-right: 2em;
+}
+
+#titleBottom{
+    font-size: 1.7em;
+    font-weight: 600;
+    margin-top: 2em;
+    margin-bottom: 0em;
+}
+
+#bottomContent{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: space-between;
+    width: 70em;
+
+}
+
+.topFlopTitle{
+    font-size: 2.1em;
+    font-weight: 700;
+    color: white;
+    margin: auto;
+    width: 6em;
+    text-align: center;
+    background-color: #3D7021;
+    border-radius: 10px;
+    padding-left: 0.5em;
+}
+
+.separation{
+    font-size: 2.1em;
+    font-weight: 700;
+}
+
+.line-vertical {
+    width: 4px; /* line-width */
+    height: 570px; /* line length */
+    margin-left: 12px;
+    margin-top: 30px;
+    float: left;
+    position: relative;
+    background: #222;
+}
+
+
+.arrow-up:after {
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border: 5px solid transparent;
+    left: -3px;
+    top: -15px;
+    border-bottom: 15px solid #222;
+}

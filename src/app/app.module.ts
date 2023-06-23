@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { Tab1Component } from './pages/tab1/tab1.component';
 import { Tab2Component } from './pages/tab2/tab2.component';
 import { Tab3Component } from './pages/tab3/tab3.component';
+import { TopFlopComponent } from './pages/tab1/top-flop/top-flop.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     Tab1Component,
     Tab2Component,
-    Tab3Component
+    Tab3Component,
+    TopFlopComponent
   ],
   imports: [
     BrowserModule,

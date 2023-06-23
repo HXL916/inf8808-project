@@ -27,6 +27,25 @@
 </div>
 
 <div id="bottomPart">
-
-
+    <div id="titleBottom">
+        <p>Palmarès des députés:</p>
+    </div>
+    <div id="bottomContent">
+        <div class="topFlop">
+            <div class="topFlopTitle">
+                <p>TOP 👍</p>
+            </div>
+            <top-flop *ngFor="let person of topMPs" [person]="person"></top-flop>
+        </div>
+        <div class="separation">
+            <p>&</p>
+            <div class="line-vertical arrow-up"></div>
+        </div>
+        <div class="topFlop">
+            <div class="topFlopTitle">
+                <p> FLOP 👎</p>
+            </div>
+            <top-flop *ngFor="let person of flopMPs" [person]="person"></top-flop>
+        </div>
+    </div>
 </div>

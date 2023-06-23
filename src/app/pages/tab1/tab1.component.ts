@@ -13,12 +13,15 @@ import * as waffle from 'src/app/utils/waffle';
   styleUrls: ['./tab1.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
+
 export class Tab1Component implements AfterViewInit  {
   itemList!: any;
   color!: any;
   xScale!: any;
   yScale!: any;
   pourcent!: any;
+  topMPs!: {}[]
+  flopMPs!: {}[]
 
   constructor(private leg:Legend) {}
 
@@ -79,7 +82,9 @@ export class Tab1Component implements AfterViewInit  {
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
         const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
         // preprocessing for top & flop
-        preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+        let interestingMPs = preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+        this.topMPs = interestingMPs["topMPs"]
+        this.flopMPs = interestingMPs["flopMPs"]
         // prepcoessing for Key value: increase in number of women
         const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
         const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 

@@ -143,7 +143,7 @@ export function getMPsLegislature(listeDeputes:{ [key: string]: any }[], legisla
  * 
  * @param {{ [key: string]: any }[]} listeDeputes the list of MPs (for one legislature)
  * @param {{ [key: string]: any }[]} interventionsData All the interventions for the same legislature
- * @returns {any} On object with keys "topMPs" and "flopMPS", each containing an array of 3 objects 
+ * @returns {any} On object with keys "topMPs" and "flopMPs", each containing an array of 3 objects 
  *                 representing an MP with all his attributes + "count" being the number of intervention of this MP
  */
 export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interventionsData:{ [key: string]: any }[]):any{
@@ -163,7 +163,7 @@ export function getInterstingMPs(listeDeputes:{ [key: string]: any }[], interven
   const topEntries = listeDeputesWithCount.slice(0, 3);
   // Get the 3 entries with the lowest values for "count"
   const lowestEntries = listeDeputesWithCount.slice(-3)
-  const result:{[name: string]: any} = {"topMPs": topEntries, "flopMPS": lowestEntries}
+  const result:{[name: string]: any} = {"topMPs": topEntries, "flopMPs": lowestEntries}
   return result;
 }
 
