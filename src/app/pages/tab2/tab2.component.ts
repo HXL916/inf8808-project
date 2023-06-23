@@ -1,8 +1,8 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Legend from 'd3-svg-legend';
-import * as preprocess from './preprocessTab2';
 import * as waffle from 'src/app/utils/waffle';
+import { PreprocessingService } from 'src/app/services/preprocessing.service';
 
 @Component({
   selector: 'app-tab2',
@@ -15,16 +15,16 @@ export class Tab2Component  implements AfterViewInit   {
   wantedLegislature:number;
   sortedData:any;
   
-  constructor() {
+  constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = "genre";
     this.wantedLegislature = 44;
   }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
-      this.sortedData = preprocess.splitByLegislature(data);
+      this.sortedData = this.preprocessingService.splitByLegislature(data);
       console.log(this.sortedData);
-      console.log(preprocess.getPartiesNames(data));
+      console.log(this.preprocessingService.getPartiesNames(data));
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     
@@ -54,7 +54,7 @@ export class Tab2Component  implements AfterViewInit   {
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
       case "parti":
-        let affiliations = preprocess.getPartiesNames(data);
+        let affiliations = this.preprocessingService.getPartiesNames(data);
         this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
         break;
       case "province":

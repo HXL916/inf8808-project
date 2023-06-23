@@ -1,10 +1,10 @@
 import { Component, AfterViewInit, ViewEncapsulation  } from '@angular/core';
 import * as d3 from 'd3';
-import * as preproc from './preprocessTab1'
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
 import * as d3Legend from 'd3-svg-legend'
 import * as waffle from 'src/app/utils/waffle';
+import { PreprocessingService } from 'src/app/services/preprocessing.service';
 
 
 @Component({
@@ -23,13 +23,15 @@ export class Tab1Component implements AfterViewInit  {
   flopMPs!: {}[]
   data!:{ [key: string]: any}[];
 
-  constructor(private leg:Legend) {
+  constructor(private leg:Legend, private preprocessingService: PreprocessingService) {}
+
+  ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
-      let nbInterventionsByParty:{ [key: string]: any }[] = preproc.getPartyCounts(data)
-      let dataWaffle = preproc.convertToWaffleCompatible(nbInterventionsByParty);
-      let parties:string[] = preproc.getPartiesNames(data);
+      let nbInterventionsByParty:{ [key: string]: any }[] = this.preprocessingService.nbInterventionsByParty
+      let dataWaffle = this.preprocessingService.dataWaffle
+      let parties:string[] = this.preprocessingService.parties
       // Viz
       waffle.drawSquares(dataWaffle, '#waffleContainer',partyColorScale,'Parti');
       this.drawLegend(parties);
@@ -59,7 +61,7 @@ export class Tab1Component implements AfterViewInit  {
       
       
       
-      let nbInterventionsByType:{ [key: string]: any }[] = preproc.getTypeInterventionCounts(data)
+      let nbInterventionsByType:{ [key: string]: any }[] = this.preprocessingService.nbInterventionsByParty
 
 
       this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
@@ -67,9 +69,9 @@ export class Tab1Component implements AfterViewInit  {
       this.xScale;
       this.pourcent;
 
-      let popularInterventions:{ [key: string]: any }[] = preproc.getPopularInterventionTypes(nbInterventionsByType)
+      let popularInterventions:{ [key: string]: any }[] = this.preprocessingService.popularInterventions
 
-      let recentInterventions = preproc.getInterventionsLegislature(data, "44-1")
+      let recentInterventions = this.preprocessingService.recentInterventions
 
       //this.createGraph(nbInterventionsByParty, parties)
 
@@ -80,15 +82,15 @@ export class Tab1Component implements AfterViewInit  {
 
       // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
-        const listeDeputes44:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "44")
+        const listeDeputes44:{ [key: string]: any }[] = this.preprocessingService.listeDeputes44
         // preprocessing for top & flop
-        let interestingMPs = preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+        let interestingMPs = this.preprocessingService.interestingMPs
         this.topMPs = interestingMPs["topMPs"]
         this.flopMPs = interestingMPs["flopMPs"]
-        preproc.getInterstingMPs(listeDeputes44, recentInterventions)
+        this.preprocessingService.getInterestingMPs(listeDeputes44, recentInterventions)
         // prepcoessing for Key value: increase in number of women
-        const listeDeputes43:{ [key: string]: any }[] = preproc.getMPsLegislature(listeDeputes, "43")
-        const increaseWomen:string = preproc.getIncreaseWomen(listeDeputes43, listeDeputes44) 
+        const listeDeputes43:{ [key: string]: any }[] = this.preprocessingService.listeDeputes43
+        const increaseWomen:string = this.preprocessingService.increaseWomen
         console.log(increaseWomen)
         const statSpan3: HTMLSpanElement | null = document.getElementById("stat3") as HTMLSpanElement;
         if (statSpan3) {
@@ -100,7 +102,7 @@ export class Tab1Component implements AfterViewInit  {
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
       d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
         console.log("allo")
-        const changesLegislature44 : { [key: string]: any }[] = preproc.getNbChangesLegislature(listeDeputes, "441")
+        const changesLegislature44 : { [key: string]: any }[] = this.preprocessingService.changesLegislature44
         const statSpan2: HTMLSpanElement | null = document.getElementById("stat2") as HTMLSpanElement;
         if (statSpan2) {
           const innerStatSpan: HTMLSpanElement = document.createElement("span");
@@ -127,9 +129,6 @@ export class Tab1Component implements AfterViewInit  {
         }
       })
     })
-  }
-  ngAfterViewInit(): void {
-    
   }
   createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
 
