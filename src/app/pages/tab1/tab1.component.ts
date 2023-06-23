@@ -123,16 +123,13 @@ export class Tab1Component implements AfterViewInit  {
       })
     })
   }
-
-<<<<<<< HEAD
-  createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
-=======
   ngAfterViewInit(): void {
     
   }
+  createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
 
-  createGraph (data: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
->>>>>>> bcf007f1eecf38933a7e72f8d8f038a3bf6522d9
+
+
     // Define your graph logic using D3.js methods
     // For example, create a simple SVG circle
     this.color= partyColorScale
