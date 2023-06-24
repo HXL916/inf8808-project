@@ -64,19 +64,38 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
   
       // On itère sur tous les arrays (un array = les interventions pour un mois donné)
       for (const key in groupedArrays) {
-        // if (groupedArrays.hasOwnProperty(key)) {
+        if (groupedArrays.hasOwnProperty(key)) {
           const interventionMois = groupedArrays[key];
-          const valeurAAJouter = getTypeInterventionCountsByPeriod(interventionMois);
-          // je vais peut être la changer pour recevoir les bonnes infos
+          // for now the year is hardcoded
+          const valeurAAJouter = getTypeInterventionCountsByPeriod(interventionMois, month, 2016);
           interventionArray.push(valeurAAJouter)
-        // }
+        }
       }
     }
     console.log("interventionARRAY: " + interventionArray)
     return interventionArray
   }
 
-  export function getTypeInterventionCountsByPeriod(data: { [key: string]: any }[]): { [key: string]: any }[] {
+  export function getMonth(month:number): any{ 
+    var returnMonth;
+    switch(month) {
+        case 1: returnMonth = "January"; break;
+        case 2: returnMonth = "February"; break;
+        case 3: returnMonth = "March"; break;
+        case 4: returnMonth = "April"; break;
+        case 5: returnMonth = "May"; break;
+        case 6: returnMonth = "June"; break;
+        case 7: returnMonth = "July"; break;
+        case 8: returnMonth = "August"; break;
+        case 9: returnMonth = "September"; break;
+        case 10: returnMonth = "October"; break;
+        case 11: returnMonth = "November"; break;
+        case 12: returnMonth = "December"; break;
+     }
+     return returnMonth;
+  } 
+
+  export function getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], month: number, year: number): { [key: string]: any }[] {
     const keyCount: { [key: string]: number } = {};
   
     console.log('i am inside getTypeInterventionCountsByPeriod', data);
@@ -91,9 +110,10 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
       }
     }
   
+    const mois = getMonth(month)
     const summarizedData : { [key: string]: any }[] = [];
     Object.keys(keyCount).forEach((element) => {
-      summarizedData.push({ Genre: element, Count: keyCount[element] });
+      summarizedData.push({ Genre: element, Count: keyCount[element], Month: mois, Year: year  });
     });
     console.log('typeInterventionCount', keyCount, summarizedData, data);
     return summarizedData;
