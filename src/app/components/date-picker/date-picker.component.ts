@@ -48,6 +48,10 @@ export class DatePickerComponent {
     end: new FormControl<Date | null>(null)
   });
 
+  constructor() {
+    this.range = this.periodRanges[3];
+  }
+
   periodRanges: FormGroup[] = [
     new FormGroup({
       start: new FormControl<Date | null>(new Date(2015, 12, 3)), // 42ème législature
@@ -64,12 +68,13 @@ export class DatePickerComponent {
     new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 11, 22)), // 44ème législature
       end: new FormControl<Date | null>(new Date(2023, 0, 1))
-    })
+    }),
+    new FormGroup({start: new FormControl<Date | null>(null), end: new FormControl<Date | null>(null)}) // Custom range, empty
   ];
 
   updateRangePickerState() {
     this.rangePickerEnabled = !this.selectedPeriod;   
-    if(!this.rangePickerEnabled) this.range.reset();
+    if(!this.rangePickerEnabled) this.range = this.periodRanges[4];
     switch (this.selectedPeriod) {
       case "42ème législature":
         this.range = this.periodRanges[0];
@@ -88,8 +93,9 @@ export class DatePickerComponent {
         this.selectedPeriod = this.periods[3];
         break;
       default:
-        this.range = new FormGroup({start: new FormControl<Date | null>(null), end: new FormControl<Date | null>(null)});
-        break;
+        this.range = this.periodRanges[4];
+        this.selectedPeriod = this.periods[4];
+      break;
     }
   }
 }
