@@ -32,3 +32,66 @@ app-date-picker{
     padding: 10px;
     background-color: #FAF4F2;
   }
+
+/* #legendContainer{
+    display: flex;
+    width: 200px;
+    height: 300px;
+    position: relative;
+    padding-right: 10%;
+    float: right;
+    bottom: 600px;
+}
+
+.legend-wrapper {
+    display: block;
+}
+
+.filter-container{
+    float: left;
+    padding-top: 40px;
+    width: 200px;
+    position: relative;
+    left: 110px;
+}
+
+.intervention-container{
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    padding-left: 80px;
+    text-align: center;
+    align-content: center;
+}
+
+.buttons-container{
+    display: inline-grid;
+    gap: 35px;
+}
+
+.title {
+    padding-top: 40px;
+    font-size: 30px;
+    font-weight: 450;
+    text-align: center;
+}
+
+.stackedBar {
+    display: flex;
+    position: relative;
+    width: 100px;
+    height: 750px;
+}
+
+#stackedBarChart{
+    display: flex;
+    position: absolute;
+    top: -633px;
+    left: 300px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+} */
