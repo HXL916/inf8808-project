@@ -1,0 +1,9 @@
+.aligned {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.aligned > mat-form-field {
+    margin-right: 50px;
+    margin-left: 50px;
+}
