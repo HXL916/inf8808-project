@@ -1,15 +1,23 @@
 <div id="graph-container" style="text-align:center;">
-
-  <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
-
-  <svg class="waffle" width="1000" height="600"></svg>
-
-  <div class="slideContainer">
-    <input type="range" min="42" max="44" [value]="wantedLegislature" class="slider" id="myRange" (input)="updateWantedLegislature($event)">
-    <div class="slider-values">
-      <span *ngFor="let number of [42, 43, 44]" class="slider-value">{{ number }}</span>
+  <div id="zone-tooltip">
+    <img src="path/to/avatar.jpg" id="avatar">
+    <div id="tooltip-details">
+      <p id="p-name"></p>
+      <p id="p-parti"></p>
+      <p id="p-province"></p>
     </div>
   </div>
+
+  <svg id="zone-chart" class="waffle" width="525" height="550"></svg>
+
+  <div id="zone-buttons">
+    <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
+  </div>
   
-  
+</div>
+<div class="slideContainer">
+  <input type="range" min="42" max="44" [value]="wantedLegislature" class="slider" id="myRange" (input)="updateWantedLegislature($event)">
+  <div class="slider-values">
+    <span *ngFor="let number of [42, 43, 44]" class="slider-value">{{ number }}</span>
+  </div>
 </div>

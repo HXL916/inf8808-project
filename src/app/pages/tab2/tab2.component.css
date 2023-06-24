@@ -3,6 +3,76 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+
+#graph-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#zone-tooltip{
+  flex:1;
+  display: flex;
+  flex-direction: row;
+
+
+  color: black;
+  width: 25em;
+  height: 10em;
+  box-shadow: 2px 3px 12px #4A6A4A;
+
+  /* Aesthetic */
+  opacity:0;
+  border: none;
+  background-color: #8AB476;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 50px;
+  margin-left: 50px;
+  border-radius: 10px;
+}
+#avatar{
+  max-width:90px;
+  max-height:150px;
+  object-fit: scale-down;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+#tooltip-details{
+  flex: 1;
+  #p-name{
+    font-size: 1.5em;
+    font-weight: 700;
+    padding : 0.1em;
+    margin : 0.1em;
+    margin-bottom: 1em;
+  }
+}
+#zone-chart{
+  flex:2;
+  display: flex;
+  flex-direction: column;
+}
+
+#zone-buttons{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+#tooltip{
+  opacity:0;
+  background-color:"#8AB476";
+  border-radius:"25px";
+  padding:"20px";
+}
+
 .button-group button {
   /* Aesthetic */
   border: none;
@@ -33,7 +103,11 @@ body {
 
 }
 
+
+
+
 .slideContainer {
+  margin-left: 10%;
   width: 100%;
   margin-top: 20px;
   align-items: center;
@@ -56,7 +130,7 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%; 
-  background: #04AA6D;        /*Insert background url to put an image on the cursor*/
+  background: #000000;        /*Insert background url to put an image on the cursor*/
   cursor: pointer;
 }
 
@@ -64,12 +138,12 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #04AA6D;
+  background: #000000;
   cursor: pointer;
 }
 
 .slider-values {
-  margin-left: 250px;
+
   width: 75%;
   height: 5px;
   display: flex;

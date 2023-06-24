@@ -32,7 +32,6 @@
     display: flex;
     border-right: 5px solid black;
     height: 700px;
-    background-color: #ff6;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -43,7 +42,6 @@
     width: 95%;
     height: 65%;
     padding: 10px;
-    background-color: #aa2
 }
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
@@ -52,7 +50,16 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     display: flex;
     width: 85%;
     height: 100%;
+    background-color: #FAF4F2;
 
+}
+
+#legendContainer{
+    display: flex;
+    width: 15%;
+    height: 100%;
+    padding: 10px;
+    background-color: #FAF4F2;
 }
 
 #stackedBarChart{
@@ -60,31 +67,37 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 95%;
-    height: 45%;
-    padding: 10px;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
 
 }
 
 #stackedBarChartContainer{
     display: flex;
-    width: 95%;
-    height: 35%;
-    padding: 10px;
-    background-color: rgb(230, 230, 241);
-    border-radius: 4px;
+    width: auto;
+    height:auto;
+    padding: 15px;
+    border-radius: 15px;
     background-color: #3D7021;
     color: white;
 }
 
-
-#legendContainer{
-    display: flex;
-    width: 15%;
-    height: 100%;
-    padding: 10px;
-    background-color: rgb(251, 251, 252)
+#stackedBarChartTextContainer{
+    width: 150px;
 }
+
+#stackedBarChartTextContainer h3 {
+    margin-top: 0;
+    padding-top: 0;
+    line-height: 12pt;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    font-size: 1.4em;
+}
+
+
+
 
 #statsBlock p{
     font-size: 1.6em;
@@ -99,16 +112,17 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
 
 
 #bottomPart{
-    width: 40%;
+    width: 75em;
     margin: auto;
     padding-right: 2em;
+    padding-bottom: 2em;
 }
 
 #titleBottom{
     font-size: 1.7em;
     font-weight: 600;
     margin-top: 2em;
-    margin-bottom: 0em;
+    margin-bottom: 1m;
 }
 
 #bottomContent{
@@ -126,10 +140,17 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     color: white;
     margin: auto;
     width: 6em;
+    height: auto;
+    padding-top: 0.35em;
+    padding-bottom: 0.25em;
     text-align: center;
     background-color: #3D7021;
     border-radius: 10px;
     padding-left: 0.5em;
+}
+.topFlopTitle p{
+    padding-bottom: 0px;
+    margin-bottom:0px;
 }
 
 .separation{

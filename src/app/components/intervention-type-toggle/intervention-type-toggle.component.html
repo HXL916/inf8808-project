@@ -1,23 +1,9 @@
-<p>intervention-type-toggle works!</p>
-<mat-chip-listbox class="mat-mdc-chip-set-stacked" aria-label="Fish selection">
-    <mat-chip-option color="primary">
-        <img matChipAvatar src="/assets/White_flag_icon.png" alt="White Flag Icon">
-        One fish
-    </mat-chip-option>
-    <mat-chip-option color="primary">
-        <img matChipAvatar src="/assets/White_flag_icon.png" alt="White Flag Icon">
-        Two fish
-    </mat-chip-option>
-    <mat-chip-option color="primary">
-        <img matChipAvatar src="/assets/White_flag_icon.png" alt="White Flag Icon">
-        Primary fish
-    </mat-chip-option>
-    <mat-chip-option color="primary">
-        <img matChipAvatar src="/assets/White_flag_icon.png" alt="White Flag Icon">
-        Accent fish
-    </mat-chip-option>
-    <mat-chip-option color="primary">
-        <img matChipAvatar src="/assets/White_flag_icon.png" alt="White Flag Icon">
-        Warn fish
-    </mat-chip-option>
-</mat-chip-listbox>
+<div class="intervention-title">Types d'intervention :</div>
+<div class="flex-container">
+    <button *ngFor="let intervention of interventionTypes" value="intervention" class="left-align" (click)="toggle(intervention)" ngClass="active? 'active-class' : 'no-active-class'" id="{{intervention}}">
+        <div>
+            <!-- <img src="/assets/White_flag_icon.png" alt="White Flag Icon"> -->
+            {{intervention}}
+        </div>
+    </button>
+</div>
