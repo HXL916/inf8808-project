@@ -61,7 +61,7 @@ export class Tab3Component  implements AfterViewInit  {
     } 
 
     return data.sort((x, y) => d3.ascending(x[this.wantedKey], y[this.wantedKey]));
-
+  }
 //   itemList!: any;
 //   color!: any;
 //   xScale!: any;
