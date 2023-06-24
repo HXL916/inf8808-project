@@ -109,12 +109,14 @@ export class Tab1Component implements AfterViewInit  {
   
 
   drawWaffleLegend(parties:string[]):void{
-    const width = 900 // à voir si on peut utiliser une variable globale pour ça, width du waffle chart (faudra peut etre soustraire quelque chose ici)
+    const width = 10 // à voir si on peut utiliser une variable globale pour ça, width du waffle chart (faudra peut etre soustraire quelque chose ici)
     // j'ajoute directement au svg du waffle chart puis je crée un groupe (g) legend
-    var container = d3.select("#waffleChart")
+    var container = d3.select("#legendContainer")
+      .append("svg")
+      
     container.append('g')
-      .attr('class', 'legend')
-      .attr('transform', 'translate(' + width + ',+20)') 
+       .attr('class', 'legend')
+       .attr('transform', 'translate(' + width + ',+20)') 
 
     console.log(partyColorScale)
 
