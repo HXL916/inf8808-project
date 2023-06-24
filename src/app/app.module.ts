@@ -12,6 +12,7 @@ import { PreprocessingService } from './services/preprocessing.service';
 import { InterventionTypeToggleComponent } from './components/intervention-type-toggle/intervention-type-toggle.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MatChipsModule } from '@angular/material/chips';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatChipsModule,
+    MatButtonToggleModule,
   ],
   providers: [PreprocessingService],
   bootstrap: [AppComponent]

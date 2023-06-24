@@ -1,4 +1,37 @@
-.mat-mdc-chip-set {
-    max-width: 200px;
+.intervention-title {
+    margin-left: 10px;
+}
+img{
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    position: relative;
+}
+.flex-container{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.flex-container > button{
+    margin: 0 5px;
+    /* Aesthetic */
+    border: none;
+    color: white;
+    background-color: #8AB476;
+    padding: 8px 5px;
+    min-width: 8%;
+    max-width: 8%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    margin-right: 50px;
+    border-radius: 10px;
+}
 
+.flex-container > div {
+    flex-wrap: wrap;
+    margin: 10 10px;
 }
