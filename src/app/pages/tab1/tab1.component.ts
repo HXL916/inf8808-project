@@ -29,56 +29,22 @@ export class Tab1Component implements AfterViewInit  {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
-      let nbInterventionsByParty:{ [key: string]: any }[] = this.preprocessingService.nbInterventionsByParty
       let dataWaffle = this.preprocessingService.dataWaffle
       let parties:string[] = this.preprocessingService.parties
       // Viz
-      waffle.drawSquares(dataWaffle, '#waffleContainer',partyColorScale,'Parti');
-      this.drawLegend(parties);
-      
+      waffle.drawSquares(dataWaffle, '#waffleContainer', partyColorScale, 'Parti');
+      this.drawWaffleLegend(parties)
+
     
       
       // BAR CHART
       // Preprocess
-      
-      // Viz
-
-
-      // KEY VALUES
-      // Preprocess
-
-      // Viz
-
-
-      // TOP FLOP
-      // Preprocess
-
-      // Viz
-
-      
-      
-      
-      
-      
-      
-      let nbInterventionsByType:{ [key: string]: any }[] = this.preprocessingService.nbInterventionsByParty
-
-
-      this.createGraph(nbInterventionsByParty, nbInterventionsByType, parties)
-      this.yScale;
-      this.xScale;
-      this.pourcent;
-
       let popularInterventions:{ [key: string]: any }[] = this.preprocessingService.popularInterventions
+      this.createStackedBarChart(popularInterventions)
 
+
+      // get the interventions for the current legislature (44)
       let recentInterventions = this.preprocessingService.recentInterventions
-
-      //this.createGraph(nbInterventionsByParty, parties)
-
-
-
-      //drawLegend.drawLegend(partyColorScale, 400, parties)
-      
 
       // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
@@ -130,108 +96,10 @@ export class Tab1Component implements AfterViewInit  {
       })
     })
   }
-  createGraph (nbpart: { [key: string]: any }[], nbint: { [key: string]: any }[], parties:string[]): void {
-
-
-
-    // Define your graph logic using D3.js methods
-    // For example, create a simple SVG circle
-    this.color= partyColorScale
-    
-    d3.select('#waffleChart').selectAll('.tile')
-      .data(nbpart)
-      .enter()
-      .append('rect')
-      .attr('class','tile')
-    //ancien code stacked bar
-
-  
-    // Nouveau code stacked bar
-    let donnees:{ [key: string]: any }={nom:'Type'};
-    let arDonnees:{ [key: string]: any}[]=[];
-    nbint.forEach(nb=>{
-      let newkey:string=Object.values(nb)[0];
-      donnees[newkey] = Object.values(nb)[1] ;
-    })
-    arDonnees.push(donnees);
-    console.log(arDonnees);
-
-    const margin = { top: 10, right: 10, bottom: 20, left: 40 };
-
-    const width = 1200 - margin.left - margin.right;
-    const height = 600 - margin.top - margin.bottom;
-
-    const svg = d3.select('#stackedBarChart')
-      //.append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-        .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    // data
-
-    
-
-    const fruit = Object.keys(arDonnees[0]).filter(d => d != "nom");
-    console.log(fruit);
-    const months = arDonnees.map(d => d["nom"]);
-    console.log(months);
-    const stackedData = d3.stack()
-        .keys(fruit)(arDonnees);
-
-    const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
-    // scales
-
-
-    const x = d3.scaleLinear()
-        .domain([0, xMax]).nice()
-        .range([0, width]);
-
-    const y = d3.scaleBand()
-        .domain(months)
-        .range([0, height])
-        //.padding(0.75);
-
-    const colores: any = d3.scaleOrdinal()
-        .domain(fruit)
-        .range(d3.schemeTableau10);
-
-    // axes
-
-    /*const xAxis = d3.axisBottom(x).ticks(5, '~s');
-    const yAxis = d3.axisLeft(y);
-
-    svg.append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(xAxis)
-        .call(g => g.select('.domain').remove());
-
-    svg.append("g")
-        .call(yAxis)
-        .call(g => g.select('.domain').remove());*/
-
-    // draw bars
-
-    // create one group for each fruit
-    const layers = svg.append('g')
-      .selectAll('g')
-      .data(stackedData)
-      .join('g')
-        .attr('fill', d => colores(d.key));
-
-
-
-    layers.selectAll("rect")
-    .data(function(d) { return d; })
-  .enter().append("rect")
-    .attr("x", function(d) { return x(d[0]); })
-    .attr("height", y.bandwidth())
-    .attr("width", function(d) { return x(d[1]) - x(d[0]) });
-  }
 
   
 
-  drawLegend(parties:string[]):void{
+  drawWaffleLegend(parties:string[]):void{
     console.log(parties)
     // Usually you have a color scale in your chart already
     //this.color = d3.scaleOrdinal().range(d3.schemeTableau10).domain(parties);  
@@ -266,6 +134,71 @@ export class Tab1Component implements AfterViewInit  {
       .attr("text-anchor", "left")
       .style("alignment-baseline", "middle")
     }
+
+
+
+    createStackedBarChart (popularinterventions: { [key: string]: any }[]): void {
+      let donnees:{ [key: string]: any }={nom:'Type'};
+      let arDonnees:{ [key: string]: any}[]=[];
+      popularinterventions.forEach(nb=>{
+        let newkey:string=Object.values(nb)[0];
+        donnees[newkey] = Object.values(nb)[1] ;
+      })
+      arDonnees.push(donnees)
+  
+      const margin = { top: 10, right: 10, bottom: 20, left: 40 };
+  
+      const width = 1000 - margin.left - margin.right;
+      const height = 150 - margin.top - margin.bottom;
+  
+      const svg = d3.select('#stackedBarChart')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  
+      const fruit = Object.keys(arDonnees[0]).filter(d => d != "nom");
+      console.log("fruit")
+      console.log(fruit);
+      const months = arDonnees.map(d => d["nom"]);
+      console.log(months);
+      const stackedData = d3.stack()
+          .keys(fruit)(arDonnees);
+  
+      const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
+      // scales
+  
+  
+      const x = d3.scaleLinear()
+          .domain([0, xMax]).nice()
+          .range([0, width]);
+  
+      const y = d3.scaleBand()
+          .domain(months)
+          .range([0, height])
+  
+      const colores: any = d3.scaleOrdinal()
+          .domain(fruit)
+          .range(d3.schemeTableau10);
+
+      const layers = svg.append('g')
+      .selectAll('g')
+      .data(stackedData)
+      .join('g')
+        .attr('fill', d => colores(d.key));
+
+
+
+      layers.selectAll("rect")
+        .data(function(d) { return d; })
+        .enter()
+        .append("rect")
+        .attr("x", function(d) { return x(d[0]); })
+        .attr("height", y.bandwidth())
+        .attr("width", function(d) { return x(d[1]) - x(d[0]) });
+  }
 }
+
 
 

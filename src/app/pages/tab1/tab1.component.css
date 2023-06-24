@@ -32,7 +32,6 @@
     display: flex;
     border-right: 5px solid black;
     height: 700px;
-    background-color: #ff6;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -43,7 +42,6 @@
     width: 95%;
     height: 65%;
     padding: 10px;
-    background-color: #aa2
 }
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
@@ -52,7 +50,16 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     display: flex;
     width: 85%;
     height: 100%;
+    background-color: #FAF4F2;
 
+}
+
+#legendContainer{
+    display: flex;
+    width: 15%;
+    height: 100%;
+    padding: 10px;
+    background-color: #FAF4F2;
 }
 
 #stackedBarChart{
@@ -60,31 +67,33 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    width: 95%;
-    height: 45%;
+    width: auto;
     padding: 10px;
 
 }
 
 #stackedBarChartContainer{
     display: flex;
-    width: 95%;
-    height: 35%;
-    padding: 10px;
-    background-color: rgb(230, 230, 241);
-    border-radius: 4px;
+    width: auto;
+    height:auto;
+    padding: 15px;
+    border-radius: 10px;
     background-color: #3D7021;
     color: white;
 }
 
-
-#legendContainer{
-    display: flex;
-    width: 15%;
-    height: 100%;
-    padding: 10px;
-    background-color: rgb(251, 251, 252)
+#stackedBarChartTextContainer{
+    width: 150px;
 }
+
+#stackedBarChartTextContainer h3 {
+    margin-top: 0;
+    padding-top: 0;
+    line-height: 12pt;
+}
+
+
+
 
 #statsBlock p{
     font-size: 1.6em;
