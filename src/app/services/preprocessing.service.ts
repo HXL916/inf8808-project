@@ -345,7 +345,7 @@ export class PreprocessingService {
   }
 
 
-  /**
+ /**
    * Gets the number of intervention by specific period for each type of intervention.
    *
    * @param {{ [key: string]: any }[]} data The data to analyze
@@ -355,41 +355,44 @@ export class PreprocessingService {
    * @returns { [key: string]: any }[]  A table of objects with keys 'TypeIntervention',  containing
    * the name of the number of interventions for each party in the dataset, and 'Count' containing the number of interventions
    */
-  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
-      const keyCount: { [key: string]: number } = {};
-    
-      for (const obj of data) {
-        if (obj.hasOwnProperty(wantedKey) && obj['année'] === year && obj['month'] === month) {
-          const key = obj[wantedKey];
-          if (keyCount.hasOwnProperty(key)) {
-              keyCount[key]++;
-          } else {
-              keyCount[key] = 1;
-          }
-        }
+//  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
+  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[]): { [key: string]: any }[] {
+  const keyCount: { [key: string]: number } = {};
+
+  for (const obj of data) {
+    if (obj.hasOwnProperty('genre') ) {
+      const key = obj['genre'];
+      if (keyCount.hasOwnProperty(key)) {
+          keyCount[key]++;
+      } else {
+          keyCount[key] = 1;
       }
-    
-      const summarizedData : { [key: string]: any }[] = [];
-      switch (wantedKey){
-          case "genre":
-              Object.keys(keyCount).forEach(element => {
-                  summarizedData.push( {"Genre": element, "Count": keyCount[element]})
-                });
-              break;
-          case "parti":
-              Object.keys(keyCount).forEach(element => {
-                  summarizedData.push( {"Parti": element, "Count": keyCount[element]})
-                });
-              break;
-          case "province":
-              Object.keys(keyCount).forEach(element => {
-                  summarizedData.push( {"Province": element, "Count": keyCount[element]})
-                });
-              break;
-      } 
-      console.log('typeInterventionCount', keyCount, summarizedData, data);
-      return summarizedData;
+    }
   }
+
+  const summarizedData : { [key: string]: any }[] = [];
+  // switch (wantedKey){
+  //     case "genre":
+  //         Object.keys(keyCount).forEach(element => {
+  //             summarizedData.push( {"Genre": element, "Count": keyCount[element]})
+  //           });
+  //         break;
+  //     case "parti":
+  //         Object.keys(keyCount).forEach(element => {
+  //             summarizedData.push( {"Parti": element, "Count": keyCount[element]})
+  //           });
+  //         break;
+  //     case "province":
+  //         Object.keys(keyCount).forEach(element => {
+  //             summarizedData.push( {"Province": element, "Count": keyCount[element]})
+  //           });
+  //         break;
+  // } 
+  Object.keys(keyCount).forEach((element) => {
+    summarizedData.push({ Genre: element, Count: keyCount[element] });
+  });
+  return summarizedData;
+}
 
 
   // TODO: add description
