@@ -55,19 +55,30 @@ export function drawSquares(//Main arguments
         d3.select(this)
           .style("stroke", color)
           .style("stroke-width",3) ;
-      })
-      .on("mousemove", function(d) {
         var x = d3.select(this).attr('x');
         var y = d3.select(this).attr('y');
         var tooltip = d3.select("#zone-tooltip");
         tooltip.select("#p-name").html("Name: " + d["nom"]);
         tooltip.select("#p-province").html("Province: " + d['province']);
         tooltip.select("#p-parti").html("Parti: " + d['parti']);
-                  
+        
+      })
+      .on('mouseenter', function (event, d) {
+         seatSelected(d3.select(this))
       })
       .on("mouseleave", function(d) {
         d3.select("#zone-tooltip").style("opacity", 0);
         d3.select(this)
           .style("stroke", "none");
       });
+}
+
+function seatSelected(element:any){
+  const parentElement = element._groups[0][0]
+  const parentNode = parentElement.parentNode
+  const d = parentElement.__data__
+  let tooltip = d3.select("#zone-tooltip")
+  tooltip.select("#p-name").html("Name: " + d["nom"]);
+  tooltip.select("#p-province").html("Province: " + d['province']);
+  tooltip.select("#p-parti").html("Parti: " + d['parti']);
 }
