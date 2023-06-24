@@ -5,6 +5,7 @@ import { partyColorScale } from "../../utils/scales"
 import * as d3Legend from 'd3-svg-legend'
 import * as waffle from 'src/app/utils/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
+import * as preproc from './preprocessTab1'
 
 
 @Component({
@@ -40,7 +41,6 @@ export class Tab1Component implements AfterViewInit  {
       // BAR CHART
       // Preprocess
       let popularInterventions:{ [key: string]: any }[] = this.preprocessingService.popularInterventions
-      console.log("ici", popularInterventions)
       this.createStackedBarChart(popularInterventions)
 
 
@@ -64,11 +64,19 @@ export class Tab1Component implements AfterViewInit  {
           // Inject the value into the <span> element
           statSpan3.textContent = increaseWomen;
         }
+
+        // KEY VALUE 1 : percentage of MP who spoke each month on average
+        const statSpan1: HTMLSpanElement | null = document.getElementById("stat1") as HTMLSpanElement;
+        if (statSpan1) {
+          const percentActiveMPs:number = preproc.getPecentageActiveMP(listeDeputes, data)
+          // Inject the value into the <span> element
+          statSpan1.textContent = percentActiveMPs.toString();
+        }
+
       })
 
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
       d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
-        console.log("allo")
         const changesLegislature44 : { [key: string]: any }[] = this.preprocessingService.changesLegislature44
         const statSpan2: HTMLSpanElement | null = document.getElementById("stat2") as HTMLSpanElement;
         if (statSpan2) {
@@ -101,11 +109,9 @@ export class Tab1Component implements AfterViewInit  {
   
 
   drawWaffleLegend(parties:string[]):void{
-    console.log(parties)
     // Usually you have a color scale in your chart already
     //this.color = d3.scaleOrdinal().range(d3.schemeTableau10).domain(parties);  
     this.color= partyColorScale
-    console.log(this.color)
       // Add one dot in the legend for each name.
     var size = 20
     var legend = d3
@@ -177,7 +183,6 @@ export class Tab1Component implements AfterViewInit  {
 
 
 
-      console.log("Popular interventions", popularinterventions)
 
       const stack = svg.selectAll('.stack')
         .data(popularinterventions)
@@ -190,7 +195,7 @@ export class Tab1Component implements AfterViewInit  {
         .append('rect')
         .attr('x', 0)
         .attr('width', (d) => x(d[1]) - x(d[0]))
-        .attr('width', function(d) { console.log("d:",d) ; return x(d["End"] - d["Beginning"])})
+        .attr('width', function(d) { return x(d["End"] - d["Beginning"])})
         .attr('height', height)
         .attr('fill', function(d) { return colorScale(d["TypeIntervention"])});
 
