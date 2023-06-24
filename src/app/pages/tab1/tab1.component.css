@@ -62,6 +62,12 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     background-color: #FAF4F2;
 }
 
+.legendTitle{
+    font-size: 1.3em;
+    font-weight: 600;
+    padding-bottom: 0.8em
+}
+
 #stackedBarChart{
     display: flex;
     flex-direction: row;

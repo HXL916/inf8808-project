@@ -109,37 +109,41 @@ export class Tab1Component implements AfterViewInit  {
   
 
   drawWaffleLegend(parties:string[]):void{
-    // Usually you have a color scale in your chart already
-    //this.color = d3.scaleOrdinal().range(d3.schemeTableau10).domain(parties);  
-    this.color= partyColorScale
-      // Add one dot in the legend for each name.
-    var size = 20
-    var legend = d3
-        .select('#legendContainer')
-        .append('svg')
-        .attr('width', 900)
-        .attr('height', 1000)
-        .selectAll('.legend-element')
-        .data(parties);
-    legend
-      .enter()
-      .append("rect")
-        .attr("x", 100)
-        .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("width", size)
-        .attr("height", size)
-        //.attr("fill",function(d){ return color(d)})
-        .attr('fill', d=>this.color(d))
+    const width = 900 // à voir si on peut utiliser une variable globale pour ça, width du waffle chart (faudra peut etre soustraire quelque chose ici)
+    // j'ajoute directement au svg du waffle chart puis je crée un groupe (g) legend
+    var container = d3.select("#waffleChart")
+    container.append('g')
+      .attr('class', 'legend')
+      .attr('transform', 'translate(' + width + ',+20)') 
 
-    legend
-    .enter()
-    .append("text")
-      .attr("x", 100 + size*1.2)
-      .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-      .style("fill", "black")
-      .text(parties=>parties)
-      .attr("text-anchor", "left")
-      .style("alignment-baseline", "middle")
+    console.log(partyColorScale)
+
+    var legend = d3Legend.legendColor()
+      .shape('path', d3.symbol().type(d3.symbolSquare).size(250)()!) // mettre point d'exclamation à la fin parce qu'on sait que c'est non null
+      .title('Légende:')
+      .shapePadding(10)
+      .cells(6)
+      .orient('vertical')
+      .scale(partyColorScale)  as any
+
+      container.select('.legend')
+        .call(legend)
+
+      // Ajout de la cellule suplémentaire qui dit "un carré c'est 1000 interventions"
+      const explanationCell = d3.select(".legendCells")
+        .append("g")
+        .attr("class", "explanationCell")
+        .attr('transform', 'translate(0,180)')
+      // On récupère la forme des éléments de la légende + la transformation sur le label
+      const path = container.select(".swatch").attr("d")
+      const transform = container.select(".label").attr("transform")
+      explanationCell.append("path")
+        .attr("d", path)
+        .attr("fill","white")
+        .attr("stroke", "black")
+      explanationCell.append("text")
+        .attr('transform' , transform)
+        .text("= 1000 interventions")
     }
 
 
