@@ -1,14 +1,14 @@
 <div id="graph-container" style="text-align:center;">
     <div id="zone-buttons">
+        <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
         <app-intervention-type-toggle></app-intervention-type-toggle>
     </div>
     
     <div id="zone-chart">
-        <svg class="waffle" width="525" height="550"></svg>
+        <svg class="stackedBarChart"></svg>
     </div>
   
     <div id="zone-buttons">
-      <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
       <div id="legendContainer"></div>
     </div>
     

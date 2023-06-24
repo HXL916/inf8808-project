@@ -52,7 +52,6 @@ export class PreprocessingService {
         // preprocessing for Key value: increase in number of women
         this.listeDeputes43 = this.getMPsLegislature(listeDeputes, "43")
         this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44) 
-        console.log(this.increaseWomen)
       })
 
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
@@ -284,7 +283,6 @@ export class PreprocessingService {
       (obj) => obj['genre'] === 'F'
     ).length;
     const increase: number = newNumberOfWomen - previousNumberOfWomen;
-    console.log(previousNumberOfWomen, newNumberOfWomen);
     if (increase < 0) {
       return increase.toString();
     } else {

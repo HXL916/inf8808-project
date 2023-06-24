@@ -33,6 +33,10 @@ app-date-picker{
     background-color: #FAF4F2;
   }
 
+#stackedBarChart{
+    width: 100%;
+}
+
 /* #legendContainer{
     display: flex;
     width: 200px;
