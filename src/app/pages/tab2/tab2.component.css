@@ -3,6 +3,55 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+
+#graph-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#zone-tooltip{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+
+  /* Aesthetic */
+  opacity:0;
+  border: none;
+  color: white;
+  background-color: #8AB476;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 50px;
+  margin-left: 50px;
+  border-radius: 10px;
+}
+
+#zone-chart{
+  flex:2;
+  display: flex;
+  flex-direction: column;
+}
+
+#zone-buttons{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+#tooltip{
+  opacity:0;
+  background-color:"#8AB476";
+  border-radius:"25px";
+  padding:"20px";
+}
+
 .button-group button {
   /* Aesthetic */
   border: none;
@@ -33,6 +82,9 @@ body {
 
 }
 
+
+
+
 .slideContainer {
   width: 100%;
   margin-top: 20px;
@@ -56,7 +108,7 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%; 
-  background: #04AA6D;        /*Insert background url to put an image on the cursor*/
+  background: #000000;        /*Insert background url to put an image on the cursor*/
   cursor: pointer;
 }
 
@@ -64,7 +116,7 @@ body {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #04AA6D;
+  background: #000000;
   cursor: pointer;
 }
 

@@ -73,6 +73,14 @@ export class Tab2Component  implements AfterViewInit   {
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
+    /*
+    var tooltip = d3.select("#tooltip")
+                    .append('div')
+                      .style("opacity", 0)
+                      .attr("class", "tooltip")
+                      .style("background-color", "#8AB476")
+                      .style("border-radius", "25px")
+                      .style("padding", "20px");*/
     // Draw each seat 
     waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
 
@@ -97,6 +105,9 @@ export class Tab2Component  implements AfterViewInit   {
          
   }
 
+  /**
+ * Rearrange the waffle chart to git it the looks of the House Of Commons, with an alley in the middle
+ */
   lookLikeHouseOfCommons(nbBlocCol = 4,nbBlocRow = 5):void{
     let bigGap = 10,
         alleyGap = 20;
@@ -111,10 +122,12 @@ export class Tab2Component  implements AfterViewInit   {
         d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
         .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
       }
-    
-    } 
+    }
   }
+
+
   drawLegend():void{    //TODO : utilise preprocess.getPartiesNames(data) pour avoir les noms des partis
   }
+
   
 }
