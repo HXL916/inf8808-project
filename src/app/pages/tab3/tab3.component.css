@@ -40,7 +40,7 @@ app-date-picker{
     position: relative;
     padding-right: 10%;
     float: right;
-    bottom: 600px;
+    bottom: 1279px;
 }
 
 .legend-wrapper {
@@ -87,7 +87,7 @@ app-date-picker{
     display: flex;
     position: absolute;
     top: -633px;
-    left: 300px;
+    left: 500px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
