@@ -14,12 +14,17 @@ body {
 #zone-tooltip{
   flex:1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+
+
+  color: black;
+  width: 25em;
+  height: 10em;
+  box-shadow: 2px 3px 12px #4A6A4A;
 
   /* Aesthetic */
   opacity:0;
   border: none;
-  color: white;
   background-color: #8AB476;
   padding: 16px 32px;
   text-align: center;
@@ -30,7 +35,23 @@ body {
   margin-left: 50px;
   border-radius: 10px;
 }
-
+#avatar{
+  max-width:90px;
+  max-height:150px;
+  object-fit: scale-down;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+#tooltip-details{
+  flex: 1;
+  #p-name{
+    font-size: 1.5em;
+    font-weight: 700;
+    padding : 0.1em;
+    margin : 0.1em;
+    margin-bottom: 1em;
+  }
+}
 #zone-chart{
   flex:2;
   display: flex;
