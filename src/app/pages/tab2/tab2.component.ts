@@ -2,6 +2,8 @@ import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Legend from 'd3-svg-legend';
 import * as waffle from 'src/app/pages/tab2/waffle';
+import * as waffle1 from 'src/app/pages/tab1/waffle';
+import * as tab1 from 'src/app/pages/tab1/tab1.component';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { partyColorScale } from "../../utils/scales"
 
@@ -88,6 +90,7 @@ export class Tab2Component  implements AfterViewInit   {
 
     // Rearrange the seats to make it looks more like the house 
     this.lookLikeHouseOfCommons();
+    waffle1.drawWaffleLegend(this.colorScale);
 
     /*
     // Draw Legend

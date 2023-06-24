@@ -78,7 +78,6 @@ function seatSelected(element:any){
   const parentNode = parentElement.parentNode
   const d = parentElement.__data__
   let tooltip = d3.select("#zone-tooltip")
-  console.log(d)
   tooltip.select("#avatar").attr("src", d['urlPhoto']);
   tooltip.select("#p-name").html("Name: " + d["nom"]);
   tooltip.select("#p-province").html("Province: " + d['province']);
