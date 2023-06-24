@@ -40,6 +40,7 @@ export class Tab1Component implements AfterViewInit  {
       // BAR CHART
       // Preprocess
       let popularInterventions:{ [key: string]: any }[] = this.preprocessingService.popularInterventions
+      console.log("ici", popularInterventions)
       this.createStackedBarChart(popularInterventions)
 
 
@@ -138,13 +139,7 @@ export class Tab1Component implements AfterViewInit  {
 
 
     createStackedBarChart (popularinterventions: { [key: string]: any }[]): void {
-      let donnees:{ [key: string]: any }={nom:'Type'};
-      let arDonnees:{ [key: string]: any}[]=[];
-      popularinterventions.forEach(nb=>{
-        let newkey:string=Object.values(nb)[0];
-        donnees[newkey] = Object.values(nb)[1] ;
-      })
-      arDonnees.push(donnees)
+
   
       const margin = { top: 10, right:0, bottom: 10, left: 30 };
   
@@ -157,49 +152,68 @@ export class Tab1Component implements AfterViewInit  {
           .append('g')
           .attr('transform', `translate(${margin.left},${margin.top})`);
 
+
+      let xMax:number = 0;
+      for (const obj of popularinterventions) {
+        xMax += obj["Count"];
+      }
+      let cumulative_count:number = 0
+      popularinterventions.forEach((d) => {
+          d["Beginning"] = cumulative_count;
+          cumulative_count = cumulative_count + d["Count"]
+          d["End"] = cumulative_count;
+          d["Percentage"] = Math.round(d["Count"] / xMax * 1000)/10
+        });
   
-      const fruit = Object.keys(arDonnees[0]).filter(d => d != "nom");
-      console.log("fruit")
-      console.log(fruit);
-      const months = arDonnees.map(d => d["nom"]);
-      console.log(months);
-      const stackedData = d3.stack()
-          .keys(fruit)(arDonnees);
-  
-      const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
-      console.log("xmax:", xMax)
-      // scales
-  
-  
+      const types: string[] = popularinterventions.map((obj) => obj["TypeIntervention"]);
       const x = d3.scaleLinear()
           .domain([0, xMax])
           .range([0, width]);
   
-      const y = d3.scaleBand()
-          .domain(months)
-          .range([0, height])
   
       const colores: any = d3.scaleOrdinal()
-          .domain(fruit)
+          .domain(types)
           .range(d3.schemeTableau10);
 
-      const layers = svg.append('g')
-      .selectAll('g')
-      .data(stackedData)
-      .join('g')
-        .attr('fill', d => colores(d.key));
 
 
+      console.log("Popular interventions", popularinterventions)
 
-      layers.selectAll("rect")
-        .data(function(d) { return d; })
+      const stack = svg.selectAll('.stack')
+        .data(popularinterventions)
         .enter()
-        .append("rect")
-        .attr("x", function(d) { return x(d[0]); })
-        .attr("height", y.bandwidth())
-        .attr("width", function(d) { console.log(d)
-          console.log(x(d[1]))
-          return x(d[1]) - x(d[0]) });
+        .append('g')
+        .attr('class', 'stack')
+        .attr('transform', (d) => `translate(${x(d["Beginning"])}, 0)`);
+
+      stack
+        .append('rect')
+        .attr('x', 0)
+        .attr('width', (d) => x(d[1]) - x(d[0]))
+        .attr('width', function(d) { console.log("d:",d) ; return x(d["End"] - d["Beginning"])})
+        .attr('height', height)
+        .attr('fill', function(d) { return colores(d["TypeIntervention"])});
+
+      //Ajoute type d'interventions
+      stack
+        .append('text')
+        .attr('x', (d) => x(d["End"] - d["Beginning"])/2)
+        .attr('y', 25)
+        .attr('text-anchor', 'middle')
+        .attr("fill", "white")
+        .attr("font-size", "1.3em")
+        .attr("font-weight", "bold")
+        .text((d) => d["TypeIntervention"]);
+
+      //Ajoute pourcentage d'interventions
+      stack
+        .append('text')
+        .attr('x', (d) => x(d["End"] - d["Beginning"])/2)
+        .attr('y', height - 20)
+        .attr('text-anchor', 'middle')
+        .attr("fill", "white")
+        .text((d) => d["Percentage"]+"%");
+
   }
 }
 

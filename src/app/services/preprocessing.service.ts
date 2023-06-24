@@ -181,7 +181,7 @@ export class PreprocessingService {
     // Create the new array with the top parties and the "Other" party
     const newData = [
       ...topParties,
-      { TypeIntervention: 'Other', count: otherCount },
+      { TypeIntervention: 'Autres', Count: otherCount },
     ];
     return newData;
   }
