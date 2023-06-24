@@ -15,8 +15,6 @@ body {
   flex:1;
   display: flex;
   flex-direction: row;
-
-
   color: black;
   width: 25em;
   height: 10em;

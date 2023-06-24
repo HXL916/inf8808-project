@@ -1,9 +1,7 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Legend from 'd3-svg-legend';
 import * as waffle from 'src/app/pages/tab2/waffle';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
-import * as tab1 from 'src/app/pages/tab1/tab1.component';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { partyColorScale } from "../../utils/scales"
 
@@ -27,8 +25,6 @@ export class Tab2Component  implements AfterViewInit   {
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
       this.sortedData = this.preprocessingService.splitByLegislature(data);
-      console.log(this.sortedData);
-      console.log(this.preprocessingService.getPartiesNames(data));
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     
