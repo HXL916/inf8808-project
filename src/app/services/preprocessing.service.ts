@@ -359,7 +359,6 @@ export class PreprocessingService {
   getTypeInterventionCountsByPeriod(data: { [key: string]: any }[]): { [key: string]: any }[] {
   const keyCount: { [key: string]: number } = {};
 
-  console.log('i am inside getTypeInterventionCountsByPeriod', data);
   for (const obj of data) {
     if (obj.hasOwnProperty('genre') ) {
       const key = obj['genre'];
@@ -392,7 +391,6 @@ export class PreprocessingService {
   Object.keys(keyCount).forEach((element) => {
     summarizedData.push({ Genre: element, Count: keyCount[element] });
   });
-  console.log('typeInterventionCount', keyCount, summarizedData, data);
   return summarizedData;
 }
 

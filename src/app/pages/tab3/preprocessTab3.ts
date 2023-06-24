@@ -46,10 +46,8 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
     let interventionArray = []
   
     for(let month of possibleMonths){
-    //   console.log(legislature_short)
       let interventionsDefault = getInterventionsByDateRangeDefault(interventionsData, 2016)
       let interventionMonth = getInterventionsMonth(interventionsDefault, month)
-      console.log( 'YANNICK ',interventionsDefault, interventionMonth)
   
       // Regroupe les interventions par mois et par année
       // C'est compliqué à comprendre le reduce avec javascript, si besoin: https://www.digitalocean.com/community/tutorials/js-finally-understand-reduce
@@ -72,7 +70,6 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
         }
       }
     }
-    console.log("interventionARRAY: " + interventionArray)
     return interventionArray
   }
 
@@ -98,7 +95,6 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
   export function getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], month: number, year: number): { [key: string]: any }[] {
     const keyCount: { [key: string]: number } = {};
   
-    console.log('i am inside getTypeInterventionCountsByPeriod', data);
     for (const obj of data) {
       if (obj.hasOwnProperty('genre') ) {
         const key = obj['genre'];
@@ -115,6 +111,5 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
     Object.keys(keyCount).forEach((element) => {
       summarizedData.push({ Genre: element, Count: keyCount[element], Month: mois, Year: year  });
     });
-    console.log('typeInterventionCount', keyCount, summarizedData, data);
     return summarizedData;
   }
