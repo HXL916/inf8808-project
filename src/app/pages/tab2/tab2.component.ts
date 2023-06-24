@@ -1,7 +1,7 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Legend from 'd3-svg-legend';
-import * as waffle from 'src/app/utils/waffle';
+import * as waffle from 'src/app/pages/tab2/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { partyColorScale } from "../../utils/scales"
 

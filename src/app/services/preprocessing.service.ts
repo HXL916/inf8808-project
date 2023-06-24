@@ -24,16 +24,19 @@ export class PreprocessingService {
   nbInterventionsByType!: { [key: string]: any }[];
   dataIsLoaded: Subject<boolean> = new Subject<boolean>();
   sortedData: any;
+  waffleScale:number;
 
   
 
 
   constructor() {
+    this.waffleScale = 500;
+    
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
       this.nbInterventionsByParty = this.getPartyCounts(data)
-      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty);
+      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty,this.waffleScale);
       this.parties = this.getPartiesNames(data);    
       this.nbInterventionsByType = this.getTypeInterventionCounts(data)
       this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType)
@@ -149,12 +152,10 @@ export class PreprocessingService {
    * @returns { [key: string]: any }[]  A table of objects with keys 'Parti',
    * each object significates 1000 interventions by this Parti
    */
-  convertToWaffleCompatible(
-    data: { [key: string]: any }[]
-  ): { [key: string]: any }[] {
+  convertToWaffleCompatible( data: { [key: string]: any }[], scale:number): { [key: string]: any }[] {
     const summarizedData: { [key: string]: any }[] = [];
     for (const obj of data) {
-      let thousands = Math.round(obj['Count'] / 1000);
+      let thousands = Math.round(obj['Count'] / scale);
       for (let i = 0; i < thousands; i++) {
         summarizedData.push({ Parti: obj['Parti'] });
       }

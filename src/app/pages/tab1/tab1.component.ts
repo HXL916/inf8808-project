@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
 import * as d3Legend from 'd3-svg-legend'
-import * as waffle from 'src/app/utils/waffle';
+import * as waffle from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import * as preproc from './preprocessTab1'
 
@@ -30,10 +30,23 @@ export class Tab1Component implements AfterViewInit  {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
+      let partyCount = preproc.getPartyCounts(data);
       let dataWaffle = this.preprocessingService.dataWaffle
       let parties:string[] = this.preprocessingService.parties
+      //console.log(dataWaffle);
       // Viz
-      waffle.drawSquares(dataWaffle, '#waffleContainer', partyColorScale, 'Parti');
+      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',1);
+      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',2);
+      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',3);
+       
+      let oldCount = 0,
+          newCount=0;
+      for (let element of partyCount){
+        newCount += Math.round(element['Count'] / 500);
+        console.log(oldCount,newCount);
+        oldCount = newCount;
+      }
+      this.waffleLookNice();
       this.drawWaffleLegend(parties)
 
     
@@ -142,6 +155,21 @@ export class Tab1Component implements AfterViewInit  {
       .style("alignment-baseline", "middle")
     }
 
+  /**
+ * Rearrange the waffle chart to git it the looks of the House Of Commons, with an alley in the middle
+ */
+  waffleLookNice(nbBlocCol = 8,nbBlocRow = 5):void{
+    let bigGap = 10;
+    
+    // Improve placement of the squares
+    for (let i=0;i<nbBlocCol;i++){
+      for (let j=0;j<nbBlocRow;j++){
+        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
+        .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
+      }
+    }
+  }
+
 
 
     createStackedBarChart (popularinterventions: { [key: string]: any }[]): void {
@@ -219,8 +247,6 @@ export class Tab1Component implements AfterViewInit  {
         .attr('text-anchor', 'middle')
         .attr("fill", "white")
         .text((d) => d["Percentage"]+"%");
-
-
   }
 }
 

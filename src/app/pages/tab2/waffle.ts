@@ -7,12 +7,12 @@ export function drawSquares(//Main arguments
                             colorScale:any,
                             wantedKey:string,
                             //Additional arguments
-                            svgPadding=20,
-                            squareSize=20,
-                            smallGap= 5,
                             nbRowInBloc = 4,
                             nbColInBloc = 5,
-                            nbBlocCol = 4
+                            nbBlocCol = 4,
+                            svgPadding=20,
+                            squareSize=20,
+                            smallGap= 5
                             )
                             :void{
     // Geometry Calculus
