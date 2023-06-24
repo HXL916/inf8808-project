@@ -31,8 +31,8 @@ import * as d3 from 'd3';
 //   }
 
 export const partyColorScale = d3.scaleOrdinal() // D3 Version 4
-  .domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind.", "Autres", "FCC", "PPC"])
-  .range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA", "#AAAAAA", "#AAAAAA", "#AAAAAA"]);
+  .domain(["BQ", "PCC", "PLC", "NPD", "PV", "Ind."])
+  .range(["#159CE1", "#002395" , "#ED2E38", "#FF8514", "#30D506", "#AAAAAA"]);
 
 
 // export default { partyColorScale: partyColorScale } 

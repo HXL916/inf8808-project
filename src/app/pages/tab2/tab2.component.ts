@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 import * as d3Legend from 'd3-svg-legend';
 import * as waffle from 'src/app/utils/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
+import { partyColorScale } from "../../utils/scales"
+
 
 @Component({
   selector: 'app-tab2',
@@ -54,8 +56,8 @@ export class Tab2Component  implements AfterViewInit   {
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
       case "parti":
-        let affiliations = this.preprocessingService.getPartiesNames(data);
-        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
+        //let affiliations = this.preprocessingService.getPartiesNames(data);
+        this.colorScale = partyColorScale//d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
         break;
       case "province":
         let provinces = data.map(obj => obj["province"]).sort();
