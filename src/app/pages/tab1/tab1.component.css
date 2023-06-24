@@ -50,7 +50,7 @@
     flex-direction: column;
     justify-content: space-between;
     width: 95%;
-    padding: 10px;
+    padding: 0px;
 }
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
@@ -62,6 +62,11 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     background-color: #1AA4F2;
     margin: 5px;
 
+}
+
+#titleTop{
+    font-size: 1.7em;
+    font-weight: 600;
 }
 
 #legendContainer{
