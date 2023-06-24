@@ -12,7 +12,7 @@ export function drawSquares(//Main arguments
                             nbColInBloc = 5,
                             nbBlocRow = 1,
                             svgPadding=20,
-                            squareSize=20,
+                            squareSize=18,
                             smallGap= 5
                             )
                             :void{

@@ -31,23 +31,16 @@ export class Tab1Component implements AfterViewInit  {
       // WAFFLE CHART
       // Preprocess
       let partyCount = preproc.getPartyCounts(data);
+      console.log(partyCount);
       let dataWaffle = this.preprocessingService.dataWaffle
       let parties:string[] = this.preprocessingService.parties
-      //console.log(dataWaffle);
       // Viz
-      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',1);
-      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',2);
-      waffle.drawSquares(dataWaffle, '#waffleChart', partyColorScale, 'Parti',3);
-       
-      let oldCount = 0,
-          newCount=0;
-      for (let element of partyCount){
-        newCount += Math.round(element['Count'] / 500);
-        console.log(oldCount,newCount);
-        oldCount = newCount;
+      for (let index=0; index<dataWaffle.length;index++){
+        waffle.drawSquares(dataWaffle[index], '#waffleContainerInner', partyColorScale, 'Parti',index);
       }
-      this.waffleLookNice();
-      this.drawWaffleLegend(parties)
+
+      this.waffleLookNice(dataWaffle.length);
+      this.drawWaffleLegend(parties,this.preprocessingService.getScale())
 
     
       
@@ -121,7 +114,7 @@ export class Tab1Component implements AfterViewInit  {
 
   
 
-  drawWaffleLegend(parties:string[]):void{
+  drawWaffleLegend(parties:string[], scale:number):void{
     const width = 10 // à voir si on peut utiliser une variable globale pour ça, width du waffle chart (faudra peut etre soustraire quelque chose ici)
     // j'ajoute directement au svg du waffle chart puis je crée un groupe (g) legend
     var container = d3.select("#legendContainer")
@@ -158,20 +151,20 @@ export class Tab1Component implements AfterViewInit  {
         .attr("stroke", "black")
       explanationCell.append("text")
         .attr('transform' , transform)
-        .text("= 1000 interventions")
+        .text("= "+scale+" interventions")
     }
 
   /**
  * Rearrange the waffle chart to git it the looks of the House Of Commons, with an alley in the middle
  */
-  waffleLookNice(nbBlocCol = 8,nbBlocRow = 5):void{
-    let bigGap = 10;
+  waffleLookNice(nbRow:number, nbBlocCol = 8,nbBlocRow = 5):void{
+    let bigGap = 8;
     
     // Improve placement of the squares
-    for (let i=0;i<nbBlocCol;i++){
-      for (let j=0;j<nbBlocRow;j++){
-        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(j)+"']")
-        .attr('transform','translate('+String(bigGap*i)+','+String(bigGap*j)+')');
+    for (let row=0;row<nbRow;row++){
+      for (let i=0;i<nbBlocCol;i++){
+        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(row)+"']")
+        .attr('transform','translate('+String(bigGap*i)+',0)');
       }
     }
   }

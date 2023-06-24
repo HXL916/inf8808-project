@@ -13,7 +13,7 @@ export class PreprocessingService {
   topMPs!: any;
   flopMPs!: any;
   nbInterventionsByParty!: { [key: string]: any }[];
-  dataWaffle!: { [key: string]: any; }[];
+  dataWaffle!: any[];
   popularInterventions!: { [key: string]: any; }[];
   recentInterventions!: { [key: string]: any; }[];
   listeDeputes44!: any;
@@ -31,13 +31,13 @@ export class PreprocessingService {
 
   constructor() {
     this.waffleScale = 500;
-    
+
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
       // WAFFLE CHART
       // Preprocess
-      this.nbInterventionsByParty = this.getPartyCounts(data)
-      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty,this.waffleScale);
-      this.parties = this.getPartiesNames(data);    
+      this.nbInterventionsByParty = this.getPartyCounts(data);
+      this.parties = this.getPartiesNames(data);
+      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty,this.waffleScale);    
       this.nbInterventionsByType = this.getTypeInterventionCounts(data)
       this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType)
       this.recentInterventions = this.getInterventionsLegislature(data, "44-1")   
@@ -152,16 +152,26 @@ export class PreprocessingService {
    * @returns { [key: string]: any }[]  A table of objects with keys 'Parti',
    * each object significates 1000 interventions by this Parti
    */
-  convertToWaffleCompatible( data: { [key: string]: any }[], scale:number): { [key: string]: any }[] {
-    const summarizedData: { [key: string]: any }[] = [];
+  convertToWaffleCompatible( data: { [key: string]: any }[], scale:number): any[] {
+    const allData: { [key: string]: any }[] = [];
+    const summarizedData: any[]=[];
     for (const obj of data) {
       let thousands = Math.round(obj['Count'] / scale);
       for (let i = 0; i < thousands; i++) {
-        summarizedData.push({ Parti: obj['Parti'] });
+        allData.push({ Parti: obj['Parti'] });
       }
     }
+    for (let party of ['PCC','NPD','PLC']){
+      let data = allData.filter((d)=>d['Parti']==party);
+      summarizedData.push(data);
+    }
+    let otherParties = ['BQ','PV','Ind.'];
+    summarizedData.push(allData.filter((d)=>otherParties.indexOf(d['Parti']) > -1));
+    
     return summarizedData;
   }
+
+  getScale():number{return this.waffleScale}
 
   /**
    * Gets the 5 types of interventions with the most intervention, merge the others in "Autres" type
