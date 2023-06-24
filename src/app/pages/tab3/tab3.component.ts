@@ -4,7 +4,6 @@ import { genderColorScale, partyColorScale } from "../../utils/scales"
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
-import { partyColorScale } from "../../utils/scales"
 
 @Component({
   selector: 'app-tab3',

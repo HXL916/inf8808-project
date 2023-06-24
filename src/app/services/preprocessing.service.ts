@@ -355,12 +355,13 @@ export class PreprocessingService {
    * @returns { [key: string]: any }[]  A table of objects with keys 'TypeIntervention',  containing
    * the name of the number of interventions for each party in the dataset, and 'Count' containing the number of interventions
    */
- getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
+//  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
+  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[]): { [key: string]: any }[] {
   const keyCount: { [key: string]: number } = {};
 
   console.log('i am inside getTypeInterventionCountsByPeriod', data);
   for (const obj of data) {
-    if (obj.hasOwnProperty('genre') && obj['année'] === year ) {
+    if (obj.hasOwnProperty('genre') ) {
       const key = obj['genre'];
       if (keyCount.hasOwnProperty(key)) {
           keyCount[key]++;
