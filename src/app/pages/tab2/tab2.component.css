@@ -107,6 +107,7 @@ body {
 
 
 .slideContainer {
+  margin-left: 10%;
   width: 100%;
   margin-top: 20px;
   align-items: center;
@@ -142,7 +143,7 @@ body {
 }
 
 .slider-values {
-  margin-left: 250px;
+
   width: 75%;
   height: 5px;
   display: flex;
