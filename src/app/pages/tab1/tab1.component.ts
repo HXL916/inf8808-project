@@ -146,7 +146,7 @@ export class Tab1Component implements AfterViewInit  {
       })
       arDonnees.push(donnees)
   
-      const margin = { top: 10, right: 10, bottom: 20, left: 40 };
+      const margin = { top: 10, right:0, bottom: 10, left: 30 };
   
       const width = 1000 - margin.left - margin.right;
       const height = 150 - margin.top - margin.bottom;
@@ -154,7 +154,7 @@ export class Tab1Component implements AfterViewInit  {
       const svg = d3.select('#stackedBarChart')
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)
-        .append('g')
+          .append('g')
           .attr('transform', `translate(${margin.left},${margin.top})`);
 
   
@@ -167,11 +167,12 @@ export class Tab1Component implements AfterViewInit  {
           .keys(fruit)(arDonnees);
   
       const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
+      console.log("xmax:", xMax)
       // scales
   
   
       const x = d3.scaleLinear()
-          .domain([0, xMax]).nice()
+          .domain([0, xMax])
           .range([0, width]);
   
       const y = d3.scaleBand()
@@ -196,7 +197,9 @@ export class Tab1Component implements AfterViewInit  {
         .append("rect")
         .attr("x", function(d) { return x(d[0]); })
         .attr("height", y.bandwidth())
-        .attr("width", function(d) { return x(d[1]) - x(d[0]) });
+        .attr("width", function(d) { console.log(d)
+          console.log(x(d[1]))
+          return x(d[1]) - x(d[0]) });
   }
 }
 

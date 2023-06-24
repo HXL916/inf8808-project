@@ -68,7 +68,8 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     justify-content: center;
     align-items: center;
     width: auto;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 
 }
 
@@ -77,7 +78,7 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     width: auto;
     height:auto;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 15px;
     background-color: #3D7021;
     color: white;
 }
@@ -90,6 +91,9 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     margin-top: 0;
     padding-top: 0;
     line-height: 12pt;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    font-size: 1.4em;
 }
 
 
@@ -108,16 +112,17 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
 
 
 #bottomPart{
-    width: 40%;
+    width: 75em;
     margin: auto;
     padding-right: 2em;
+    padding-bottom: 2em;
 }
 
 #titleBottom{
     font-size: 1.7em;
     font-weight: 600;
     margin-top: 2em;
-    margin-bottom: 0em;
+    margin-bottom: 1m;
 }
 
 #bottomContent{
@@ -135,10 +140,17 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     color: white;
     margin: auto;
     width: 6em;
+    height: auto;
+    padding-top: 0.35em;
+    padding-bottom: 0.25em;
     text-align: center;
     background-color: #3D7021;
     border-radius: 10px;
     padding-left: 0.5em;
+}
+.topFlopTitle p{
+    padding-bottom: 0px;
+    margin-bottom:0px;
 }
 
 .separation{
