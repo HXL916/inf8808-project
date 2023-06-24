@@ -37,20 +37,30 @@
     align-items: center;
 }
 
-#waffleContainer{
-    display: flex;
+#waffleContainerOuter{
+    display:flex;
+    flex-direction: row;
     width: 95%;
     height: 65%;
+    padding: 10px;
+}
+
+#waffleContainerInner{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 95%;
     padding: 10px;
 }
 /* pour l'instant ça se présente pas bien mais on verra bien comment c'est une fois qu'il y aura des graphes dedans
 sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans utiliser des valeurs absolues*/
 
-#waffleChart{
+.waffleChart{
     display: flex;
-    width: 85%;
+    width: 100%;
     height: 100%;
-    background-color: #FAF4F2;
+    background-color: #1AA4F2;
+    margin: 5px;
 
 }
 
@@ -60,6 +70,12 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     height: 100%;
     padding: 10px;
     background-color: #FAF4F2;
+}
+
+.legendTitle{
+    font-size: 1.3em;
+    font-weight: 600;
+    padding-bottom: 0.8em
 }
 
 #stackedBarChart{
@@ -88,9 +104,9 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
 }
 
 #stackedBarChartTextContainer h3 {
-    margin-top: 0;
-    padding-top: 0;
-    line-height: 12pt;
+    margin-top: 0px;
+    padding-top: 0px;
+    line-height: 15pt;
     padding-bottom: 0px;
     margin-bottom: 0px;
     font-size: 1.4em;
