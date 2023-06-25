@@ -27,10 +27,25 @@ export class Tab3Component  implements AfterViewInit  {
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
-      this.data = preprocessTab3.getTypeInterventionCountsOfOneMonth(data,6,2015,this.wantedKey);     
-      console.log(this.data);
-      this.createStackedBar(this.process(this.data));
-      waffle1.drawWaffleLegend(this.colorScale);
+      const filterData = preprocessTab3.getInterventionsByDateRange(data, "01/01/2016", "06/30/2016") //saloperie de format américain
+      console.log(filterData)
+      const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)
+      console.log("Ymax", Ymax)
+      const something = preprocessTab3.getCountsWithKey(groupedArrays["2016-1"], "parti")
+      console.log("something",something)
+      const timeGroups = Object.keys(groupedArrays)
+      console.log("time groups", timeGroups)
+      
+      this.createGraphBase(timeGroups, Ymax)
+
+
+
+      // this.data = preprocessTab3.getTypeInterventionCountsOfOneMonth(data,6,2015,this.wantedKey);     
+      // console.log("thisdata:")
+      // console.log(this.data);
+      // this.createStackedBar(this.process(this.data));
+      //waffle1.drawWaffleLegend(this.colorScale);
     })
   }
 
@@ -67,13 +82,40 @@ export class Tab3Component  implements AfterViewInit  {
     return data;
   }
 
+  // crée la base du graph: svg element, axes, titre?
+  createGraphBase(timeGroups: string[], Ymax:number) : void{
+    var margin = {top: 10, right: 30, bottom: 20, left: 90},
+    width = 900- margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#zone-chart")
+    .append("svg")
+    .attr("id","stackedBarChart")
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
+
+    var yScale = d3.scaleLinear().domain([0, Ymax]).range([ height, 0 ]);
+      svg.append("g")
+      .call(d3.axisLeft(yScale));
+  
+  }    
+
+
   createStackedBar (data: { [key: string]: any }[]): void{
     
 
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 30, bottom: 20, left: 50},
-    width = 600- margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 900- margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select("#zone-chart")
@@ -86,6 +128,7 @@ export class Tab3Component  implements AfterViewInit  {
 
     // List of subgroups = header of the csv files = soil condition here
     var subgroups = preprocessTab3.getCategories(data,this.wantedKey);
+    console.log("subgroups:", subgroups)
 
     // List of groups = species here = value of the first column called group -> I show them on the X axis
     // var groups = preprocessTab3.getCategories(data, 'Mois');
@@ -105,7 +148,7 @@ export class Tab3Component  implements AfterViewInit  {
 
     //stack the data? --> stack per subgroup
     var stackedData = d3.stack().keys(subgroups)(data)
-    console.log(stackedData)
+    console.log("stackedDAta:",stackedData)
 
 
     // // Show the bars
