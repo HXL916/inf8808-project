@@ -29,7 +29,7 @@ export class Tab3Component  implements AfterViewInit  {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
       let nbInterventionsByType:{ [key: string]: any }[] = this.preprocessingService.getTypeInterventionCountsByPeriod(data);     
       console.log(nbInterventionsByType);
-      this.createStackedBar(nbInterventionsByType);
+      //this.createStackedBar(nbInterventionsByType);
     })
   }
 
