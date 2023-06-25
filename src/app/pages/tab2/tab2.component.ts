@@ -1,8 +1,10 @@
 import { Component, AfterViewInit} from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Legend from 'd3-svg-legend';
-import * as waffle from 'src/app/utils/waffle';
+import * as waffle from 'src/app/pages/tab2/waffle';
+import * as waffle1 from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
+import { partyColorScale } from "../../utils/scales"
+
 
 @Component({
   selector: 'app-tab2',
@@ -23,8 +25,6 @@ export class Tab2Component  implements AfterViewInit   {
   ngAfterViewInit(): void {
     d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
       this.sortedData = this.preprocessingService.splitByLegislature(data);
-      console.log(this.sortedData);
-      console.log(this.preprocessingService.getPartiesNames(data));
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
     });
     
@@ -54,8 +54,8 @@ export class Tab2Component  implements AfterViewInit   {
         this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
         break;
       case "parti":
-        let affiliations = this.preprocessingService.getPartiesNames(data);
-        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
+        //let affiliations = this.preprocessingService.getPartiesNames(data);
+        this.colorScale = partyColorScale//d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
         break;
       case "province":
         let provinces = data.map(obj => obj["province"]).sort();
@@ -73,35 +73,12 @@ export class Tab2Component  implements AfterViewInit   {
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
-    /*
-    var tooltip = d3.select("#tooltip")
-                    .append('div')
-                      .style("opacity", 0)
-                      .attr("class", "tooltip")
-                      .style("background-color", "#8AB476")
-                      .style("border-radius", "25px")
-                      .style("padding", "20px");*/
     // Draw each seat 
     waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
 
     // Rearrange the seats to make it looks more like the house 
     this.lookLikeHouseOfCommons();
-
-    /*
-    // Draw Legend
-    svg.append('g')
-      .attr('class', 'legend');
-
-    var legend = d3Legend.legendColor()
-        .title('Légende')
-        .shapePadding(5)
-        .cells(6)
-        .orient('vertical')
-        .scale(this.colorScale) as any;
-  
-    svg.select('.legend')
-        .call(legend);
-    */
+    waffle1.drawWaffleLegend(this.colorScale);
          
   }
 
@@ -123,10 +100,6 @@ export class Tab2Component  implements AfterViewInit   {
         .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
       }
     }
-  }
-
-
-  drawLegend():void{    //TODO : utilise preprocess.getPartiesNames(data) pour avoir les noms des partis
   }
 
   

@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
 import * as d3Legend from 'd3-svg-legend'
-import * as waffle from 'src/app/utils/waffle';
+import * as waffle from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import * as preproc from './preprocessTab1'
 
@@ -33,8 +33,11 @@ export class Tab1Component implements AfterViewInit  {
       let dataWaffle = this.preprocessingService.dataWaffle
       let parties:string[] = this.preprocessingService.parties
       // Viz
-      waffle.drawSquares(dataWaffle, '#waffleContainer', partyColorScale, 'Parti');
-      this.drawWaffleLegend(parties)
+      for (let index=0; index<dataWaffle.length;index++){
+        waffle.drawSquares(dataWaffle[index], '#waffleContainerInner', partyColorScale, 'Parti',index);
+      }
+      this.waffleLookNice(dataWaffle.length);
+      waffle.drawWaffleLegend(partyColorScale, this.preprocessingService.getScale());
 
     
       
@@ -108,39 +111,20 @@ export class Tab1Component implements AfterViewInit  {
 
   
 
-  drawWaffleLegend(parties:string[]):void{
-    // Usually you have a color scale in your chart already
-    //this.color = d3.scaleOrdinal().range(d3.schemeTableau10).domain(parties);  
-    this.color= partyColorScale
-      // Add one dot in the legend for each name.
-    var size = 20
-    var legend = d3
-        .select('#legendContainer')
-        .append('svg')
-        .attr('width', 900)
-        .attr('height', 1000)
-        .selectAll('.legend-element')
-        .data(parties);
-    legend
-      .enter()
-      .append("rect")
-        .attr("x", 100)
-        .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("width", size)
-        .attr("height", size)
-        //.attr("fill",function(d){ return color(d)})
-        .attr('fill', d=>this.color(d))
-
-    legend
-    .enter()
-    .append("text")
-      .attr("x", 100 + size*1.2)
-      .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-      .style("fill", "black")
-      .text(parties=>parties)
-      .attr("text-anchor", "left")
-      .style("alignment-baseline", "middle")
+  /**
+ * Rearrange the waffle chart to git it the looks of the House Of Commons, with an alley in the middle
+ */
+  waffleLookNice(nbRow:number, nbBlocCol = 8,nbBlocRow = 5):void{
+    let bigGap = 8;
+    
+    // Improve placement of the squares
+    for (let row=0;row<nbRow;row++){
+      for (let i=0;i<nbBlocCol;i++){
+        d3.selectAll("rect[col='"+String(i)+"'][row='"+String(row)+"']")
+        .attr('transform','translate('+String(bigGap*i)+',0)');
+      }
     }
+  }
 
 
 
@@ -219,8 +203,6 @@ export class Tab1Component implements AfterViewInit  {
         .attr('text-anchor', 'middle')
         .attr("fill", "white")
         .text((d) => d["Percentage"]+"%");
-
-
   }
 }
 

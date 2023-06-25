@@ -7,12 +7,12 @@ export function drawSquares(//Main arguments
                             colorScale:any,
                             wantedKey:string,
                             //Additional arguments
-                            svgPadding=20,
-                            squareSize=20,
-                            smallGap= 5,
                             nbRowInBloc = 4,
                             nbColInBloc = 5,
-                            nbBlocCol = 4
+                            nbBlocCol = 4,
+                            svgPadding=20,
+                            squareSize=20,
+                            smallGap= 5
                             )
                             :void{
     // Geometry Calculus
@@ -78,7 +78,6 @@ function seatSelected(element:any){
   const parentNode = parentElement.parentNode
   const d = parentElement.__data__
   let tooltip = d3.select("#zone-tooltip")
-  console.log(d)
   tooltip.select("#avatar").attr("src", d['urlPhoto']);
   tooltip.select("#p-name").html("Name: " + d["nom"]);
   tooltip.select("#p-province").html("Province: " + d['province']);

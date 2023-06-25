@@ -12,10 +12,12 @@
 
   <div id="zone-buttons">
     <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
+    <div id="legendContainer"></div>
   </div>
   
 </div>
 <div class="slideContainer">
+  <p id="smallTitle">Législature:</p>
   <input type="range" min="42" max="44" [value]="wantedLegislature" class="slider" id="myRange" (input)="updateWantedLegislature($event)">
   <div class="slider-values">
     <span *ngFor="let number of [42, 43, 44]" class="slider-value">{{ number }}</span>

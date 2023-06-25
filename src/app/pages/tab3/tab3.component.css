@@ -1,0 +1,101 @@
+app-date-picker{
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+}
+
+#graph-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+#zone-chart{
+    flex:4;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #zone-buttons{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #legendContainer{
+    display: flex;
+    width: 100%;
+    height: 250px;
+    padding: 10px;
+    background-color: #FAF4F2;
+  }
+
+#stackedBarChart{
+    width: 100%;
+}
+
+/* #legendContainer{
+    display: flex;
+    width: 200px;
+    height: 300px;
+    position: relative;
+    padding-right: 10%;
+    float: right;
+    bottom: 1279px;
+}
+
+.legend-wrapper {
+    display: block;
+}
+
+.filter-container{
+    float: left;
+    padding-top: 40px;
+    width: 200px;
+    position: relative;
+    left: 110px;
+}
+
+.intervention-container{
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    padding-left: 80px;
+    text-align: center;
+    align-content: center;
+}
+
+.buttons-container{
+    display: inline-grid;
+    gap: 35px;
+}
+
+.title {
+    padding-top: 40px;
+    font-size: 30px;
+    font-weight: 450;
+    text-align: center;
+}
+
+.stackedBar {
+    display: flex;
+    position: relative;
+    width: 100px;
+    height: 750px;
+}
+
+#stackedBarChart{
+    display: flex;
+    position: absolute;
+    top: -633px;
+    left: 500px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+} */
