@@ -65,76 +65,60 @@ export class Tab3Component  implements AfterViewInit  {
     return data.sort((x, y) => d3.ascending(x[this.wantedKey], y[this.wantedKey]));
   }
 
-
-
-
-
-  // createStackedBar (popularinterventions: { [key: string]: any }[]): void {
+  // createStackedBar (interventionList: { [key: string]: any }[]): void {
   //   const margin = { top: 10, right:0, bottom: 10, left: 30 };
 
   //   const width = 150 - margin.left - margin.right;
-  //   const height = 1400 - margin.top - margin.bottom;
+  //   const height = 900 - margin.top - margin.bottom;
 
-  //   const genres = popularinterventions;
+  //   const svg = d3.select('#stackedBarChart')
+  //         .attr('width', width + margin.left + margin.right)
+  //         .attr('height', height + margin.top + margin.bottom)
+  //         .append('g')
+  //         .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  //   const genres = interventionList;
+
+  //   console.log("genre: " + genres);
 
   //   const colores: any = genderColorScale;
-  //   const months = genres.map(d => d["genre"]);
 
-  //   var xScale = d3.scaleBand().domain(months).range([0, height]);
+  //   let yMaxi:number = 0;
+  //     for (const obj of interventionList) {
+  //       yMaxi += obj[0]["Count"] + obj[1]["Count"];
+  //     }
+  //     var xScale = d3.scaleLinear()
+  //       .domain([0, 6])
+  //       .range([0, height])
+      
+  //       const yScale = d3.scaleLinear()
+  //       .domain([0, 2377])
+  //       .range([0, height]);
 
-  //     let donnees:{ [key: string]: any }={nom:'Genre'};
-  //     let arDonnees:{ [key: string]: any}[]=[];
-  //     popularinterventions.forEach(nb=>{
-  //       let newkey:string=Object.values(nb)[0];
-  //       donnees[newkey] = Object.values(nb)[1];
-  //     });
-  //     arDonnees.push(donnees);
-  //     const fruit = Object.keys(arDonnees[0]).filter(d => d != "plumes");
-
-  //     const stackedData = d3.stack()
-  //       .keys(fruit)(arDonnees);
-
-  //     const xMax: any = d3.max(stackedData[stackedData.length - 1], d => d[1]);
-
-  //     const yScale = d3.scaleLinear()
-  //     .domain([0, xMax])
-  //     .range([0, height]);
+  //     const xMax: any = 6;
 
   //     var yAxis = d3.axisLeft(yScale)
   //       .scale(yScale)
   //       .ticks(6);
 
-  //     var stack = d3.stack()
-  //       .keys(fruit)
-  //       .order(d3.stackOrderAscending);
-
-  //     var series = stack(genres);
-
-  //     const svg = d3.select('#stackedBarChart')
-  //       .attr('width', width + margin.left + margin.right)
-  //       .attr('height', height + margin.top + margin.bottom)
+  //       const stack = svg.selectAll('.stack')
+  //       .data(interventionList)
+  //       .enter()
   //       .append('g')
-  //       .attr('transform', `translate(${margin.left},${margin.top})`);
+  //       .attr('class', 'stack')
+  //       .attr('transform', (d) => `translate(${xScale(d[0])}, 0)`)
+  //       .attr('transform', (d) => `translate(${yScale(d["Beginning"])}, 0)`)
 
-  //       const layers = svg.append('g')
-  //       .selectAll('g')
-  //       .data(stackedData)
-  //       .join('g')
-  //       .attr('fill', d => colores(d.key));
-
-  //     //---------------------------------------------
-  //     layers.selectAll("rect")
-  //     .data(function(d) { return d; })
-  //     .enter()
-  //     .append("rect")
-  //     // .attr("x", function(d) { return xScale(d[2]); })
-  //     .attr("y", function(d) { return yScale(d[0]); })
-  //     .attr("width", xScale.bandwidth())
-  //     .attr("height", function(d) { console.log(d)
-  //       console.log(yScale(d[1]))
-  //       return yScale(d[1]) - yScale(d[0]) });
+  //       stack
+  //       .append('rect')
+  //       .attr('x', 0)
+  //       .attr('y', 0)
+  //       .attr('width', (d) => xScale(24))
+  //       .attr('height', function(d) { 
+  //         console.log('d dans stack ', d[0]['Count'])
+  //         return yScale(d[0]['Count'] + d[1]['Count'])})
+  //       .attr('fill', function(d) { console.log("colorScale ", colores);return colores[d[0]['Genre']]});
   // }
-
 
 }
 
