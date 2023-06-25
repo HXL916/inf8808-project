@@ -39,6 +39,10 @@ export class Tab3Component  implements AfterViewInit  {
       
       this.createGraphBase(timeGroups, Ymax)
 
+      // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
+      // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
+      // Y a juste besoin du groupedArray[month] (avec un peu de processing derrière) pour créer la barre
+      // et month permet de positionner sur l'axe des abscisses 
 
 
       // this.data = preprocessTab3.getTypeInterventionCountsOfOneMonth(data,6,2015,this.wantedKey);     
