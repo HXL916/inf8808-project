@@ -40,40 +40,40 @@ export function getInterventionsByType(data: { [key: string]: any }[], intervent
     return filteredData;
 }
 
-export function getInterventions(interventionsData:{ [key: string]: any }[] ){
+// export function getInterventions(interventionsData:{ [key: string]: any }[] ){
 
-    let possibleMonths : number[] = [1, 2, 3, 4, 5, 6]
-    let interventionArray = []
+//     let possibleMonths : number[] = [1, 2, 3, 4, 5, 6]
+//     let interventionArray = []
   
-    for(let month of possibleMonths){
-      let interventionsDefault = getInterventionsByDateRangeDefault(interventionsData, 2016)
-      let interventionMonth = getInterventionsMonth(interventionsDefault, month)
+//     for(let month of possibleMonths){
+//       let interventionsDefault = getInterventionsByDateRangeDefault(interventionsData, 2016)
+//       let interventionMonth = getInterventionsMonth(interventionsDefault, month)
   
-      // Regroupe les interventions par mois et par année
-      // C'est compliqué à comprendre le reduce avec javascript, si besoin: https://www.digitalocean.com/community/tutorials/js-finally-understand-reduce
-      const groupedArrays = interventionMonth.reduce<{ [key: string]: { [key: string]: any}[] }>((acc, obj) => {
-        const key = `${obj["année"]}-${obj["mois"]}`
-        if (!acc[key]) {
-          acc[key] = []
-        }
-        acc[key].push(obj)
-        return acc
-      }, {})
+//       // Regroupe les interventions par mois et par année
+//       // C'est compliqué à comprendre le reduce avec javascript, si besoin: https://www.digitalocean.com/community/tutorials/js-finally-understand-reduce
+//       const groupedArrays = interventionMonth.reduce<{ [key: string]: { [key: string]: any}[] }>((acc, obj) => {
+//         const key = `${obj["année"]}-${obj["mois"]}`
+//         if (!acc[key]) {
+//           acc[key] = []
+//         }
+//         acc[key].push(obj)
+//         return acc
+//       }, {})
   
-      // On itère sur tous les arrays (un array = les interventions pour un mois donné)
-      for (const key in groupedArrays) {
-        if (groupedArrays.hasOwnProperty(key)) {
-          const interventionMois = groupedArrays[key];
-          // for now the year is hardcoded
-          const valeurAAJouter = getTypeInterventionCountsByPeriod(interventionMois, month, 2016);
-          interventionArray.push(valeurAAJouter)
-        }
-      }
-    }
-    return interventionArray
-  }
+//       // On itère sur tous les arrays (un array = les interventions pour un mois donné)
+//       for (const key in groupedArrays) {
+//         if (groupedArrays.hasOwnProperty(key)) {
+//           const interventionMois = groupedArrays[key];
+//           // for now the year is hardcoded
+//           const valeurAAJouter = getTypeInterventionCountsByPeriod(interventionMois, month, 2016);
+//           interventionArray.push(valeurAAJouter)
+//         }
+//       }
+//     }
+//     return interventionArray;
+// }
 
-  export function getMonth(month:number): any{ 
+export function getMonth(month:number): any{ 
     var returnMonth;
     switch(month) {
         case 1: returnMonth = "January"; break;
@@ -90,26 +90,48 @@ export function getInterventions(interventionsData:{ [key: string]: any }[] ){
         case 12: returnMonth = "December"; break;
      }
      return returnMonth;
-  } 
+  }
+  
+export function getCategories(data: { [key: string]: any }[], wantedKey:string): string[] {
+  // Get the categories' names
+  let categories: string[] = [];
+  categories = data.map((obj) => obj[wantedKey]);
+  // Filter it to avoid duplicates
+  categories = categories.filter(
+    (value, index, array) => array.indexOf(value) === index
+  );
+  return categories;
+}
 
-  export function getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], month: number, year: number): { [key: string]: any }[] {
-    const keyCount: { [key: string]: number } = {};
-  
-    for (const obj of data) {
-      if (obj.hasOwnProperty('genre') ) {
-        const key = obj['genre'];
-        if (keyCount.hasOwnProperty(key)) {
-            keyCount[key]++;
-        } else {
-            keyCount[key] = 1;
-        }
-      }
+export function getMonths(data: { [key: string]: any }[]): number[] {
+  // Get the categories' names
+  let categories: number[] = [];
+  categories = data.map((obj) => obj['Mois']);
+  // Filter it to avoid duplicates
+  categories = categories.filter(
+    (value, index, array) => array.indexOf(value) === index
+  );
+  return categories;
+}
+
+
+export function getTypeInterventionCountsOfOneMonth(data: { [key: string]: any }[], month: number, year: number, wantedKey:string): { [key: string]: any }[] {
+    // Keep the lines from the dates we want
+    data.filter((d)=>d['années']==year).filter((d)=>d['mois']==month);
+
+    const categories = getCategories(data, wantedKey);
+
+    // Count the lines of each category from the remaining data
+    const summarizedData : { [key: string]: number }[] = [];
+    var obj : { [key: string]: number } = {};
+    obj['Année'] = year;
+    obj['Mois'] = month;
+    for (let cat of categories){
+      // Pour l'instant, compte du nombre d'interventions, pas de leur longueur
+      let count = data.filter((d)=>d[wantedKey]==cat).length;
+      obj[cat]= count;
     }
-  
-    const mois = getMonth(month)
-    const summarizedData : { [key: string]: any }[] = [];
-    Object.keys(keyCount).forEach((element) => {
-      summarizedData.push({ Genre: element, Count: keyCount[element], Month: mois, Year: year  });
-    });
+    summarizedData.push(obj);
+
     return summarizedData;
   }

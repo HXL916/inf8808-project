@@ -73,36 +73,12 @@ export class Tab2Component  implements AfterViewInit   {
  * @param {object[]} data The data to use
  */
   createGraph(data: { [key: string]: any }[]): void {
-    /*
-    var tooltip = d3.select("#tooltip")
-                    .append('div')
-                      .style("opacity", 0)
-                      .attr("class", "tooltip")
-                      .style("background-color", "#8AB476")
-                      .style("border-radius", "25px")
-                      .style("padding", "20px");*/
     // Draw each seat 
     waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
 
     // Rearrange the seats to make it looks more like the house 
     this.lookLikeHouseOfCommons();
     waffle1.drawWaffleLegend(this.colorScale);
-
-    /*
-    // Draw Legend
-    svg.append('g')
-      .attr('class', 'legend');
-
-    var legend = d3Legend.legendColor()
-        .title('Légende')
-        .shapePadding(5)
-        .cells(6)
-        .orient('vertical')
-        .scale(this.colorScale) as any;
-  
-    svg.select('.legend')
-        .call(legend);
-    */
          
   }
 
@@ -124,10 +100,6 @@ export class Tab2Component  implements AfterViewInit   {
         .attr('transform','translate('+String(bigGap*i)+','+String(alleyGap+bigGap*j)+')');
       }
     }
-  }
-
-
-  drawLegend():void{    //TODO : utilise preprocess.getPartiesNames(data) pour avoir les noms des partis
   }
 
   

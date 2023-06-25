@@ -3,6 +3,7 @@ import { Legend } from './../../utils/legend';
 import { genderColorScale, partyColorScale } from "../../utils/scales"
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
+import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 
 @Component({
@@ -18,18 +19,18 @@ export class Tab3Component  implements AfterViewInit  {
   xScale!: any;
   yScale!: any;
   pourcent!: any;
+  data:any;
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey='genre';
   }
 
   ngAfterViewInit(): void {
-    //waffle1.drawWaffleLegend(this.colorScale);
-
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
-      let nbInterventionsByType:{ [key: string]: any }[] = this.preprocessingService.getTypeInterventionCountsByPeriod(data);     
-      console.log(nbInterventionsByType);
-      this.createStackedBar(nbInterventionsByType);
+      this.data = preprocessTab3.getTypeInterventionCountsOfOneMonth(data,6,2015,this.wantedKey);     
+      console.log(this.data);
+      this.createStackedBar(this.process(this.data));
+      waffle1.drawWaffleLegend(this.colorScale);
     })
   }
 
@@ -37,8 +38,9 @@ export class Tab3Component  implements AfterViewInit  {
     this.wantedKey=key;
     this.updateView();
   }
-  updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
-    //this.createGraph(this.process(this.data));
+  updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
+    this.process(this.data);
+    waffle1.drawWaffleLegend(this.colorScale);
   }
 
   /**
@@ -62,10 +64,85 @@ export class Tab3Component  implements AfterViewInit  {
         break;
     } 
 
-    return data.sort((x, y) => d3.ascending(x[this.wantedKey], y[this.wantedKey]));
+    return data;
   }
 
+  createStackedBar (data: { [key: string]: any }[]): void{
+    
 
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 20, left: 50},
+    width = 600- margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#zone-chart")
+    .append("svg")
+    .attr("id","stackedBarChart")
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+    // List of subgroups = header of the csv files = soil condition here
+    var subgroups = preprocessTab3.getCategories(data,this.wantedKey);
+
+    // List of groups = species here = value of the first column called group -> I show them on the X axis
+    // var groups = preprocessTab3.getCategories(data, 'Mois');
+    var groups = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'];
+
+    // Add X axis
+    var xScale = d3.scaleBand().domain(groups).range([0, width]);
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale).tickSizeOuter(0));
+    //console.log(xScale(6));
+
+    // Add Y axis
+    var yScale = d3.scaleLinear().domain([0, 10000]).range([ height, 0 ]);
+    svg.append("g")
+    .call(d3.axisLeft(yScale));
+
+    //stack the data? --> stack per subgroup
+    var stackedData = d3.stack().keys(subgroups)(data)
+    console.log(stackedData)
+
+
+    // // Show the bars
+    // svg.append("g")
+    // .selectAll("g")
+    // // Enter in the stack data = loop key per key = group per group
+    // .data(stackedData)
+    // .enter().append("g")
+    //   .attr("fill", (d)=>this.colorScale(d.key))
+    //   .selectAll("rect")
+    //   // enter a second time = loop subgroup per subgroup to add all rectangles
+    //   .data(function(d) { return d; })
+    //   .enter()
+    //     .append("rect")
+    //     .attr("x", (d)=>x(d.data.group))
+    //     .attr("y", function(d) { return y(d[1]); })
+    //     .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+    //     .attr("width",x.bandwidth());
+    
+    // var sel = d3.select("#zone-chart")
+    //             .select('g')
+    //             .selectAll('g.series')
+    //             .data(stackedData)
+    //             .join('g')
+    //             .classed('series', true)
+    //             .style('fill', (d) => this.colorScale(d.key));
+    // sel.selectAll('rect')
+    //   .data((d) => d)
+    //   .join('rect')
+    //   .attr('width', 40)
+    //   .attr('y', (d) => yScale(d[1]))
+    //   //.attr('x', (d) => xScale(d.data['Mois']) - 20)
+    //   //.attr('x', (d) => xScale(6))
+    //   .attr('height', (d) => yScale(d[0]) -  yScale(d[1]));
+    }
+
+  
 
 
 
@@ -134,7 +211,6 @@ export class Tab3Component  implements AfterViewInit  {
   //       console.log(yScale(d[1]))
   //       return yScale(d[1]) - yScale(d[0]) });
   // }
-
 
 }
 
