@@ -64,7 +64,7 @@ export class Tab3Component  implements AfterViewInit  {
         break;
     } 
 
-    return data.sort((x, y) => d3.ascending(x[this.wantedKey], y[this.wantedKey]));;
+    return data;
   }
 
   createStackedBar (data: { [key: string]: any }[]): void{
