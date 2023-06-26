@@ -59,6 +59,7 @@ export function drawWaffleLegend(colorScale:any, scale?:number):void{
 
   container.append('g')
      .attr('class', 'legend')
+     .attr('font-weight', 'bold')
      .attr('transform', 'translate(' + width + ',+20)') 
 
   var legend = d3Legend.legendColor()
