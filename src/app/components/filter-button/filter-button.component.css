@@ -19,6 +19,9 @@
   .button-group button:hover {
     background-color: #3D7021;
   }
+  .button-group button:focus {
+    background-color: #3D7021;
+  }
 
   .flex-container{
     display: flex;
