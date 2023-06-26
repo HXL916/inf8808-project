@@ -190,7 +190,7 @@ export class Tab1Component implements AfterViewInit  {
         .attr('y', 25)
         .attr('text-anchor', 'middle')
         .attr("fill", "white")
-        .attr("font-size", "1.3em")
+        .attr("font-size", "14px")
         .attr("font-weight", "bold")
         .text((d) => d["TypeIntervention"])
         .call(wrap, 45);
@@ -202,6 +202,7 @@ export class Tab1Component implements AfterViewInit  {
         .attr('y', height - 20)
         .attr('text-anchor', 'middle')
         .attr("fill", "white")
+        .attr("font-weight", "bold")
         .text((d) => d["Percentage"]+"%");
   }
 }

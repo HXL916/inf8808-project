@@ -115,9 +115,13 @@ sauf si quelqu'un s'y connait en css et peut déjà faire une présentation sans
     padding-bottom: 0px;
     margin-bottom: 0px;
     font-size: 1.4em;
+    text-align: end;
 }
 
 
+#stackedBarChartTextContainer h1 {
+    text-align: end;
+}
 
 
 #statsBlock p{
