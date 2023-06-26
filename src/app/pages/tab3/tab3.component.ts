@@ -148,8 +148,10 @@ export class Tab3Component  implements AfterViewInit  {
     }
 
     updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
-      this.wantedDate = date;
-      this.updateView();
+      if(date.value.start && date.value.end){
+        this.wantedDate = date;
+        this.updateView();
+      }
     }
 
 }

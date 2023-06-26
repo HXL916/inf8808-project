@@ -3,7 +3,6 @@ import { Form, FormControl, FormGroup } from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
 import {DateRange, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY} from '@angular/material/datepicker';
 
-
 // @Injectable()
 // export class HalfYearRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
 //   constructor(private _dateAdapter: DateAdapter<D>) {}
@@ -98,6 +97,11 @@ export class DatePickerComponent {
         this.selectedPeriod = this.periods[4];
       break;
     }
+    this.filterChange.emit(this.range);
+  }
+
+  updateDatePicker() {
+    console.log(this.range.value)
     this.filterChange.emit(this.range);
   }
 }
