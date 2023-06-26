@@ -129,6 +129,14 @@ export function getMaxCharCounts(groupedArrays: any): number{
   return maxSum
 }
 
+export function transformWithCumulativeCount(interventionData:{ [key: string]: any }[]):void{
+  let cumulative_count:number = 0
+  interventionData.forEach((d) => {
+      d["Beginning"] = cumulative_count;
+      cumulative_count = cumulative_count + d["CharCount"]
+      d["End"] = cumulative_count;
+    });
+}
 
 
 

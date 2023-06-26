@@ -20,6 +20,7 @@ export class Tab3Component  implements AfterViewInit  {
   yScale!: any;
   pourcent!: any;
   data:any;
+  height!:number;
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey='genre';
@@ -38,6 +39,9 @@ export class Tab3Component  implements AfterViewInit  {
       console.log("time groups", timeGroups)
       
       this.createGraphBase(timeGroups, Ymax)
+      this.wantedKey = "parti"
+      this.colorScale = partyColorScale
+      this.generateBarChart(groupedArrays)
 
       // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
       // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
@@ -92,6 +96,8 @@ export class Tab3Component  implements AfterViewInit  {
     width = 900- margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+    this.height = height
+
     // append the svg object to the body of the page
     var svg = d3.select("#zone-chart")
     .append("svg")
@@ -101,14 +107,14 @@ export class Tab3Component  implements AfterViewInit  {
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]);
+    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.6);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
 
-    var yScale = d3.scaleLinear().domain([0, Ymax]).range([ height, 0 ]);
+    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ height, 0 ]);
       svg.append("g")
-      .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(this.yScale));
   
   }    
 
@@ -148,7 +154,7 @@ export class Tab3Component  implements AfterViewInit  {
     // Add Y axis
     var yScale = d3.scaleLinear().domain([0, 10000]).range([ height, 0 ]);
     svg.append("g")
-    .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(yScale));
 
     //stack the data? --> stack per subgroup
     var stackedData = d3.stack().keys(subgroups)(data)
@@ -187,6 +193,53 @@ export class Tab3Component  implements AfterViewInit  {
     //   //.attr('x', (d) => xScale(d.data['Mois']) - 20)
     //   //.attr('x', (d) => xScale(6))
     //   .attr('height', (d) => yScale(d[0]) -  yScale(d[1]));
+    }
+
+    generateBarChart(groupedArrays:any):void{
+      for (const key in groupedArrays) {
+        console.log(this.xScale(key))
+        this.generateOneBar(groupedArrays[key], key)
+      }
+    }
+
+    generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
+      let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
+      preprocessTab3.transformWithCumulativeCount(tab)
+      console.log("tab:",tab)
+      // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
+      let xScale = this.xScale
+      let yScale = this.yScale
+      let colorScale = this.colorScale
+      let height = this.height
+
+      // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
+      // on positionne le groupe sur l'axe des abscisses
+      const container = d3.select("#stackedBarChart")
+        .select("g")
+        .append("g")
+        .attr("class", "stackedBar")
+        .attr("width", 35) // a changer
+        .attr("transform", `translate(${xScale(xvalue)},0)`)
+
+      // crée toutes les zones (une par KeyElement) pour cette barre
+      const stack = container.selectAll('.stack')
+        .data(tab)
+        .enter()
+        .append('g')
+        .attr('class', 'stack')
+        //.attr('transform', (d) => `translate(0,${height - yScale(d["Beginning"])})`)
+
+      console.log("yScale(1000000)", yScale(1000000))
+      console.log("yScale(5000000)", yScale(5000000))
+
+      // ajoute le rectangle à chaque zone
+      stack
+        .append('rect')
+        .attr('x', 0)
+        .attr('height', function(d) { return height - yScale(d["End"] - d["Beginning"])})
+        .attr("y", function(d) {  return height - yScale(d["Beginning"])})
+        .attr('width', xScale.bandwidth())
+        .attr('fill', function(d) { return colorScale(d["KeyElement"])});
     }
 
 
