@@ -9,7 +9,8 @@
     margin: 14px 0;
     padding: 16px 8px;
     border-radius: 10px;
-    min-width: 35%;
+    width: 120px;
+    align-self: flex-start;
 
     /* Hover */
     transition-duration: 0.4s;
@@ -28,7 +29,6 @@
 
   .flex-container {
     display: flex;
-    align-items: stretch;
-    margin-right: 176px;
+    /* align-items: baseline; */
     flex-direction: column;
   }

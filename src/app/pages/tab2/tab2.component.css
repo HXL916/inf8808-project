@@ -169,3 +169,7 @@ body {
   float:right;  /*Ne fonctionne pas, à modifier pour mieux positionner la légende*/
 }
 
+app-filter-button{
+  padding-left: 17px;
+}
+

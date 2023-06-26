@@ -6,11 +6,11 @@ app-date-picker{
     margin: 0 auto;
 }
 app-filter-button{
-    padding-top: 5em;
-    padding-left: 3em;
+    padding-top: 3em;
+    padding-left: 7em;
 }
 app-intervention-type-toggle{
-    padding-top: 5em;
+    padding-top: 3em;
     padding-left: 3em;
 }
 .dateContainer{
