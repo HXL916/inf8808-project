@@ -12,10 +12,10 @@
       <div id="legendContainer"></div>
     </div>
     
-  </div>
-  <div class="dateContainer">
-    <app-date-picker></app-date-picker>
-  </div>
+</div>
+<div class="dateContainer">
+  <app-date-picker (filterChange)="updateDateFilter($event)"></app-date-picker>
+</div>
 
 
 <!-- PASSER LA VALEUR DU FILTER BUTTON SELECTIONNÉE DANS LE TITLE POUR QU'IL CHANGE EN FONCTION

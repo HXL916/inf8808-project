@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-tab3',
@@ -13,6 +14,7 @@ import { PreprocessingService } from 'src/app/services/preprocessing.service';
 })
 export class Tab3Component  implements AfterViewInit  {
   wantedKey!:string;
+  wantedDate!: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>;
   colorScale!: any;
   itemList!: any;
   color!: any;
@@ -24,12 +26,14 @@ export class Tab3Component  implements AfterViewInit  {
 
   constructor(private preprocessingService: PreprocessingService) {
     this.updateWantedKey("genre");
+    this.wantedDate = new FormGroup({start: new FormControl<Date | null>(new Date(2021, 10, 22)), end: new FormControl<Date | null>(new Date(2023, 0, 1))});
   }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
       this.data = data
-      const filterData = preprocessTab3.getInterventionsByDateRange(data, "01/01/2016", "06/30/2016") //saloperie de format américain
+      // 44ème législature
+      const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
       //console.log(filterData)
       const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
       //console.log("groupedArrays", groupedArrays)
@@ -141,6 +145,11 @@ export class Tab3Component  implements AfterViewInit  {
         .attr("y", function(d) {  return height - yScale(d["End"])})
         .attr('width', xScale.bandwidth())
         .attr('fill', function(d) { return colorScale(d["KeyElement"])});
+    }
+
+    updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
+      this.wantedDate = date;
+      this.updateView();
     }
 
 }

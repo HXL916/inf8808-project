@@ -1,12 +1,10 @@
 
-export function getInterventionsByDateRange(data: { [key: string]: any }[], startDate: string, endDate: string):{ [key: string]: any }[]{
-  const startDateCast = new Date(startDate)
-  const endDateCast = new Date(endDate)
-  console.log(startDateCast, endDateCast )
+export function getInterventionsByDateRange(data: { [key: string]: any }[], startDate: Date, endDate: Date):{ [key: string]: any }[]{
+  console.log(startDate, endDate )
 
   const filteredArray = data.filter((obj) => {
     const objDate = new Date(obj["année"], obj["mois"] - 1, obj["jour"]) // attention, en objet Date de javascript, janvier=0
-    return objDate >= startDateCast && objDate <= endDateCast
+    return objDate >= startDate && objDate <= endDate
   });
   return filteredArray
 }
