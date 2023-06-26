@@ -81,8 +81,29 @@ export class PreprocessingService {
     parties = parties.filter(
       (value, index, array) => array.indexOf(value) === index
     );
+    /*
+    console.log('before sort:', parties)
+    parties.sort((x,y)=>x.localeCompare(y))
+    console.log('after sort:', parties)
+    */
     return parties;
   }
+
+    /**
+   * Gets the names of the provinces (as written in debatsCommunes.csv).
+   *
+   * @param {object[]} data The data to analyze
+   * @returns {string[]} The names of the parties in the data set
+   */
+    getProvinces(data: { [key: string]: any }[]): string[] {
+      let parties: string[] = [];
+      parties = data.map((obj) => obj['province']);
+      // Filter it to avoid duplicates
+      parties = parties.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+      return parties;
+    }
 
   /**
    * Gets the number of intervention for each political party.

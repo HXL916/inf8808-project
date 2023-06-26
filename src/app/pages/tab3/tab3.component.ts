@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { Legend } from './../../utils/legend';
-import { genderColorScale, partyColorScale } from "../../utils/scales"
+import { genderColorScale, partyColorScale, provinceColorScale } from "../../utils/scales"
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
@@ -12,7 +12,7 @@ import { PreprocessingService } from 'src/app/services/preprocessing.service';
   styleUrls: ['./tab3.component.css']
 })
 export class Tab3Component  implements AfterViewInit  {
-  wantedKey:string;
+  wantedKey!:string;
   colorScale!: any;
   itemList!: any;
   color!: any;
@@ -23,71 +23,51 @@ export class Tab3Component  implements AfterViewInit  {
   height!:number;
 
   constructor(private preprocessingService: PreprocessingService) {
-    this.wantedKey='genre';
+    this.updateWantedKey("genre");
   }
 
   ngAfterViewInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
+      this.data = data
       const filterData = preprocessTab3.getInterventionsByDateRange(data, "01/01/2016", "06/30/2016") //saloperie de format américain
-      console.log(filterData)
+      //console.log(filterData)
       const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+      //console.log("groupedArrays", groupedArrays)
       let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)
-      console.log("Ymax", Ymax)
-      const something = preprocessTab3.getCountsWithKey(groupedArrays["2016-1"], "parti")
-      console.log("something",something)
+      //console.log("Ymax", Ymax)
       const timeGroups = Object.keys(groupedArrays)
-      console.log("time groups", timeGroups)
+      //console.log("time groups", timeGroups)
       
       this.createGraphBase(timeGroups, Ymax)
-      this.wantedKey = "parti"
-      this.colorScale = partyColorScale
       this.generateBarChart(groupedArrays)
+      waffle1.drawWaffleLegend(this.colorScale)
 
       // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
       // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
       // Y a juste besoin du groupedArray[month] (avec un peu de processing derrière) pour créer la barre
       // et month permet de positionner sur l'axe des abscisses 
-
-
-      // this.data = preprocessTab3.getTypeInterventionCountsOfOneMonth(data,6,2015,this.wantedKey);     
-      // console.log("thisdata:")
-      // console.log(this.data);
-      // this.createStackedBar(this.process(this.data));
-      //waffle1.drawWaffleLegend(this.colorScale);
     })
   }
 
   updateWantedKey(key:string):void{
     this.wantedKey=key;
+    console.log(this.wantedKey)
+
+    switch (this.wantedKey){
+      case "genre":
+        this.colorScale = genderColorScale;
+        break;
+      case "parti":
+        this.colorScale = partyColorScale;
+        break;
+      case "province":
+        this.colorScale = provinceColorScale;
+        break;
+    } 
     this.updateView();
   }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
-    this.process(this.data);
-    waffle1.drawWaffleLegend(this.colorScale);
-  }
-
-  /**
-   * Keeps only the MPs from the selected Legislature.
-   *
-   * @param {object[]} data The data to analyze
-   * @returns {object[]} output The data filtered
-   */
-  process(data: { [key: string]: any }[]):{ [key: string]: any }[]{
-    switch (this.wantedKey){
-      case "genre":
-        this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
-        break;
-      case "parti":
-        let affiliations = this.preprocessingService.getPartiesNames(data);
-        this.colorScale = d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
-        break;
-      case "province":
-        let provinces = data.map(obj => obj["province"]).sort();
-        this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
-        break;
-    } 
-
-    return data;
+    this.ngAfterViewInit();
   }
 
   // crée la base du graph: svg element, axes, titre?
@@ -97,6 +77,9 @@ export class Tab3Component  implements AfterViewInit  {
     height = 500 - margin.top - margin.bottom;
 
     this.height = height
+
+    // delete any old stackedBarChart so clicking updates don't append new charts
+    d3.selectAll("#stackedBarChart").remove();
 
     // append the svg object to the body of the page
     var svg = d3.select("#zone-chart")
@@ -113,14 +96,12 @@ export class Tab3Component  implements AfterViewInit  {
       .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
-      svg.append("g")
-      .call(d3.axisLeft(this.yScale));
+    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0])));
   
   }    
 
     generateBarChart(groupedArrays:any):void{
-      for (const key in groupedArrays) {
-        console.log(this.xScale(key))
+      for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
         this.generateOneBar(groupedArrays[key], key)
       }
     }
@@ -128,7 +109,8 @@ export class Tab3Component  implements AfterViewInit  {
     generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
       let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
       preprocessTab3.transformWithCumulativeCount(tab)
-      console.log("tab:",tab)
+      //console.log('tab',tab)
+
       // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
       let xScale = this.xScale
       let yScale = this.yScale
@@ -150,10 +132,6 @@ export class Tab3Component  implements AfterViewInit  {
         .enter()
         .append('g')
         .attr('class', 'stack')
-        //.attr('transform', (d) => `translate(0,${height - yScale(d["Beginning"])})`)
-
-      console.log("yScale(1000000)", yScale(1000000))
-      console.log("yScale(5000000)", yScale(5000000))
 
       // ajoute le rectangle à chaque zone
       stack
