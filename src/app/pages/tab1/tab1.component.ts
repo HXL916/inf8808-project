@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewEncapsulation  } from '@angular/core';
+import { Component, AfterViewInit, ViewEncapsulation, OnInit  } from '@angular/core';
 import * as d3 from 'd3';
 import { Legend } from "../../utils/legend";
 import { partyColorScale } from "../../utils/scales"
@@ -14,7 +14,7 @@ import * as preproc from './preprocessTab1'
   styleUrls: ['./tab1.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class Tab1Component implements AfterViewInit  {
+export class Tab1Component implements OnInit  {
   itemList!: any;
   color!: any;
   xScale!: any;
@@ -22,12 +22,12 @@ export class Tab1Component implements AfterViewInit  {
   pourcent!: any;
   topMPs!: {}[]
   flopMPs!: {}[]
-  data!:{ [key: string]: any}[];
+  data:any;
 
-  constructor(private leg:Legend, private preprocessingService: PreprocessingService) {}
+  constructor(private leg:Legend, private preprocessingService: PreprocessingService) {
+  }
 
-  ngAfterViewInit(): void {
-    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
+  ngOnInit(): void {
       // WAFFLE CHART
       // Preprocess
       let dataWaffle = this.preprocessingService.dataWaffle
@@ -52,7 +52,6 @@ export class Tab1Component implements AfterViewInit  {
       
 
       // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
-      d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
         const listeDeputes44:{ [key: string]: any }[] = this.preprocessingService.listeDeputes44
         // preprocessing for top & flop
         let interestingMPs = this.preprocessingService.interestingMPs
@@ -62,15 +61,12 @@ export class Tab1Component implements AfterViewInit  {
         // prepcoessing for Key value: increase in number of women
         this.addingStatIncreaseWomen()
         // KEY VALUE 1 : percentage of MP who spoke each month on average
-        this.addingStatActiveMPs(listeDeputes, data)        
-      })
+        this.addingStatActiveMPs(this.preprocessingService.listeDeputes, this.preprocessingService.data)        
+
 
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
-      d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
         const changesLegislature44 : { [key: string]: any }[] = this.preprocessingService.changesLegislature44
         this.addingStatChangeLegislature(changesLegislature44)
-      })
-    })
   }
 
   

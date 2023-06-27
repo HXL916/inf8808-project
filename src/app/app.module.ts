@@ -20,6 +20,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoadingPageComponent } from './pages/loading-page/loading-page.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FilterButtonComponent,
     InterventionTypeToggleComponent,
     DatePickerComponent,
+    LoadingPageComponent,
   ],
   imports: [
     BrowserModule,
