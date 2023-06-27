@@ -1,5 +1,8 @@
 import * as d3 from 'd3';
 
+//import d3TipFactory from 'd3-tip'
+//import d3Tip from 'd3-tip';
+//(d3 as any).tip = d3Tip;
 
 export function drawSquares(//Main arguments
                             data: { [key: string]: any }[], 
@@ -23,7 +26,18 @@ export function drawSquares(//Main arguments
     const container = d3.select(containerName);
     const svg = container.select('svg');
     svg.selectAll('rect').remove();
-    
+
+
+    var tooltip = d3.select("#graph-container")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("position","absolute")
+      .style("background-color", "rgba(138, 180, 118, 0.8)")
+      .style('border-radius', '10px 10px 0px 10px')
+      .style("padding", "5px")
+      .style('pointer-events','none')
+
+      
     // Drawing
     svg.selectAll('rect')
       .data(data)
@@ -48,29 +62,26 @@ export function drawSquares(//Main arguments
       .attr('col', function(d,i) {
         return Math.floor(((i%(nbSquaresinBloc*nbBlocCol))%nbCol)/nbColInBloc);
       })
-      // Tooltip 
-      .on("mouseover", function(d) {
-        d3.select("#zone-tooltip").style("opacity", 1);
+
+    d3.selectAll(".seat")
+      .on("mouseover", function(event, d){
         var color = d3.select(this).attr('fill');
         d3.select(this)
           .style("stroke", color)
           .style("stroke-width",3) ;
-        var x = d3.select(this).attr('x');
-        var y = d3.select(this).attr('y');
-        var tooltip = d3.select("#zone-tooltip");
-        tooltip.select("#p-name").html(d["nom"]);
-        tooltip.select("#p-province").html("Province: " + d['province']);
-        tooltip.select("#p-parti").html("Parti: " + d['parti']);
-        
+        return tooltip.style("visibility", "visible");})
+      .on("mousemove", function(event, d:any){
+        const el = document.getElementById('zone-chart') as any;
+        var viewportOffset = el.getBoundingClientRect();
+        return tooltip
+          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px")
+          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px")
+          .html(getTooltipContents(d));
       })
-      .on('mouseenter', function (event, d) {
-         seatSelected(d3.select(this))
-      })
-      .on("mouseleave", function(d) {
-        d3.select("#zone-tooltip").style("opacity", 0);
+      .on("mouseout", function(){
         d3.select(this)
-          .style("stroke", "none");
-      });
+        .style("stroke", "none");
+        return tooltip.style("visibility", "hidden");});
 }
 
 function seatSelected(element:any){
@@ -83,3 +94,50 @@ function seatSelected(element:any){
   tooltip.select("#p-province").html("Province: " + d['province']);
   tooltip.select("#p-parti").html("Parti: " + d['parti']);
 }
+
+
+function getTooltipContents(d:any):string{
+  const tooltipDiv = d3.create('div')
+  .classed('tooltip-div', true)
+  .style('display','flex')
+  .style('flex-direction','row')
+  .style('padding', '5px')
+  .style('width', '250px')
+
+
+  tooltipDiv.append('img')
+    .attr('src', d["urlPhoto"])
+    .style('height', '100px')
+    .style('width', '100px')
+    .style('object-fit','cover')
+    .style('object-position', '0 10%')
+    .style('border-radius', '10px ')
+    
+
+  const tooltipTextDiv = tooltipDiv.append('div')
+    .style('display', 'flex')
+    .style('flex-direction', 'column')
+    .style('justify-content', 'space-between')
+    .style('padding-left', '10px')
+    .style('font-size', '1.2em')
+
+    tooltipTextDiv.append('div')
+    .style('font-size', '1.4em')
+    .style('font-weight', '600')
+    .text(d["nom"]);
+
+    tooltipTextDiv.append('div')
+      .text('Parti: '+d["parti"]);
+
+    tooltipTextDiv.append('div')
+    .text('Province: '+d["province"]);
+
+  const tooltipNode = tooltipDiv.node();
+  if (tooltipNode) {
+    return tooltipNode.outerHTML;
+  }
+
+  return '';
+}
+
+

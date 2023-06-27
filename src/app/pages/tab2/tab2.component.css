@@ -84,6 +84,18 @@ body {
   padding:"20px";
 }
 
+.tooltip{
+  background-color:"#8AB476";
+  opacity:70%;
+
+  position: absolute;
+  border: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 5px;
+
+}
+
 
 
 
