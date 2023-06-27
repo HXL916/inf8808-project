@@ -1,7 +1,7 @@
 <div id="graph-container" style="text-align:center;">
     <div id="zone-buttons">
         <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
-        <app-intervention-type-toggle></app-intervention-type-toggle>
+        <app-intervention-type-toggle (filterChange)="updateInterventionTypes($event)"></app-intervention-type-toggle>
     </div>
     
     <div id="zone-chart">
