@@ -1,8 +1,7 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, Output, EventEmitter } from '@angular/core';
 import { Form, FormControl, FormGroup } from '@angular/forms';
 import {DateAdapter} from '@angular/material/core';
 import {DateRange, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY} from '@angular/material/datepicker';
-
 
 // @Injectable()
 // export class HalfYearRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {
@@ -39,7 +38,8 @@ import {DateRange, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRAT
   styleUrls: ['./date-picker.component.css']
 })
 export class DatePickerComponent {
-  periods = ["42ème législature", "43ème législature", "Pré-élections 2021", "44ème législature"]
+  @Output() filterChange = new EventEmitter<FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>>();
+  periods = ["42ème législature", "43ème législature", "Pré-élections 2021", "44ème législature"];
   selectedPeriod = this.periods[this.periods.length - 1];
   rangePickerEnabled = !this.selectedPeriod;
 
@@ -54,19 +54,19 @@ export class DatePickerComponent {
 
   periodRanges: FormGroup[] = [
     new FormGroup({
-      start: new FormControl<Date | null>(new Date(2015, 12, 3)), // 42ème législature
-      end: new FormControl<Date | null>(new Date(2019, 9, 11))
+      start: new FormControl<Date | null>(new Date(2015, 11, 3)), // 42ème législature
+      end: new FormControl<Date | null>(new Date(2019, 8, 11))
     }),
     new FormGroup({
-      start: new FormControl<Date | null>(new Date(2019, 12, 5)), // 43ème législature
-      end: new FormControl<Date | null>(new Date(2021, 8, 15))
+      start: new FormControl<Date | null>(new Date(2019, 11, 5)), // 43ème législature
+      end: new FormControl<Date | null>(new Date(2021, 7, 15))
     }),
     new FormGroup({
-      start: new FormControl<Date | null>(new Date(2021, 3, 20)), // Pré-élections 2021
-      end: new FormControl<Date | null>(new Date(2021, 9, 20))
+      start: new FormControl<Date | null>(new Date(2021, 2, 20)), // Pré-élections 2021
+      end: new FormControl<Date | null>(new Date(2021, 8, 20))
     }),
     new FormGroup({
-      start: new FormControl<Date | null>(new Date(2021, 11, 22)), // 44ème législature
+      start: new FormControl<Date | null>(new Date(2021, 10, 22)), // 44ème législature
       end: new FormControl<Date | null>(new Date(2023, 0, 1))
     }),
     new FormGroup({start: new FormControl<Date | null>(null), end: new FormControl<Date | null>(null)}) // Custom range, empty
@@ -97,5 +97,11 @@ export class DatePickerComponent {
         this.selectedPeriod = this.periods[4];
       break;
     }
+    this.filterChange.emit(this.range);
+  }
+
+  updateDatePicker() {
+    console.log(this.range.value)
+    this.filterChange.emit(this.range);
   }
 }

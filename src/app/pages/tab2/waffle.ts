@@ -58,7 +58,7 @@ export function drawSquares(//Main arguments
         var x = d3.select(this).attr('x');
         var y = d3.select(this).attr('y');
         var tooltip = d3.select("#zone-tooltip");
-        tooltip.select("#p-name").html("Name: " + d["nom"]);
+        tooltip.select("#p-name").html(d["nom"]);
         tooltip.select("#p-province").html("Province: " + d['province']);
         tooltip.select("#p-parti").html("Parti: " + d['parti']);
         
@@ -79,7 +79,7 @@ function seatSelected(element:any){
   const d = parentElement.__data__
   let tooltip = d3.select("#zone-tooltip")
   tooltip.select("#avatar").attr("src", d['urlPhoto']);
-  tooltip.select("#p-name").html("Name: " + d["nom"]);
+  tooltip.select("#p-name").html(d["nom"]);
   tooltip.select("#p-province").html("Province: " + d['province']);
   tooltip.select("#p-parti").html("Parti: " + d['parti']);
 }

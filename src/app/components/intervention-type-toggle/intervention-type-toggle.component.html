@@ -1,9 +1,17 @@
 <div class="intervention-title">Types d'intervention :</div>
 <div class="flex-container">
-    <button *ngFor="let intervention of interventionTypes" value="intervention" class="left-align" (click)="toggle(intervention)" ngClass="active? 'active-class' : 'no-active-class'" id="{{intervention}}">
-        <div>
-            <!-- <img src="/assets/White_flag_icon.png" alt="White Flag Icon"> -->
-            {{intervention}}
-        </div>
-    </button>
+  <button
+    *ngFor="let intervention of interventionTypes"
+    class="left-align"
+    [ngClass]="{
+      'active-class': selectedTypes.includes(intervention),
+      'no-active-class': !selectedTypes.includes(intervention),
+    }"
+    (click)="toggle(intervention)"
+    [attr.id]="intervention"
+  >
+    <div>
+      {{ intervention }}
+    </div>
+  </button>
 </div>

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Subject } from 'rxjs';
+import { Subject,forkJoin  } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
+const WAFFLE_SCALE = 500;
 
 @Injectable({
   providedIn: 'root',
@@ -16,54 +18,47 @@ export class PreprocessingService {
   dataWaffle!: any[];
   popularInterventions!: { [key: string]: any; }[];
   recentInterventions!: { [key: string]: any; }[];
+  deputesLegislatures!: any;
   listeDeputes44!: any;
   interestingMPs!: any;
   listeDeputes43!: any;
   increaseWomen!: string;
   changesLegislature44!: any;
   nbInterventionsByType!: { [key: string]: any }[];
-  dataIsLoaded: Subject<boolean> = new Subject<boolean>();
+  dataIsLoaded = new BehaviorSubject<boolean>(false);
   sortedData: any;
-  waffleScale:number;
-
-  
-
+  debats: any;
 
   constructor() {
-    this.waffleScale = 500;
-
-    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => { // utiliser (data)=> permet de garder le .this qui référence le Tab1Component
-      // WAFFLE CHART
-      // Preprocess
-      this.nbInterventionsByParty = this.getPartyCounts(data);
-      this.parties = this.getPartiesNames(data);
-      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty,this.waffleScale);    
-      this.nbInterventionsByType = this.getTypeInterventionCounts(data)
-      this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType)
-      this.recentInterventions = this.getInterventionsLegislature(data, "44-1")   
-
-      // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
-      d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
-        this.listeDeputes44 = this.getMPsLegislature(listeDeputes, "44")
-        // preprocessing for top & flop
-        this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions)
-        this.topMPs = this.interestingMPs["topMPs"]
-        this.flopMPs = this.interestingMPs["flopMPs"]
-        // preprocessing for Key value: increase in number of women
-        this.listeDeputes43 = this.getMPsLegislature(listeDeputes, "43")
-        this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44) 
-      })
-
-      // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
-      d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
-        this.changesLegislature44  = this.getNbChangesLegislature(listeDeputes, "441")
-      })
-    })
-
-    console.log('PreprocessingService created');
-    this.dataIsLoaded.next(true);
-    this.dataIsLoaded.complete();
-    
+    this.dataIsLoaded = new BehaviorSubject<boolean>(false); // Initialize with false
+  
+    const csv1Promise = d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType);
+    const csv2Promise = d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType);
+    const csv3Promise = d3.csv('./assets/data/listedeputes.csv', d3.autoType);
+  
+    forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
+      // Process the data
+      this.debats = debats;
+      this.nbInterventionsByParty = this.getPartyCounts(debats);
+      this.parties = this.getPartiesNames(debats);
+      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
+      this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
+      this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
+      this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
+      
+      this.deputesLegislatures = deputesLegislatures;
+      this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
+      this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
+      this.topMPs = this.interestingMPs['topMPs'];
+      this.flopMPs = this.interestingMPs['flopMPs'];
+      this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
+      this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
+      
+      this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
+  
+      console.log('PreprocessingService created');
+      this.dataIsLoaded.next(true); // Emit true to indicate that data is loaded
+    });
   }
 
   // TAB 1 PREPROCESSING FUNCTIONS
@@ -81,8 +76,29 @@ export class PreprocessingService {
     parties = parties.filter(
       (value, index, array) => array.indexOf(value) === index
     );
+    /*
+    console.log('before sort:', parties)
+    parties.sort((x,y)=>x.localeCompare(y))
+    console.log('after sort:', parties)
+    */
     return parties;
   }
+
+    /**
+   * Gets the names of the provinces (as written in debatsCommunes.csv).
+   *
+   * @param {object[]} data The data to analyze
+   * @returns {string[]} The names of the parties in the data set
+   */
+    getProvinces(data: { [key: string]: any }[]): string[] {
+      let parties: string[] = [];
+      parties = data.map((obj) => obj['province']);
+      // Filter it to avoid duplicates
+      parties = parties.filter(
+        (value, index, array) => array.indexOf(value) === index
+      );
+      return parties;
+    }
 
   /**
    * Gets the number of intervention for each political party.
@@ -170,7 +186,7 @@ export class PreprocessingService {
     return summarizedData;
   }
 
-  getScale():number{return this.waffleScale}
+  getScale():number{return WAFFLE_SCALE}
 
   /**
    * Gets the 5 types of interventions with the most intervention, merge the others in "Autres" type
@@ -332,6 +348,17 @@ export class PreprocessingService {
  */
   getPartiesNamesTab2(data: { [key: string]: any }[]): string[] {
     return Array.from(new Set(data.map(obj => obj["parti"]))).sort();
+  }
+
+  getCountByKey(listMPs: { [key: string]: any }[], wantedKey:string){
+    return listMPs.reduce(
+      (acc, obj) => {
+        const key = obj[wantedKey]
+        acc[key] = (acc[key] || 0) + 1
+        return acc
+      },
+      {}
+    )
   }
 
   // TAB 3 PREPROCESSING FUNCTIONS

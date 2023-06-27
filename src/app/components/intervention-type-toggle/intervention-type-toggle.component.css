@@ -14,7 +14,12 @@ img{
     flex-direction: column;
     flex-wrap: wrap;
 }
-.flex-container > button{
+
+.flex-container > button:hover{
+    background-color: rgba(138, 180, 118, 0.5);
+}
+
+.active-class{
     margin: 0 5px;
     /* Aesthetic */
     border: none;
@@ -28,6 +33,30 @@ img{
     margin-right:5%;
     margin-left:5%;
     border-radius: 10px;
+
+    /* Hover */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.no-active-class{
+    margin: 0 5px;
+    /* Aesthetic */
+    border: none;
+    color: white;
+    background-color: rgba(138, 180, 118, 0.5);
+    padding: 8px 5px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    margin-right:5%;
+    margin-left:5%;
+    border-radius: 10px;
+
+    /* Hover */
+    transition-duration: 0.4s;
+    cursor: pointer;
 }
 
 .flex-container > div {

@@ -1,11 +1,26 @@
 app-date-picker{
-    position: fixed;
+    /* position: fixed; */
     left: 50%;
     bottom: 20px;
     transform: translate(-50%, -50%);
     margin: 0 auto;
 }
-
+app-filter-button{
+    padding-top: 5em;
+    padding-left: 3em;
+}
+app-intervention-type-toggle{
+    padding-top: 5em;
+    padding-left: 3em;
+}
+.dateContainer{
+    margin-left: 30em;
+    margin-right: 10em;
+    margin-top: 2em;
+}
+.intervention-title{
+    font-weight: 300;
+}
 #graph-container{
     display: flex;
     flex-direction: row;
@@ -17,12 +32,14 @@ app-date-picker{
     flex:4;
     display: flex;
     flex-direction: column;
+    padding: 3em;
   }
   
   #zone-buttons{
     flex:1;
     display: flex;
     flex-direction: column;
+    padding-right: 2em;
   }
 
   #legendContainer{
@@ -35,6 +52,11 @@ app-date-picker{
 
 #stackedBarChart{
     width: 100%;
+}
+
+#titleTop{
+    font-size: 1.7em;
+    font-weight: 500;
 }
 
 /* #legendContainer{
