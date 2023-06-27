@@ -23,6 +23,7 @@ export class Tab3Component  implements AfterViewInit  {
   pourcent!: any;
   data:any;
   height!:number;
+  tooltip:any;
 
   constructor(private preprocessingService: PreprocessingService) {
     this.updateWantedKey("genre");
@@ -101,10 +102,22 @@ export class Tab3Component  implements AfterViewInit  {
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
     svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0])));
+
+    this.tooltip = svg.append("g")
+    .style("opacity", 1)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .html('TEST HERE')
   
   }    
 
     generateBarChart(groupedArrays:any):void{
+      console.log("groupedArrays", groupedArrays)
+      
       for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
         this.generateOneBar(groupedArrays[key], key)
       }
@@ -113,13 +126,16 @@ export class Tab3Component  implements AfterViewInit  {
     generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
       let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
       preprocessTab3.transformWithCumulativeCount(tab)
-      //console.log('tab',tab)
+      console.log('tab',tab)
 
       // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
       let xScale = this.xScale
       let yScale = this.yScale
       let colorScale = this.colorScale
       let height = this.height
+      let tooltip = this.tooltip
+      let wantedKey = this.wantedKey
+      let wantedDate = this.wantedDate
 
       // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
       // on positionne le groupe sur l'axe des abscisses
@@ -144,7 +160,22 @@ export class Tab3Component  implements AfterViewInit  {
         .attr('height', function(d) { return yScale(d["End"] - d["Beginning"])})
         .attr("y", function(d) {  return height - yScale(d["End"])})
         .attr('width', xScale.bandwidth())
-        .attr('fill', function(d) { return colorScale(d["KeyElement"])});
+        .attr('fill', function(d) { return colorScale(d["KeyElement"])})
+        // Tooltip part
+        .on("mouseover", function(event, d) {
+          tooltip
+            .style("opacity", 1)
+            .style("left", (d3.pointer(event)[0]+70) + "px")
+            .style("top", (d3.pointer(event)[1]) + "px")
+            .html((d['KeyElement'])+" en "+xvalue+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
+          d3.select(this)
+            .style("stroke", "black")
+        })
+        .on("mouseleave", function(d) {
+          tooltip.style("opacity", 0)
+          d3.select(this)
+            .style("stroke", "none")
+          });
     }
 
     updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
