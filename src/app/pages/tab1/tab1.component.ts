@@ -61,7 +61,7 @@ export class Tab1Component implements OnInit  {
         // prepcoessing for Key value: increase in number of women
         this.addingStatIncreaseWomen()
         // KEY VALUE 1 : percentage of MP who spoke each month on average
-        this.addingStatActiveMPs(this.preprocessingService.listeDeputes, this.preprocessingService.data)        
+        this.addingStatActiveMPs(this.preprocessingService.deputesLegislatures, this.preprocessingService.debats)        
 
 
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature

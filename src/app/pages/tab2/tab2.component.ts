@@ -1,4 +1,4 @@
-import { Component, AfterViewInit} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as waffle from 'src/app/pages/tab2/waffle';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
@@ -12,7 +12,7 @@ import * as preproc from './preprocessTab2'
   templateUrl: './tab2.component.html',
   styleUrls: ['./tab2.component.css']
 })
-export class Tab2Component  implements AfterViewInit   {
+export class Tab2Component  implements OnInit   {
   colorScale!: any;
   wantedKey:string;
   wantedLegislature:number;
@@ -23,14 +23,11 @@ export class Tab2Component  implements AfterViewInit   {
     this.wantedLegislature = 44;
   }
 
-  ngAfterViewInit(): void {
-    d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
-      this.sortedData = this.preprocessingService.splitByLegislature(data);
+  ngOnInit(): void { 
+      this.sortedData = this.preprocessingService.splitByLegislature(this.preprocessingService.deputesLegislatures);
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-      const count : { [key:string]: number } = preproc.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
+      const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
       this.addCountToLegend(count)
-    });
-    
   }
 
   updateWantedKey(key:string):void{
@@ -43,7 +40,7 @@ export class Tab2Component  implements AfterViewInit   {
   }
   updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
     this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-    const count : { [key:string]: number } = preproc.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
+    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
     this.addCountToLegend(count)
   }
 

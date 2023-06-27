@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Legend } from './../../utils/legend';
 import { genderColorScale, partyColorScale, provinceColorScale, translatePretty, translateDate } from "../../utils/scales"
 import * as d3 from 'd3';
@@ -12,7 +12,7 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './tab3.component.html',
   styleUrls: ['./tab3.component.css']
 })
-export class Tab3Component  implements AfterViewInit  {
+export class Tab3Component  implements OnInit  {
   wantedKey!:string;
   wantedDate!: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>;
   wantedInterventions!: string[];
@@ -33,7 +33,7 @@ export class Tab3Component  implements AfterViewInit  {
 
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
       this.data = data
       const filterDataInRange = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
@@ -75,7 +75,7 @@ export class Tab3Component  implements AfterViewInit  {
     this.updateView();
   }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
-    this.ngAfterViewInit();
+    this.ngOnInit();
   }
 
   // crée la base du graph: svg element, axes, titre?
