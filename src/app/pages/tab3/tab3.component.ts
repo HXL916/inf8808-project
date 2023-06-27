@@ -15,6 +15,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class Tab3Component  implements OnInit  {
   wantedKey!:string;
   wantedDate!: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>;
+  wantedInterventions!: string[];
   colorScale!: any;
   itemList!: any;
   color!: any;
@@ -28,6 +29,8 @@ export class Tab3Component  implements OnInit  {
   constructor(private preprocessingService: PreprocessingService) {
     this.updateWantedKey("genre");
     this.wantedDate = new FormGroup({start: new FormControl<Date | null>(new Date(2021, 10, 22)), end: new FormControl<Date | null>(new Date(2023, 0, 1))});
+    this.wantedInterventions = ["Déclarations de députés", "Questions orales", "Affaires courantes", "Ordres émanant du gouvernement", "Recours au Règlement", "Travaux des subsides", "Affaires émanant des députés", "Autre"]
+
   }
 
   ngOnInit(): void {
@@ -39,13 +42,14 @@ export class Tab3Component  implements OnInit  {
       let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
       groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
       //console.log("groupedArrays", groupedArrays)
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)
+      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)/1000000
       //console.log("Ymax", Ymax)
-      const timeGroups = Object.keys(groupedArrays)
+      const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
+      const timeGroups = Object.keys(groupedArraysByType)
       //console.log("time groups", timeGroups)
       
       this.createGraphBase(timeGroups, Ymax)
-      this.generateBarChart(groupedArrays)
+      this.generateBarChart(groupedArraysByType)
       waffle1.drawWaffleLegend(this.colorScale)
 
       // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
@@ -99,10 +103,24 @@ export class Tab3Component  implements OnInit  {
     this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.2);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0)).append("text")
+      .attr("y", 30)
+      .attr("x", 350)
+      .attr("dy", ".71em")
+      .attr("dx", ".71em")
+      .style("font-size", "300")
+      .style("opacity", 1)
+      .attr("fill", "black")
+      .text("Mois");
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
-    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0])));
+    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
+    .attr("class", "axis-title")
+    .attr("y", 5)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .attr("fill", "#5D6971")
+    .text("Millions de caracteres*");
 
     this.tooltip = svg.append("g")
     .style("opacity", 1)
@@ -137,6 +155,7 @@ export class Tab3Component  implements OnInit  {
       let tooltip = this.tooltip
       let wantedKey = this.wantedKey
       let wantedDate = this.wantedDate
+      let wantedInterventions = this.wantedInterventions
 
       // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
       // on positionne le groupe sur l'axe des abscisses
@@ -158,8 +177,8 @@ export class Tab3Component  implements OnInit  {
       stack
         .append('rect')
         .attr('x', 0)
-        .attr('height', function(d) { return yScale(d["End"] - d["Beginning"])})
-        .attr("y", function(d) {  return height - yScale(d["End"])})
+        .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
+        .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
         .attr('width', xScale.bandwidth())
         .attr('fill', function(d) { return colorScale(d["KeyElement"])})
         // Tooltip part
@@ -184,6 +203,12 @@ export class Tab3Component  implements OnInit  {
         this.wantedDate = date;
         this.updateView();
       }
+    }
+
+    updateInterventionTypes(interventionTypes: string[]) {
+      console.log(interventionTypes)
+      this.wantedInterventions = interventionTypes;
+      this.updateView();
     }
 
 }

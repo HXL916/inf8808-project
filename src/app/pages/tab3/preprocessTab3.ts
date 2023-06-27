@@ -125,3 +125,47 @@ export function transformWithCumulativeCount(interventionData:{ [key: string]: a
       d["End"] = cumulative_count;
     });
 }
+
+interface ObjectData {
+  legislature: string;
+  hansard: number;
+  année: number;
+  mois: number;
+  jour: number;
+  idIntervention: number;
+  typeIntervention: string;
+  nom: string;
+  genre: string;
+  parti: string;
+  nbCaracteres: number;
+  province: string;
+}
+
+export function getInterventionsByType(interventionData: { [key: string]: ObjectData[] }, wantedInterventions: string[]) {
+  const filteredData: { [key: string]: ObjectData[] } = {};
+
+  //console.log(interventionData["2021-11"])
+
+  Object.entries(interventionData).forEach(([key, value]) => {
+    const filteredItems = value.filter(item => wantedInterventions.includes(item.typeIntervention));
+    if (filteredItems.length > 0) {
+      filteredData[key] = filteredItems;
+    }
+  });
+
+  return filteredData;
+}
+
+function getAllTypeInterventions(interventionData: { [key: string]: ObjectData[] }): string[] { // TODO: use to initialize the buttons
+  const typeInterventionsSet = new Set<string>();
+
+  // Iterate over the dataset and collect unique typeIntervention values
+  Object.values(interventionData).forEach(items => {
+    items.forEach(item => {
+      typeInterventionsSet.add(item.typeIntervention);
+    });
+  });
+
+  // Convert the Set to an array and return the result
+  return Array.from(typeInterventionsSet);
+}
