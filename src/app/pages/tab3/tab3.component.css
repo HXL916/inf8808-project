@@ -28,6 +28,12 @@ app-intervention-type-toggle{
     align-items: center;
   }
 
+  #axis-title {
+    display: flex;
+    white-space: break-spaces;
+    padding-right: 16px;
+  }
+
 #zone-chart{
     flex:4;
     display: flex;
@@ -55,8 +61,9 @@ app-intervention-type-toggle{
 }
 
 #titleTop{
-    font-size: 1.7em;
+    font-size: 1.9em;
     font-weight: 500;
+    padding-bottom: 2em;
 }
 
 /* #legendContainer{

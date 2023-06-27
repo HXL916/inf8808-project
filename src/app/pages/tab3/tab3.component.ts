@@ -76,6 +76,7 @@ export class Tab3Component  implements OnInit  {
     } 
     this.updateView();
   }
+
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
     this.ngOnInit();
   }
@@ -118,8 +119,9 @@ export class Tab3Component  implements OnInit  {
     svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
     .attr("class", "axis-title")
     .attr("y", -3)
+    .attr("x", -15)
     .attr("dy", ".21em")
-    .attr('text-anchor', 'beginning')
+    .attr('text-anchor', 'end')
     .attr("fill", "black")
     .text("Millions de caractères");
 
@@ -210,6 +212,22 @@ export class Tab3Component  implements OnInit  {
       console.log(interventionTypes)
       this.wantedInterventions = interventionTypes;
       this.updateView();
+    }
+
+    updateLegendName():string{
+      var legend = ''
+      switch (this.wantedKey){
+        case "genre":
+          legend = "du genre";
+          break;
+        case "parti":
+          legend = "du parti politique";
+          break;
+        case "province":
+          legend = "de la province";
+          break;
+      } 
+      return legend;
     }
 
 }
