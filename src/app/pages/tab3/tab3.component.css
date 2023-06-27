@@ -54,6 +54,11 @@ app-intervention-type-toggle{
     width: 100%;
 }
 
+#titleTop{
+    font-size: 1.7em;
+    font-weight: 500;
+}
+
 /* #legendContainer{
     display: flex;
     width: 200px;
