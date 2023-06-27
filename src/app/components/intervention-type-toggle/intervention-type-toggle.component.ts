@@ -14,15 +14,11 @@ export class InterventionTypeToggleComponent implements OnInit {
   }
 
   toggle(intervention: string): void {
-    if (this.selectedTypes.includes(intervention)) {
+    if (this.selectedTypes.includes(intervention)) { // OFF
       this.selectedTypes = this.selectedTypes.filter(type => type !== intervention);
-      document.getElementById(intervention)!.style.background="rgba(138, 180, 118, 0.5)";
     }
-    else {
+    else { // ON
       this.selectedTypes.push(intervention);
-      document.getElementById(intervention)!.style.background="#8AB476";
     }
-    console.log(this.selectedTypes);
   }
-
 }
