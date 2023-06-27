@@ -1,15 +1,8 @@
 <div id="graph-container" style="text-align:center; padding: 2em;">
-  <div id="zone-tooltip">
-    <img src="path/to/avatar.jpg" id="avatar">
-    <div id="tooltip-details">
-      <p id="p-name"></p>
-      <p id="p-parti"></p>
-      <p id="p-province"></p>
-    </div>
+  <div id="svgContainer">
+    <svg id="zone-chart" class="waffle" width="525" height="560">
+    </svg>
   </div>
-
-  <svg id="zone-chart" class="waffle" width="525" height="560"></svg>
-
   <div id="zone-buttons">
     <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
     <div id="legendContainer"></div>
