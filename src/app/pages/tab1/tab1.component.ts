@@ -31,7 +31,6 @@ export class Tab1Component implements AfterViewInit  {
       // WAFFLE CHART
       // Preprocess
       let dataWaffle = this.preprocessingService.dataWaffle
-      let parties:string[] = this.preprocessingService.parties
       // Viz
       for (let index=0; index<dataWaffle.length;index++){
         waffle.drawSquares(dataWaffle[index], '#waffleContainerInner', partyColorScale, 'Parti',index);
@@ -44,11 +43,13 @@ export class Tab1Component implements AfterViewInit  {
       // BAR CHART
       // Preprocess
       let popularInterventions:{ [key: string]: any }[] = this.preprocessingService.popularInterventions
+      // Viz
       this.createStackedBarChart(popularInterventions)
 
 
       // get the interventions for the current legislature (44)
       let recentInterventions = this.preprocessingService.recentInterventions
+      
 
       // KEY VALUES with deputesLegislatures.csv + TOP & FLOP
       d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (listeDeputes) => {
@@ -59,52 +60,15 @@ export class Tab1Component implements AfterViewInit  {
         this.flopMPs = interestingMPs["flopMPs"]
         this.preprocessingService.getInterestingMPs(listeDeputes44, recentInterventions)
         // prepcoessing for Key value: increase in number of women
-        const listeDeputes43:{ [key: string]: any }[] = this.preprocessingService.listeDeputes43
-        const increaseWomen:string = this.preprocessingService.increaseWomen
-        console.log(increaseWomen)
-        const statSpan3: HTMLSpanElement | null = document.getElementById("stat3") as HTMLSpanElement;
-        if (statSpan3) {
-          // Inject the value into the <span> element
-          statSpan3.textContent = increaseWomen;
-        }
-
+        this.addingStatIncreaseWomen()
         // KEY VALUE 1 : percentage of MP who spoke each month on average
-        const statSpan1: HTMLSpanElement | null = document.getElementById("stat1") as HTMLSpanElement;
-        if (statSpan1) {
-          const percentActiveMPs:number = preproc.getPecentageActiveMP(listeDeputes, data)
-          // Inject the value into the <span> element
-          statSpan1.textContent = percentActiveMPs.toString();
-        }
-
+        this.addingStatActiveMPs(listeDeputes, data)        
       })
 
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
       d3.csv('./assets/data/listedeputes.csv', d3.autoType).then( (listeDeputes) => {
         const changesLegislature44 : { [key: string]: any }[] = this.preprocessingService.changesLegislature44
-        const statSpan2: HTMLSpanElement | null = document.getElementById("stat2") as HTMLSpanElement;
-        if (statSpan2) {
-          const innerStatSpan: HTMLSpanElement = document.createElement("span");
-          innerStatSpan.classList.add("statValue");
-          if(changesLegislature44.length == 0){
-            innerStatSpan.textContent = "Aucun"
-            const textAfter: Text = document.createTextNode(" député n'a")
-            statSpan2.appendChild(innerStatSpan)
-            statSpan2.appendChild(textAfter)
-          }
-          else if(changesLegislature44.length == 1){
-            innerStatSpan.textContent = "1"
-            const textAfter: Text = document.createTextNode("députe ("+changesLegislature44[0]["nom"]+") a")
-            statSpan2.appendChild(innerStatSpan)
-            statSpan2.appendChild(textAfter)
-          }
-          else{
-            //statSpan2.textContent = changesLegislature44.length.toString()+" députés ont";
-            innerStatSpan.textContent = changesLegislature44.length.toString()
-            const textAfter: Text = document.createTextNode(" députés ont")
-            statSpan2.appendChild(innerStatSpan)
-            statSpan2.appendChild(textAfter)
-          }
-        }
+        this.addingStatChangeLegislature(changesLegislature44)
       })
     })
   }
@@ -204,6 +168,52 @@ export class Tab1Component implements AfterViewInit  {
         .attr("fill", "white")
         .attr("font-weight", "bold")
         .text((d) => d["Percentage"]+"%");
+  }
+
+
+  addingStatIncreaseWomen():void{
+    const increaseWomen:string = this.preprocessingService.increaseWomen
+    const statSpan3: HTMLSpanElement | null = document.getElementById("stat3") as HTMLSpanElement;
+    if (statSpan3) {
+      // Inject the value into the <span> element
+      statSpan3.textContent = increaseWomen;
+    }
+  }
+
+  addingStatActiveMPs(listeDeputes: { [key: string]: any }[], interventionData:{ [key: string]: any }[]):void{
+    const statSpan1: HTMLSpanElement | null = document.getElementById("stat1") as HTMLSpanElement;
+    if (statSpan1) {
+      const percentActiveMPs:number = preproc.getPecentageActiveMP(listeDeputes, interventionData)
+      // Inject the value into the <span> element
+      statSpan1.textContent = percentActiveMPs.toString();
+    }
+  }
+
+  addingStatChangeLegislature(changesLegislature44: { [key: string]: any }[]){
+    const statSpan2: HTMLSpanElement | null = document.getElementById("stat2") as HTMLSpanElement;
+    if (statSpan2) {
+      const innerStatSpan: HTMLSpanElement = document.createElement("span");
+      innerStatSpan.classList.add("statValue");
+      if(changesLegislature44.length == 0){
+        innerStatSpan.textContent = "Aucun"
+        const textAfter: Text = document.createTextNode(" député n'a")
+        statSpan2.appendChild(innerStatSpan)
+        statSpan2.appendChild(textAfter)
+      }
+      else if(changesLegislature44.length == 1){
+        innerStatSpan.textContent = "1"
+        const textAfter: Text = document.createTextNode("députe ("+changesLegislature44[0]["nom"]+") a")
+        statSpan2.appendChild(innerStatSpan)
+        statSpan2.appendChild(textAfter)
+      }
+      else{
+        //statSpan2.textContent = changesLegislature44.length.toString()+" députés ont";
+        innerStatSpan.textContent = changesLegislature44.length.toString()
+        const textAfter: Text = document.createTextNode(" députés ont")
+        statSpan2.appendChild(innerStatSpan)
+        statSpan2.appendChild(textAfter)
+      }
+    }
   }
 }
 
