@@ -38,7 +38,7 @@ export class Tab3Component  implements AfterViewInit  {
       //console.log(filterData)
       const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
       //console.log("groupedArrays", groupedArrays)
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)
+      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)/1000000
       //console.log("Ymax", Ymax)
       const timeGroups = Object.keys(groupedArrays)
       //console.log("time groups", timeGroups)
@@ -77,7 +77,7 @@ export class Tab3Component  implements AfterViewInit  {
 
   // crée la base du graph: svg element, axes, titre?
   createGraphBase(timeGroups: string[], Ymax:number) : void{
-    var margin = {top: 10, right: 30, bottom: 20, left: 90},
+    var margin = {top: 10, right: 30, bottom: 50, left: 150},
     width = 900- margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -98,10 +98,24 @@ export class Tab3Component  implements AfterViewInit  {
     this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.6);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0)).append("text")
+      .attr("y", 30)
+      .attr("x", 350)
+      .attr("dy", ".71em")
+      .attr("dx", ".71em")
+      .style("font-size", "300")
+      .style("opacity", 1)
+      .attr("fill", "black")
+      .text("Mois");
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
-    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0])));
+    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
+    .attr("class", "axis-title")
+    .attr("y", 5)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .attr("fill", "#5D6971")
+    .text("Millions de caracteres*");
 
     this.tooltip = svg.append("g")
     .style("opacity", 1)
@@ -157,8 +171,8 @@ export class Tab3Component  implements AfterViewInit  {
       stack
         .append('rect')
         .attr('x', 0)
-        .attr('height', function(d) { return yScale(d["End"] - d["Beginning"])})
-        .attr("y", function(d) {  return height - yScale(d["End"])})
+        .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
+        .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
         .attr('width', xScale.bandwidth())
         .attr('fill', function(d) { return colorScale(d["KeyElement"])})
         // Tooltip part
