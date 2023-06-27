@@ -15,4 +15,16 @@ export const provinceColorScale = d3.scaleOrdinal() // D3 Version 4
 .range(d3.schemeTableau10);
 
 
-// export default { partyColorScale: partyColorScale } 
+export const translatePretty = d3.scaleOrdinal()
+.domain(["H", "F","BQ", "PCC", "PLC", "NPD", "PV", "Ind.","Alberta", "Colombie-Britannique", "Manitoba", "Ontario", "Provinces maritimes", "Québec", "Saskatchewan", "Territoires"])
+.range(["Homme", "Femme", "Bloc Québécois", "Parti Conservateur", "Parti Libéral", "Nouveau Parti Démocratique","Parti Vert", "Indépendantistes","Alberta", "Colombie-Britannique", "Manitoba", "Ontario", "Provinces maritimes", "Québec", "Saskatchewan", "Territoires"]);
+
+const monthScale = d3.scaleOrdinal()
+.domain(['1','2','3','4','5','6','7','8','9','10','11','12'])
+.range(['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']);
+
+export function translateDate(input:string):string{
+  console.log(input)
+  let [year,month] = input.split('-')
+  return monthScale(month)+" "+year
+}

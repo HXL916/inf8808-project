@@ -1,6 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { Legend } from './../../utils/legend';
-import { genderColorScale, partyColorScale, provinceColorScale } from "../../utils/scales"
+import { genderColorScale, partyColorScale, provinceColorScale, translatePretty, translateDate } from "../../utils/scales"
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
@@ -167,7 +167,7 @@ export class Tab3Component  implements AfterViewInit  {
             .style("opacity", 1)
             .style("left", (d3.pointer(event)[0]+70) + "px")
             .style("top", (d3.pointer(event)[1]) + "px")
-            .html((d['KeyElement'])+" en "+xvalue+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
+            .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
           d3.select(this)
             .style("stroke", "black")
         })
