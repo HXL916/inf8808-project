@@ -23,14 +23,11 @@ export class Tab2Component  implements OnInit   {
     this.wantedLegislature = 44;
   }
 
-  ngOnInit(): void {
-    d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType).then( (data)=>{     
-      this.sortedData = this.preprocessingService.splitByLegislature(data);
+  ngOnInit(): void { 
+      this.sortedData = this.preprocessingService.splitByLegislature(this.preprocessingService.deputesLegislatures);
       this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-      const count : { [key:string]: number } = preproc.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
+      const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
       this.addCountToLegend(count)
-    });
-    
   }
 
   updateWantedKey(key:string):void{
@@ -43,7 +40,7 @@ export class Tab2Component  implements OnInit   {
   }
   updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
     this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-    const count : { [key:string]: number } = preproc.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
+    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
     this.addCountToLegend(count)
   }
 

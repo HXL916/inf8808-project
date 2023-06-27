@@ -72,7 +72,7 @@ export class Tab3Component  implements OnInit  {
     this.updateView();
   }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
-    this.ngAfterViewInit();
+    this.ngOnInit();
   }
 
   // crée la base du graph: svg element, axes, titre?

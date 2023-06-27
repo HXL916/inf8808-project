@@ -18,7 +18,7 @@ export class PreprocessingService {
   dataWaffle!: any[];
   popularInterventions!: { [key: string]: any; }[];
   recentInterventions!: { [key: string]: any; }[];
-  listeDeputes!: any;
+  deputesLegislatures!: any;
   listeDeputes44!: any;
   interestingMPs!: any;
   listeDeputes43!: any;
@@ -27,7 +27,7 @@ export class PreprocessingService {
   nbInterventionsByType!: { [key: string]: any }[];
   dataIsLoaded = new BehaviorSubject<boolean>(false);
   sortedData: any;
-  data: any;
+  debats: any;
 
   constructor() {
     this.dataIsLoaded = new BehaviorSubject<boolean>(false); // Initialize with false
@@ -36,22 +36,22 @@ export class PreprocessingService {
     const csv2Promise = d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType);
     const csv3Promise = d3.csv('./assets/data/listedeputes.csv', d3.autoType);
   
-    forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([data, listeDeputes, listedeputes]) => {
+    forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
       // Process the data
-      this.data = data;
-      this.nbInterventionsByParty = this.getPartyCounts(data);
-      this.parties = this.getPartiesNames(data);
+      this.debats = debats;
+      this.nbInterventionsByParty = this.getPartyCounts(debats);
+      this.parties = this.getPartiesNames(debats);
       this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
-      this.nbInterventionsByType = this.getTypeInterventionCounts(data);
+      this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
       this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
-      this.recentInterventions = this.getInterventionsLegislature(data, '44-1');
+      this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
       
-      this.listeDeputes = listeDeputes;
-      this.listeDeputes44 = this.getMPsLegislature(listeDeputes, '44');
+      this.deputesLegislatures = deputesLegislatures;
+      this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
       this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
       this.topMPs = this.interestingMPs['topMPs'];
       this.flopMPs = this.interestingMPs['flopMPs'];
-      this.listeDeputes43 = this.getMPsLegislature(listeDeputes, '43');
+      this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
       this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
       
       this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
@@ -348,6 +348,17 @@ export class PreprocessingService {
  */
   getPartiesNamesTab2(data: { [key: string]: any }[]): string[] {
     return Array.from(new Set(data.map(obj => obj["parti"]))).sort();
+  }
+
+  getCountByKey(listMPs: { [key: string]: any }[], wantedKey:string){
+    return listMPs.reduce(
+      (acc, obj) => {
+        const key = obj[wantedKey]
+        acc[key] = (acc[key] || 0) + 1
+        return acc
+      },
+      {}
+    )
   }
 
   // TAB 3 PREPROCESSING FUNCTIONS
