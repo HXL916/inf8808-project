@@ -107,6 +107,7 @@ export class Tab2Component  implements AfterViewInit   {
     }
   }
 
+  // Ajoute à la légende le nombre de députés dans chaque groupe / le nombre total de députés pour cette législature
   addCountToLegend(countData: { [key:string]: number }):void{
     let total:number = 0;
     for (const key in countData) {

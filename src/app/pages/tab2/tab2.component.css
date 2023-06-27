@@ -50,13 +50,22 @@ body {
   margin : 0.1em;
   margin-bottom: 1em;
 }
+
+#svgContainer{
+  display:flex;
+  flex:3;
+  margin: auto;
+  justify-content: center;
+
+}
+
 #zone-chart{
-  flex:2;
-  display: flex;
+  display: block;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 16px 32px;
+  width:600px;
   margin: auto;
 }
 
@@ -92,8 +101,6 @@ body {
   border: solid;
   border-width: 2px;
   border-radius: 5px;
-  padding: 5px;
-
 }
 
 

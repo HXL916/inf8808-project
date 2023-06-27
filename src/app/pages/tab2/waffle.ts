@@ -1,9 +1,5 @@
 import * as d3 from 'd3';
 
-//import d3TipFactory from 'd3-tip'
-//import d3Tip from 'd3-tip';
-//(d3 as any).tip = d3Tip;
-
 export function drawSquares(//Main arguments
                             data: { [key: string]: any }[], 
                             containerName:string,
@@ -31,11 +27,12 @@ export function drawSquares(//Main arguments
     var tooltip = d3.select("#graph-container")
       .append("div")
       .attr("class", "tooltip")
-      .style("position","absolute")
-      .style("background-color", "rgba(138, 180, 118, 0.8)")
+      .style("position","absolute") // je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
+      .style("background-color", "rgba(138, 180, 118, 0.8)") // opacité du fond à 0.8
       .style('border-radius', '10px 10px 0px 10px')
       .style("padding", "5px")
       .style('pointer-events','none')
+      .style('visibility', 'hidden')
 
       
     // Drawing
@@ -84,25 +81,18 @@ export function drawSquares(//Main arguments
         return tooltip.style("visibility", "hidden");});
 }
 
-function seatSelected(element:any){
-  const parentElement = element._groups[0][0]
-  const parentNode = parentElement.parentNode
-  const d = parentElement.__data__
-  let tooltip = d3.select("#zone-tooltip")
-  tooltip.select("#avatar").attr("src", d['urlPhoto']);
-  tooltip.select("#p-name").html(d["nom"]);
-  tooltip.select("#p-province").html("Province: " + d['province']);
-  tooltip.select("#p-parti").html("Parti: " + d['parti']);
-}
 
 
+// Renvoie le div (sous forme de string) à rajouter au DOM pour afficher le contenu du tooltip
+// Note: je n'ai pas réussi à appliquer les styles en définissant juste une classe et en écrivant le style dans le csv
+// donc tous les éléments de style sont présents ici
 function getTooltipContents(d:any):string{
   const tooltipDiv = d3.create('div')
-  .classed('tooltip-div', true)
-  .style('display','flex')
-  .style('flex-direction','row')
-  .style('padding', '5px')
-  .style('width', '250px')
+    .classed('tooltip-div', true)
+    .style('display','flex')
+    .style('flex-direction','row')
+    .style('padding', '5px')
+    .style('width', '250px')
 
 
   tooltipDiv.append('img')
