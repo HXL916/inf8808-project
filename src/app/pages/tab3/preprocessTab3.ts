@@ -23,55 +23,61 @@ export function groupInterventionByMonth(data: { [key: string]: any }[]): any {
   return groupedArrays
 }
 
+export function groupSeveralMonths(data: { [key: string]: any }):{ [key: string]: any }{
+  let groupedData: { [key: string]: any[] } = {};
+  const months = Object.keys(data);
+
+  const step:number = Math.max(1,Math.ceil((months.length -6) /12 ))
+  for (let i = 0; i < months.length; i += step) {
+    const group = months.slice(i, i + step);
+    const groupKey = `${group[0]} ${group[group.length - 1]}`;
+    const groupValues: any[] = [];
+  
+    for (const month of group) {
+      if (data.hasOwnProperty(month)) {
+        groupValues.push(...data[month]);
+      }
+    }
+  
+    groupedData[groupKey] = groupValues;
+  }
+  groupedData = simplifyKeyNames(groupedData)
+  return groupedData
+}
 
 
-export function getTypeInterventionCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
-  console.log("ici", data)
-  const typeInterventionCount: { [key: string]: number } = {};
-  const typeInterventionCharCount: { [key: string]: number } = {};
-  for (const obj of data) {
-    if (obj.hasOwnProperty('typeIntervention')) {
-      const interventionType = obj['typeIntervention'];
-      if (typeInterventionCount.hasOwnProperty(interventionType)) {
-        typeInterventionCount[interventionType]++;
-        typeInterventionCharCount[interventionType] += obj["nbCaracteres"]
+function simplifyKeyNames(data: { [key: string]: any }): { [key: string]: any }{
+  const simplifiedData: { [key: string]: any } = {};
+  const monthTranslate : { [key: number]: string }= {1: "Jan", 2:"Fev", 3:"Mars", 4:"Avr", 5:"Mai", 
+                    6:"Juin", 7:"Juil", 8:"Aout", 9:"Sep", 10:"Oct", 11:"Nov", 12:"Dec"}
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const [startDate, endDate] = key.split(" ");
+
+      const [startYear, startMonth] = startDate.split("-");
+      const [endYear, endMonth] = endDate.split("-");
+
+      const startMonthName = monthTranslate[parseInt(startMonth)];
+      const endMonthName = monthTranslate[parseInt(endMonth)];
+
+      if (startYear === endYear) {
+        if (startMonth === endMonth) {
+          const simplifiedKey = `${startMonthName} ${startYear}`;
+          simplifiedData[simplifiedKey] = data[key];
+        } else {
+          const simplifiedKey = `${startMonthName}-${endMonthName} ${startYear}`;
+          simplifiedData[simplifiedKey] = data[key];
+        }
       } else {
-        typeInterventionCount[interventionType] = 1;
-        typeInterventionCharCount[interventionType] = obj["nbCaracteres"]
+        const simplifiedKey = `${startMonthName} ${startYear} - ${endMonthName} ${endYear}`;
+        simplifiedData[simplifiedKey] = data[key];
       }
     }
   }
+  return simplifiedData
 
-  const summarizedData : { [key: string]: any }[] = [];
-  Object.keys(typeInterventionCount).forEach(element => {
-    summarizedData.push( {"TypeIntervention": element, "Count": typeInterventionCount[element], "CharCount": typeInterventionCharCount[element]})
-  });
-  return summarizedData;
 }
 
-export function getPartiCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
-  const partiCount: { [key: string]: number } = {};
-  const partiCharCount: { [key: string]: number } = {};
-
-  for (const obj of data) {
-    if (obj.hasOwnProperty('parti')) {
-      const parti = obj['parti'];
-      if (partiCount.hasOwnProperty(parti)) {
-        partiCount[parti]++;
-        partiCharCount[parti] += obj["nbCaracteres"]
-      } else {
-        partiCount[parti] = 1;
-        partiCharCount[parti] = obj["nbCaracteres"]
-      }
-    }
-  }
-
-  const summarizedData : { [key: string]: any }[] = [];
-  Object.keys(partiCount).forEach(element => {
-    summarizedData.push( {"TypeIntervention": element, "Count": partiCount[element], "CharCount": partiCharCount[element]})
-  });
-  return summarizedData;
-}
 
 
 export function getCountsWithKey(data: { [key: string]: any }[], wantedKey: string): { [key: string]: any }[] {

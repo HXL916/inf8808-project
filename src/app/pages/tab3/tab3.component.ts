@@ -36,7 +36,8 @@ export class Tab3Component  implements OnInit  {
       // 44ème législature
       const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
       //console.log(filterData)
-      const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+      let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+      groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
       //console.log("groupedArrays", groupedArrays)
       let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)
       //console.log("Ymax", Ymax)
@@ -78,7 +79,7 @@ export class Tab3Component  implements OnInit  {
   // crée la base du graph: svg element, axes, titre?
   createGraphBase(timeGroups: string[], Ymax:number) : void{
     var margin = {top: 10, right: 30, bottom: 20, left: 90},
-    width = 900- margin.left - margin.right,
+    width = 1200- margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
     this.height = height
@@ -95,7 +96,7 @@ export class Tab3Component  implements OnInit  {
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.6);
+    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.2);
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
