@@ -8,6 +8,7 @@ import { LoadingPageComponent } from './pages/loading-page/loading-page.componen
 
 const routes: Routes = [
   { path: 'loading', component: LoadingPageComponent },
+  { path: 'home', component: LoadingPageComponent },
   { path: 'tab1', component: Tab1Component },
   { path: 'tab2', component: Tab2Component },
   { path: 'tab3', component: Tab3Component },

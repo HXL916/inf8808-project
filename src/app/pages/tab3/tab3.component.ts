@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Legend } from './../../utils/legend';
 import { genderColorScale, partyColorScale, provinceColorScale, translatePretty, translateDate } from "../../utils/scales"
 import * as d3 from 'd3';
@@ -12,9 +12,10 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './tab3.component.html',
   styleUrls: ['./tab3.component.css']
 })
-export class Tab3Component  implements AfterViewInit  {
+export class Tab3Component  implements OnInit  {
   wantedKey!:string;
   wantedDate!: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>;
+  wantedInterventions!: string[];
   colorScale!: any;
   itemList!: any;
   color!: any;
@@ -28,23 +29,29 @@ export class Tab3Component  implements AfterViewInit  {
   constructor(private preprocessingService: PreprocessingService) {
     this.updateWantedKey("genre");
     this.wantedDate = new FormGroup({start: new FormControl<Date | null>(new Date(2021, 10, 22)), end: new FormControl<Date | null>(new Date(2023, 0, 1))});
+    this.wantedInterventions = ["Déclarations de députés", "Questions orales", "Affaires courantes", "Ordres émanant du gouvernement", "Recours au Règlement", "Travaux des subsides", "Affaires émanant des députés", "Autre"]
+
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
       this.data = data
-      // 44ème législature
-      const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
-      //console.log(filterData)
-      const groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+      const filterDataInRange = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
+      //console.log(filterDataInRange)
+      const groupedArrays = preprocessTab3.groupInterventionByMonth(filterDataInRange)
       //console.log("groupedArrays", groupedArrays)
+<<<<<<< HEAD
       let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)/1000000
+=======
+      const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
+      let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)
+>>>>>>> 5aa5df9bf69b651833c1069f45b1535aa9fbb3be
       //console.log("Ymax", Ymax)
-      const timeGroups = Object.keys(groupedArrays)
+      const timeGroups = Object.keys(groupedArraysByType)
       //console.log("time groups", timeGroups)
       
       this.createGraphBase(timeGroups, Ymax)
-      this.generateBarChart(groupedArrays)
+      this.generateBarChart(groupedArraysByType)
       waffle1.drawWaffleLegend(this.colorScale)
 
       // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
@@ -72,7 +79,7 @@ export class Tab3Component  implements AfterViewInit  {
     this.updateView();
   }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
-    this.ngAfterViewInit();
+    this.ngOnInit();
   }
 
   // crée la base du graph: svg element, axes, titre?
@@ -150,6 +157,7 @@ export class Tab3Component  implements AfterViewInit  {
       let tooltip = this.tooltip
       let wantedKey = this.wantedKey
       let wantedDate = this.wantedDate
+      let wantedInterventions = this.wantedInterventions
 
       // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
       // on positionne le groupe sur l'axe des abscisses
@@ -197,6 +205,12 @@ export class Tab3Component  implements AfterViewInit  {
         this.wantedDate = date;
         this.updateView();
       }
+    }
+
+    updateInterventionTypes(interventionTypes: string[]) {
+      console.log(interventionTypes)
+      this.wantedInterventions = interventionTypes;
+      this.updateView();
     }
 
 }
