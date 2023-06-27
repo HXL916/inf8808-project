@@ -27,3 +27,14 @@ export function getPartiesNames(data: { [key: string]: any }[]): string[] {
 }
 
 
+export function getCountByKey(listMPs: { [key: string]: any }[], wantedKey:string){
+  return listMPs.reduce(
+    (acc, obj) => {
+      const key = obj[wantedKey]
+      acc[key] = (acc[key] || 0) + 1
+      return acc
+    },
+    {}
+  )
+}
+
