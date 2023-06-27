@@ -40,12 +40,8 @@ export class Tab3Component  implements OnInit  {
       //console.log(filterDataInRange)
       const groupedArrays = preprocessTab3.groupInterventionByMonth(filterDataInRange)
       //console.log("groupedArrays", groupedArrays)
-<<<<<<< HEAD
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArrays)/1000000
-=======
       const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)
->>>>>>> 5aa5df9bf69b651833c1069f45b1535aa9fbb3be
+      let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)/1000000
       //console.log("Ymax", Ymax)
       const timeGroups = Object.keys(groupedArraysByType)
       //console.log("time groups", timeGroups)
