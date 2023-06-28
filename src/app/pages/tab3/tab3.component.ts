@@ -12,6 +12,7 @@ import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { BaseType } from 'd3';
 
 @Component({
   selector: 'app-tab3',
@@ -113,10 +114,17 @@ export class Tab3Component implements OnInit {
   }
 
   // crée la base du graph: svg element, axes, titre?
+<<<<<<< HEAD
+  createGraphBase(timeGroups: string[], Ymax:number) : void{
+    var margin = {top: 10, right: 30, bottom: 30, left: 120},
+    width = 1200- margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+=======
   createGraphBase(timeGroups: string[], Ymax: number): void {
     var margin = { top: 10, right: 30, bottom: 50, left: 120 },
       width = 1200 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
+>>>>>>> 8175828bef35cf00867907c6d16431e5865ed0be
 
     this.height = height;
 
@@ -124,6 +132,61 @@ export class Tab3Component implements OnInit {
     d3.selectAll('#stackedBarChart').remove();
 
     // append the svg object to the body of the page
+<<<<<<< HEAD
+    var svg = d3.select("#zone-chart")
+    .append("svg")
+    .attr("id","stackedBarChart")
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+  
+    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.2);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0))
+      .attr('text-anchor', 'middle')
+      .selectAll(".tick text")
+      .call(wrap,50)
+      /*.attr("y", 30)
+      .attr("x", 525)
+      .attr("dy", ".71em")
+      .attr("dx", ".71em")
+      .attr('text-anchor', 'beginning')
+      .attr("font-size", "15px")
+      .attr("font-weight", "bold")
+      .attr("fill", "black")
+      .text("Mois");*/
+
+    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
+    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
+    .attr("class", "axis-title")
+    .attr("y", -3)
+    .attr("dy", ".21em")
+    .attr('text-anchor', 'beginning')
+    .attr("fill", "black")
+    .text("Millions de caractères");
+
+    this.tooltip = svg.append("g")
+    .style("opacity", 1)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .html('TEST HERE')
+  
+  }    
+
+    generateBarChart(groupedArrays:any):void{
+      console.log("groupedArrays", groupedArrays)
+      
+      for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
+        this.generateOneBar(groupedArrays[key], key)
+      }
+    }
+=======
     var svg = d3
       .select('#zone-chart')
       .append('svg')
@@ -151,6 +214,7 @@ export class Tab3Component implements OnInit {
       .attr('font-weight', 'bold')
       .attr('fill', 'black')
       .text('Mois');
+>>>>>>> 8175828bef35cf00867907c6d16431e5865ed0be
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([0, height]);
 
@@ -275,11 +339,62 @@ export class Tab3Component implements OnInit {
     }
   }
 
+<<<<<<< HEAD
+}
+function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: number) {
+  text.each(function (this: BaseType, d) {
+    const text = d3.select(this)
+    const words = text.text().split(/\s+/).reverse()
+    let word
+    let line:any = []
+    const lineHeight = 1.1 // Adjust this value for desired line height
+    const x = text.attr('x')
+    const y = text.attr('y')
+    const dy = parseFloat(text.attr('dy') || '0')
+    const maxLines = 2
+
+    let tspan = text
+      .text(null)
+      .append('tspan')
+      .attr('x', x)
+      .attr('y', y)
+      .attr('dy', dy + 'em')
+
+      let lineCount = 0;
+
+      while ((word = words.pop())) {
+        line.push(word);
+        tspan.text(line.join(' '));
+        if (tspan.node()!.getComputedTextLength() > width && line.length > 1) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = text
+            .append('tspan')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('dy', ++lineCount * lineHeight + dy + 'em')
+            .text(word);
+        }
+      }
+  
+      // Check if the maximum number of lines is reached
+      if (lineCount >= maxLines) {
+        // Append "..." at the end of the last line
+        const lastTspan = text.selectAll('tspan').filter(':last-child');
+        const lastLineText = lastTspan.text();
+        const truncatedText = lastLineText.slice(0, lastLineText.length - 3) + '...';
+        lastTspan.text(truncatedText);
+      }
+  });
+}
+=======
   updateInterventionTypes(interventionTypes: string[]) {
     console.log(interventionTypes);
     this.wantedInterventions = interventionTypes;
     this.updateView();
   }
+>>>>>>> 8175828bef35cf00867907c6d16431e5865ed0be
 
   updateLegendName(): string {
     var legend = '';
