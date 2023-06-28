@@ -28,3 +28,24 @@ export function translateDate(input:string):string{
   let [year,month] = input.split('-')
   return monthScale(month)+" "+year
 }
+
+
+export const keyColors: { [key: string]: string } = {
+  "H": "#50BEB8",
+  "F": "#772A93",
+  "BQ": "#159CE1",
+  "PCC": "#002395", 
+  "PLC": "#ED2E38",
+  "NPD": "#FF8514",
+  "PV": "#30D506",
+  "Ind.": "#AAAAAA",
+  "Alberta": "#fadd36bb", 
+  "Colombie-Britannique": "#e7939c", 
+  "Manitoba":"#b46ebb", 
+  "Ontario":"#c94a4c", 
+  "Provinces maritimes":"#65b3ac", 
+  "Québec":"#124badf1", 
+  "Saskatchewan":"#25bb4dde", 
+  "Territoires": "#aa9a93"
+}
+
