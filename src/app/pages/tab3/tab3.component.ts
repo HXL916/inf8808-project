@@ -123,7 +123,7 @@ export class Tab3Component  implements OnInit  {
     .attr("dy", ".21em")
     .attr('text-anchor', 'end')
     .attr("fill", "black")
-    .text("Millions de caractères");
+    .text("Millions de caractères*");
 
     this.tooltip = svg.append("g")
     .style("opacity", 1)
