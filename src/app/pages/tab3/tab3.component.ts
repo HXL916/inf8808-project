@@ -144,6 +144,21 @@ export class Tab3Component  implements OnInit  {
     .html('TEST HERE')
   
   }    
+  updateLegendName():string{
+    var legend = ''
+    switch (this.wantedKey){
+      case "genre":
+        legend = "le genre";
+        break;
+      case "parti":
+        legend = "le parti politique";
+        break;
+      case "province":
+        legend = "la province";
+        break;
+    } 
+    return legend;
+  }
 
 
   generateBarChart(groupedArrays:any):void{
@@ -185,30 +200,30 @@ export class Tab3Component  implements OnInit  {
       .append('g')
       .attr('class', 'stack')
 
-    // ajoute le rectangle à chaque zone
-    stack
-      .append('rect')
-      .attr('x', 0)
-      .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
-      .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
-      .attr('width', xScale.bandwidth())
-      .attr('fill', function(d) { return colorScale(d["KeyElement"])})
-      // Tooltip part
-      .on("mouseover", function(event, d) {
-        tooltip
-          .style("opacity", 1)
-          .style("left", (d3.pointer(event)[0]+70) + "px")
-          .style("top", (d3.pointer(event)[1]) + "px")
-          .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
-        d3.select(this)
-          .style("stroke", "black")
-      })
-      .on("mouseleave", function(d) {
-        tooltip.style("opacity", 0)
-        d3.select(this)
-          .style("stroke", "none")
-        });
-  }
+      // ajoute le rectangle à chaque zone
+      stack
+        .append('rect')
+        .attr('x', 0)
+        .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
+        .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
+        .attr('width', xScale.bandwidth())
+        .attr('fill', function(d) { return colorScale(d["KeyElement"])})
+        // Tooltip part
+        .on("mouseover", function(event, d) {
+          tooltip
+            .style("opacity", 1)
+            .style("left", (d3.pointer(event)[0]+70) + "px")
+            .style("top", (d3.pointer(event)[1]) + "px")
+            .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
+          d3.select(this)
+            .style("stroke", "black")
+        })
+        .on("mouseleave", function(d) {
+          tooltip.style("opacity", 0)
+          d3.select(this)
+            .style("stroke", "none")
+          });
+    }
 
   updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
     if(date.value.start && date.value.end){
@@ -230,45 +245,43 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
     const words = text.text().split(/\s+/).reverse()
     let word
     let line:any = []
-    const lineHeight = 1.1 
+    const lineHeight = 1.1 // Adjust this value for desired line height
     const x = text.attr('x') || 0
     const y = text.attr('y') || 0
     const dy = parseFloat(text.attr('dy') || '0')
     const maxLines = 2
 
     let tspan = text
-      .text(null)
-      .append('tspan')
-      .attr('x', x)
-      .attr('y', y)
-      .attr('dy', dy + 'em')
+    .text(null)
+    .append('tspan')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('dy', dy + 'em')
 
-      let lineCount = 0;
+    let lineCount = 0;
 
-      while ((word = words.pop())) {
-        line.push(word);
+    while ((word = words.pop())) {
+      line.push(word);
+      tspan.text(line.join(' '));
+      if (tspan.node()!.getComputedTextLength() > width && line.length > 1) {
+        line.pop();
         tspan.text(line.join(' '));
-        if (tspan.node()!.getComputedTextLength() > width && line.length > 1) {
-          line.pop();
-          tspan.text(line.join(' '));
-          line = [word];
-          tspan = text
-            .append('tspan')
-            .attr('x', x)
-            .attr('y', y)
-            .attr('dy', ++lineCount * lineHeight + dy + 'em')
-            .text(word);
-        }
+        line = [word];
+        tspan = text
+        .append('tspan')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('dy', ++lineCount * lineHeight + dy + 'em')
+        .text(word);
       }
-  
-      // Check if the maximum number of lines is reached
-      if (lineCount >= maxLines) {
-        // Append "..." at the end of the last line
-        const lastTspan = text.selectAll('tspan').filter(':last-child');
-        const lastLineText = lastTspan.text();
-        const truncatedText = lastLineText.slice(0, lastLineText.length - 3) + '...';
-        lastTspan.text(truncatedText);
-      }
+    }
+    // Check if the maximum number of lines is reached
+    if (lineCount >= maxLines) {
+      // Append "..." at the end of the last line
+      const lastTspan = text.selectAll('tspan').filter(':last-child');
+      const lastLineText = lastTspan.text();
+      const truncatedText = lastLineText.slice(0, lastLineText.length - 3) + '...';
+      lastTspan.text(truncatedText);
+    }
   });
 }
-
