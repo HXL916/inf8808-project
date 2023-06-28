@@ -77,21 +77,6 @@ export class Tab3Component  implements OnInit  {
     } 
     this.updateView();
   }
-    updateLegendName():string{
-    var legend = ''
-    switch (this.wantedKey){
-      case "genre":
-        legend = "le genre";
-        break;
-      case "parti":
-        legend = "le parti politique";
-        break;
-      case "province":
-        legend = "la province";
-        break;
-    } 
-    return legend;
-  }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
     this.ngOnInit();
   }
