@@ -23,7 +23,7 @@ export function drawSquares(//Main arguments
 
     // Selection of the svg  
     const container = d3.select(containerName);
-    const svg = container.append('svg').attr("id","waffleRow");
+    const svg = container.append('svg').attr("class","waffleRow");
     
     // Drawing
     svg.selectAll('rect')
