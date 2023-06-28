@@ -116,15 +116,20 @@ export function getCountsWithKey(
     }
   }
 
-  // Here we order the tabCount object by number of interventions in each category
-  const orderedKeys = Object.keys(tabCount).sort((a, b) => tabCount[b] - tabCount[a]);
+  // Define the specific order of keys
+  const specificOrder = 
+  ["H", "F", "PCC", "NPD", "PLC", "BQ", "PV", "Ind.", "Québec", "Ontario", "Colombie-Britannique", "Alberta", "Provinces maritimes", "Manitoba", "Saskatchewan", "Territoires"];
+
+  // Here we order the tabCount object based on the specific order of keys
   const summarizedData: { [key: string]: any }[] = [];
-  orderedKeys.forEach((element) => {
-    summarizedData.push({
-      KeyElement: element,
-      Count: tabCount[element],
-      CharCount: tabCharCount[element],
-    });
+  specificOrder.forEach((element) => {
+    if (tabCount.hasOwnProperty(element)) {
+      summarizedData.push({
+        "KeyElement": element,
+        "Count": tabCount[element],
+        "CharCount": tabCharCount[element]
+      });
+    }
   });
   return summarizedData;
 }
