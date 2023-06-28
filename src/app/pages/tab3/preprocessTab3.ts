@@ -1,61 +1,80 @@
-
-export function getInterventionsByDateRange(data: { [key: string]: any }[], startDate: Date, endDate: Date):{ [key: string]: any }[]{
-  console.log(startDate, endDate )
+export function getInterventionsByDateRange(
+  data: { [key: string]: any }[],
+  startDate: Date,
+  endDate: Date
+): { [key: string]: any }[] {
+  console.log(startDate, endDate);
 
   const filteredArray = data.filter((obj) => {
-    const objDate = new Date(obj["année"], obj["mois"] - 1, obj["jour"]) // attention, en objet Date de javascript, janvier=0
-    return objDate >= startDate && objDate <= endDate
+    const objDate = new Date(obj['année'], obj['mois'] - 1, obj['jour']); // attention, en objet Date de javascript, janvier=0
+    return objDate >= startDate && objDate <= endDate;
   });
-  return filteredArray
+  return filteredArray;
 }
-
 
 export function groupInterventionByMonth(data: { [key: string]: any }[]): any {
-  const groupedArrays = data.reduce<{ [key: string]: { [key: string]: any}[] }>((acc, obj) => {
-    const key = `${obj["année"]}-${obj["mois"]}`
+  const groupedArrays = data.reduce<{
+    [key: string]: { [key: string]: any }[];
+  }>((acc, obj) => {
+    const key = `${obj['année']}-${obj['mois']}`;
     if (!acc[key]) {
-      acc[key] = []
+      acc[key] = [];
     }
-    acc[key].push(obj)
-    return acc
-  }, {})
-  console.log(groupedArrays)
-  return groupedArrays
+    acc[key].push(obj);
+    return acc;
+  }, {});
+  console.log(groupedArrays);
+  return groupedArrays;
 }
 
-export function groupSeveralMonths(data: { [key: string]: any }):{ [key: string]: any }{
+export function groupSeveralMonths(data: { [key: string]: any }): {
+  [key: string]: any;
+} {
   let groupedData: { [key: string]: any[] } = {};
   const months = Object.keys(data);
 
-  const step:number = Math.max(1,Math.ceil((months.length -6) /12 ))
+  const step: number = Math.max(1, Math.ceil((months.length - 6) / 12));
   for (let i = 0; i < months.length; i += step) {
     const group = months.slice(i, i + step);
     const groupKey = `${group[0]} ${group[group.length - 1]}`;
     const groupValues: any[] = [];
-  
+
     for (const month of group) {
       if (data.hasOwnProperty(month)) {
         groupValues.push(...data[month]);
       }
     }
-  
+
     groupedData[groupKey] = groupValues;
   }
-  groupedData = simplifyKeyNames(groupedData)
-  return groupedData
+  groupedData = simplifyKeyNames(groupedData);
+  return groupedData;
 }
 
-
-function simplifyKeyNames(data: { [key: string]: any }): { [key: string]: any }{
+function simplifyKeyNames(data: { [key: string]: any }): {
+  [key: string]: any;
+} {
   const simplifiedData: { [key: string]: any } = {};
-  const monthTranslate : { [key: number]: string }= {1: "Jan", 2:"Fev", 3:"Mars", 4:"Avr", 5:"Mai", 
-                    6:"Juin", 7:"Juil", 8:"Aout", 9:"Sep", 10:"Oct", 11:"Nov", 12:"Dec"}
+  const monthTranslate: { [key: number]: string } = {
+    1: 'Jan',
+    2: 'Fev',
+    3: 'Mars',
+    4: 'Avr',
+    5: 'Mai',
+    6: 'Juin',
+    7: 'Juil',
+    8: 'Aout',
+    9: 'Sep',
+    10: 'Oct',
+    11: 'Nov',
+    12: 'Dec',
+  };
   for (const key in data) {
     if (data.hasOwnProperty(key)) {
-      const [startDate, endDate] = key.split(" ");
+      const [startDate, endDate] = key.split(' ');
 
-      const [startYear, startMonth] = startDate.split("-");
-      const [endYear, endMonth] = endDate.split("-");
+      const [startYear, startMonth] = startDate.split('-');
+      const [endYear, endMonth] = endDate.split('-');
 
       const startMonthName = monthTranslate[parseInt(startMonth)];
       const endMonthName = monthTranslate[parseInt(endMonth)];
@@ -74,13 +93,13 @@ function simplifyKeyNames(data: { [key: string]: any }): { [key: string]: any }{
       }
     }
   }
-  return simplifiedData
-
+  return simplifiedData;
 }
 
-
-
-export function getCountsWithKey(data: { [key: string]: any }[], wantedKey: string): { [key: string]: any }[] {
+export function getCountsWithKey(
+  data: { [key: string]: any }[],
+  wantedKey: string
+): { [key: string]: any }[] {
   const tabCount: { [key: string]: number } = {};
   const tabCharCount: { [key: string]: number } = {};
 
@@ -89,44 +108,55 @@ export function getCountsWithKey(data: { [key: string]: any }[], wantedKey: stri
       const keyElement = obj[wantedKey];
       if (tabCount.hasOwnProperty(keyElement)) {
         tabCount[keyElement]++;
-        tabCharCount[keyElement] += obj["nbCaracteres"]
+        tabCharCount[keyElement] += obj['nbCaracteres'];
       } else {
         tabCount[keyElement] = 1;
-        tabCharCount[keyElement] = obj["nbCaracteres"]
+        tabCharCount[keyElement] = obj['nbCaracteres'];
       }
     }
   }
 
-  const summarizedData : { [key: string]: any }[] = [];
-  Object.keys(tabCount).forEach(element => {
-    summarizedData.push( {"KeyElement": element, "Count": tabCount[element], "CharCount": tabCharCount[element]})
+  // Here we order the tabCount object by alphabetical order of the keys
+  const orderedKeys = Object.keys(tabCount).sort(); // TODO: Modify this if we want to change the order in which the keys are displayed
+  const summarizedData: { [key: string]: any }[] = [];
+  orderedKeys.forEach((element) => {
+    summarizedData.push({
+      KeyElement: element,
+      Count: tabCount[element],
+      CharCount: tabCharCount[element],
+    });
   });
   return summarizedData;
 }
 
-export function getMaxCharCounts(groupedArrays: any): number{
-  let maxSum:number = 0
+export function getMaxCharCounts(groupedArrays: any): number {
+  let maxSum: number = 0;
   for (const key in groupedArrays) {
     if (Object.prototype.hasOwnProperty.call(groupedArrays, key)) {
-      const sum = groupedArrays[key].reduce((acc: number, obj: any) => acc + obj["nbCaracteres"], 0);
+      const sum = groupedArrays[key].reduce(
+        (acc: number, obj: any) => acc + obj['nbCaracteres'],
+        0
+      );
       if (sum > maxSum) {
         maxSum = sum;
       }
     }
   }
-  return maxSum
+  return maxSum;
 }
 
-export function transformWithCumulativeCount(interventionData:{ [key: string]: any }[]):void{
-  let cumulative_count:number = 0
+export function transformWithCumulativeCount(
+  interventionData: { [key: string]: any }[]
+): void {
+  let cumulative_count: number = 0;
   interventionData.forEach((d) => {
-      d["Beginning"] = cumulative_count;
-      cumulative_count = cumulative_count + d["CharCount"]
-      d["End"] = cumulative_count;
-    });
+    d['Beginning'] = cumulative_count;
+    cumulative_count = cumulative_count + d['CharCount'];
+    d['End'] = cumulative_count;
+  });
 }
 
-interface ObjectData {
+export interface ObjectData {
   legislature: string;
   hansard: number;
   année: number;
@@ -141,13 +171,18 @@ interface ObjectData {
   province: string;
 }
 
-export function getInterventionsByType(interventionData: { [key: string]: ObjectData[] }, wantedInterventions: string[]) {
+export function getInterventionsByType(
+  interventionData: { [key: string]: ObjectData[] },
+  wantedInterventions: string[]
+) {
   const filteredData: { [key: string]: ObjectData[] } = {};
 
   //console.log(interventionData["2021-11"])
 
   Object.entries(interventionData).forEach(([key, value]) => {
-    const filteredItems = value.filter(item => wantedInterventions.includes(item.typeIntervention));
+    const filteredItems = value.filter((item) =>
+      wantedInterventions.includes(item.typeIntervention)
+    );
     if (filteredItems.length > 0) {
       filteredData[key] = filteredItems;
     }
@@ -156,12 +191,15 @@ export function getInterventionsByType(interventionData: { [key: string]: Object
   return filteredData;
 }
 
-function getAllTypeInterventions(interventionData: { [key: string]: ObjectData[] }): string[] { // TODO: use to initialize the buttons
+function getAllTypeInterventions(interventionData: {
+  [key: string]: ObjectData[];
+}): string[] {
+  // TODO: use to initialize the buttons
   const typeInterventionsSet = new Set<string>();
 
   // Iterate over the dataset and collect unique typeIntervention values
-  Object.values(interventionData).forEach(items => {
-    items.forEach(item => {
+  Object.values(interventionData).forEach((items) => {
+    items.forEach((item) => {
       typeInterventionsSet.add(item.typeIntervention);
     });
   });

@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Legend } from './../../utils/legend';
-import { genderColorScale, partyColorScale, provinceColorScale, translatePretty, translateDate } from "../../utils/scales"
+import {
+  genderColorScale,
+  partyColorScale,
+  provinceColorScale,
+  translatePretty,
+  translateDate,
+} from '../../utils/scales';
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
@@ -10,225 +16,284 @@ import { FormControl, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-tab3',
   templateUrl: './tab3.component.html',
-  styleUrls: ['./tab3.component.css']
+  styleUrls: ['./tab3.component.css'],
 })
-export class Tab3Component  implements OnInit  {
-  wantedKey!:string;
-  wantedDate!: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>;
+export class Tab3Component implements OnInit {
+  wantedKey!: string;
+  wantedDate!: FormGroup<{
+    start: FormControl<Date | null>;
+    end: FormControl<Date | null>;
+  }>;
   wantedInterventions!: string[];
   colorScale!: any;
   itemList!: any;
   color!: any;
-  xScale!: any;
-  yScale!: any;
+  xScale!: d3.ScaleBand<string>;
+  yScale!: d3.ScaleLinear<number, number, never>;
   pourcent!: any;
-  data:any;
-  height!:number;
-  tooltip:any;
+  data: any;
+  height!: number;
+  tooltip: any;
 
   constructor(private preprocessingService: PreprocessingService) {
-    this.updateWantedKey("genre");
-    this.wantedDate = new FormGroup({start: new FormControl<Date | null>(new Date(2021, 10, 22)), end: new FormControl<Date | null>(new Date(2023, 0, 1))});
-    this.wantedInterventions = ["Déclarations de députés", "Questions orales", "Affaires courantes", "Ordres émanant du gouvernement", "Recours au Règlement", "Travaux des subsides", "Affaires émanant des députés", "Autre"]
-
+    this.updateWantedKey('genre');
+    this.wantedDate = new FormGroup({
+      start: new FormControl<Date | null>(new Date(2021, 10, 22)),
+      end: new FormControl<Date | null>(new Date(2023, 0, 1)),
+    });
+    this.wantedInterventions = [
+      'Déclarations de députés',
+      'Questions orales',
+      'Affaires courantes',
+      'Ordres émanant du gouvernement',
+      'Recours au Règlement',
+      'Travaux des subsides',
+      'Affaires émanant des députés',
+      'Autre',
+    ];
   }
 
   ngOnInit(): void {
-    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
-      this.data = data
-      // 44ème législature
-      const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
-      //console.log(filterData)
-      let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
-      groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
-      //console.log("groupedArrays", groupedArrays)
-      const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)/1000000
-      //console.log("Ymax", Ymax)
-      const timeGroups = Object.keys(groupedArraysByType)
-      //console.log("time groups", timeGroups)
-      
-      this.createGraphBase(timeGroups, Ymax)
-      this.generateBarChart(groupedArraysByType)
-      waffle1.drawWaffleLegend(this.colorScale)
+    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then(
+      (data) => {
+        this.data = data;
+        // 44ème législature
+        const filterData = preprocessTab3.getInterventionsByDateRange(
+          data,
+          this.wantedDate.value.start!,
+          this.wantedDate.value.end!
+        );
+        //console.log(filterData)
+        let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData);
+        groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays);
+        //console.log("groupedArrays", groupedArrays)
+        const groupedArraysByType = preprocessTab3.getInterventionsByType(
+          groupedArrays,
+          this.wantedInterventions
+        );
+        let Ymax =
+          preprocessTab3.getMaxCharCounts(groupedArraysByType) / 1000000;
+        //console.log("Ymax", Ymax)
+        const timeGroups = Object.keys(groupedArraysByType);
+        //console.log("time groups", timeGroups)
 
-      // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
-      // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
-      // Y a juste besoin du groupedArray[month] (avec un peu de processing derrière) pour créer la barre
-      // et month permet de positionner sur l'axe des abscisses 
-    })
+        this.createGraphBase(timeGroups, Ymax);
+        this.generateBarChart(groupedArraysByType);
+        waffle1.drawWaffleLegend(this.colorScale);
+
+        // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
+        // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
+        // Y a juste besoin du groupedArray[month] (avec un peu de processing derrière) pour créer la barre
+        // et month permet de positionner sur l'axe des abscisses
+      }
+    );
   }
 
-  updateWantedKey(key:string):void{
-    this.wantedKey=key;
-    console.log(this.wantedKey)
+  updateWantedKey(key: string): void {
+    this.wantedKey = key;
+    console.log(this.wantedKey);
 
-    switch (this.wantedKey){
-      case "genre":
+    switch (this.wantedKey) {
+      case 'genre':
         this.colorScale = genderColorScale;
         break;
-      case "parti":
+      case 'parti':
         this.colorScale = partyColorScale;
         break;
-      case "province":
+      case 'province':
         this.colorScale = provinceColorScale;
         break;
-    } 
+    }
     this.updateView();
   }
 
-  updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
+  updateView(): void {
+    //importer data une fois seulement à place de le refaire à chaque changement
     this.ngOnInit();
   }
 
   // crée la base du graph: svg element, axes, titre?
-  createGraphBase(timeGroups: string[], Ymax:number) : void{
-    var margin = {top: 10, right: 30, bottom: 50, left: 120},
-    width = 1200- margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+  createGraphBase(timeGroups: string[], Ymax: number): void {
+    var margin = { top: 10, right: 30, bottom: 50, left: 120 },
+      width = 1200 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
 
-    this.height = height
+    this.height = height;
 
     // delete any old stackedBarChart so clicking updates don't append new charts
-    d3.selectAll("#stackedBarChart").remove();
+    d3.selectAll('#stackedBarChart').remove();
 
     // append the svg object to the body of the page
-    var svg = d3.select("#zone-chart")
-    .append("svg")
-    .attr("id","stackedBarChart")
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3
+      .select('#zone-chart')
+      .append('svg')
+      .attr('id', 'stackedBarChart')
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    this.xScale = d3.scaleBand().domain(timeGroups).range([0, width]).paddingInner(0.2);
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(this.xScale).tickSizeOuter(0)).append("text")
-      .attr("y", 30)
-      .attr("x", 525)
-      .attr("dy", ".71em")
-      .attr("dx", ".71em")
+    this.xScale = d3
+      .scaleBand()
+      .domain(timeGroups)
+      .range([0, width])
+      .paddingInner(0.2);
+    svg
+      .append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0))
+      .append('text')
+      .attr('y', 30)
+      .attr('x', 525)
+      .attr('dy', '.71em')
+      .attr('dx', '.71em')
       .attr('text-anchor', 'beginning')
-      .attr("font-size", "15px")
-      .attr("font-weight", "bold")
-      .attr("fill", "black")
-      .text("Mois");
+      .attr('font-size', '15px')
+      .attr('font-weight', 'bold')
+      .attr('fill', 'black')
+      .text('Mois');
 
-    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
-    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
-    .attr("class", "axis-title")
-    .attr("y", -3)
-    .attr("x", -15)
-    .attr("dy", ".21em")
-    .attr('text-anchor', 'end')
-    .attr("fill", "black")
-    .text("Millions de caractères*");
+    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([0, height]);
 
-    this.tooltip = svg.append("g")
-    .style("opacity", 1)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
-    .html('TEST HERE')
-  
-  }    
+    svg
+      .append('g')
+      .call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([height, 0])))
+      .append('text')
+      .attr('class', 'axis-title')
+      .attr('y', -3)
+      .attr('x', -15)
+      .attr('dy', '.21em')
+      .attr('text-anchor', 'end')
+      .attr('fill', 'black')
+      .text('Millions de caractères*');
 
-    generateBarChart(groupedArrays:any):void{
-      console.log("groupedArrays", groupedArrays)
-      
-      for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
-        this.generateOneBar(groupedArrays[key], key)
-      }
+    this.tooltip = svg
+      .append('g')
+      .style('opacity', 1)
+      .attr('class', 'tooltip')
+      .style('background-color', 'white')
+      .style('border', 'solid')
+      .style('border-width', '2px')
+      .style('border-radius', '5px')
+      .style('padding', '5px')
+      .html('TEST HERE');
+  }
+
+  generateBarChart(groupedArrays: any): void {
+    console.log('groupedArrays', groupedArrays);
+
+    for (const key in groupedArrays) {
+      // here key = date YYYY-M (ex: 2016-1)
+      this.generateOneBar(groupedArrays[key], key);
     }
+  }
 
-    generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
-      let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
-      preprocessTab3.transformWithCumulativeCount(tab)
-      console.log('tab',tab)
+  generateOneBar(
+    interventionData: { [key: string]: any }[],
+    xvalue: any
+  ): void {
+    let tab: { [key: string]: any }[] = preprocessTab3.getCountsWithKey(
+      interventionData,
+      this.wantedKey
+    );
+    preprocessTab3.transformWithCumulativeCount(tab);
 
-      // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
-      let xScale = this.xScale
-      let yScale = this.yScale
-      let colorScale = this.colorScale
-      let height = this.height
-      let tooltip = this.tooltip
-      let wantedKey = this.wantedKey
-      let wantedDate = this.wantedDate
-      let wantedInterventions = this.wantedInterventions
+    // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
+    let xScale = this.xScale;
+    let yScale = this.yScale;
+    let colorScale = this.colorScale;
+    let height = this.height;
+    let tooltip = this.tooltip;
+    let wantedKey = this.wantedKey;
+    let wantedDate = this.wantedDate;
+    let wantedInterventions = this.wantedInterventions;
 
-      // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
-      // on positionne le groupe sur l'axe des abscisses
-      const container = d3.select("#stackedBarChart")
-        .select("g")
-        .append("g")
-        .attr("class", "stackedBar")
-        .attr("width", 35) // a changer
-        .attr("transform", `translate(${xScale(xvalue)},0)`)
+    // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
+    // on positionne le groupe sur l'axe des abscisses
+    const container = d3
+      .select('#stackedBarChart')
+      .select('g')
+      .append('g')
+      .attr('class', 'stackedBar')
+      .attr('width', 35) // a changer
+      .attr('transform', `translate(${xScale(xvalue)},0)`);
 
-      // crée toutes les zones (une par KeyElement) pour cette barre
-      const stack = container.selectAll('.stack')
-        .data(tab)
-        .enter()
-        .append('g')
-        .attr('class', 'stack')
+    // crée toutes les zones (une par KeyElement) pour cette barre
+    const stack = container
+      .selectAll('.stack')
+      .data(tab)
+      .enter()
+      .append('g')
+      .attr('class', 'stack');
 
-      // ajoute le rectangle à chaque zone
-      stack
-        .append('rect')
-        .attr('x', 0)
-        .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
-        .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
-        .attr('width', xScale.bandwidth())
-        .attr('fill', function(d) { return colorScale(d["KeyElement"])})
-        // Tooltip part
-        .on("mouseover", function(event, d) {
-          tooltip
-            .style("opacity", 1)
-            .style("left", (d3.pointer(event)[0]+70) + "px")
-            .style("top", (d3.pointer(event)[1]) + "px")
-            .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
-          d3.select(this)
-            .style("stroke", "black")
-        })
-        .on("mouseleave", function(d) {
-          tooltip.style("opacity", 0)
-          d3.select(this)
-            .style("stroke", "none")
-          });
-    }
+    // ajoute le rectangle à chaque zone
+    stack
+      .append('rect')
+      .attr('x', 0)
+      .attr('height', function (d) {
+        return yScale(d['End'] / 1000000 - d['Beginning'] / 1000000);
+      })
+      .attr('y', function (d) {
+        return height - yScale(d['End'] / 1000000);
+      })
+      .attr('width', xScale.bandwidth())
+      .attr('fill', function (d) {
+        return colorScale(d['KeyElement']);
+      })
+      // Tooltip part
+      .on('mouseover', function (event, d) {
+        tooltip
+          .style('opacity', 1)
+          .style('left', d3.pointer(event)[0] + 70 + 'px')
+          .style('top', d3.pointer(event)[1] + 'px')
+          .html(
+            translatePretty(d['KeyElement']) +
+              ' en ' +
+              translateDate(xvalue) +
+              ':<br> - ' +
+              d['Count'] +
+              ' interventions <br> - ' +
+              d['CharCount'] +
+              ' caractères dans ces interventions'
+          );
+        d3.select(this).style('stroke', 'black');
+      })
+      .on('mouseleave', function (d) {
+        tooltip.style('opacity', 0);
+        d3.select(this).style('stroke', 'none');
+      });
+  }
 
-    updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
-      if(date.value.start && date.value.end){
-        this.wantedDate = date;
-        this.updateView();
-      }
-    }
-
-    updateInterventionTypes(interventionTypes: string[]) {
-      console.log(interventionTypes)
-      this.wantedInterventions = interventionTypes;
+  updateDateFilter(
+    date: FormGroup<{
+      start: FormControl<Date | null>;
+      end: FormControl<Date | null>;
+    }>
+  ) {
+    if (date.value.start && date.value.end) {
+      this.wantedDate = date;
       this.updateView();
     }
+  }
 
-    updateLegendName():string{
-      var legend = ''
-      switch (this.wantedKey){
-        case "genre":
-          legend = "le genre";
-          break;
-        case "parti":
-          legend = "le parti politique";
-          break;
-        case "province":
-          legend = "la province";
-          break;
-      } 
-      return legend;
+  updateInterventionTypes(interventionTypes: string[]) {
+    console.log(interventionTypes);
+    this.wantedInterventions = interventionTypes;
+    this.updateView();
+  }
+
+  updateLegendName(): string {
+    var legend = '';
+    switch (this.wantedKey) {
+      case 'genre':
+        legend = 'le genre';
+        break;
+      case 'parti':
+        legend = 'le parti politique';
+        break;
+      case 'province':
+        legend = 'la province';
+        break;
     }
-
+    return legend;
+  }
 }
-
