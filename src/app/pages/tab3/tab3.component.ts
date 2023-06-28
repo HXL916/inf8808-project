@@ -77,6 +77,21 @@ export class Tab3Component  implements OnInit  {
     } 
     this.updateView();
   }
+    updateLegendName():string{
+    var legend = ''
+    switch (this.wantedKey){
+      case "genre":
+        legend = "le genre";
+        break;
+      case "parti":
+        legend = "le parti politique";
+        break;
+      case "province":
+        legend = "la province";
+        break;
+    } 
+    return legend;
+  }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
     this.ngOnInit();
   }
@@ -107,16 +122,7 @@ export class Tab3Component  implements OnInit  {
       .call(d3.axisBottom(this.xScale).tickSizeOuter(0))
       .attr('text-anchor', 'middle')
       .selectAll(".tick text")
-      .call(wrap,50)
-      /*.attr("y", 30)
-      .attr("x", 525)
-      .attr("dy", ".71em")
-      .attr("dx", ".71em")
-      .attr('text-anchor', 'beginning')
-      .attr("font-size", "15px")
-      .attr("font-weight", "bold")
-      .attr("fill", "black")
-      .text("Mois");*/
+      .call(wrap,50);
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
     svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
@@ -139,99 +145,83 @@ export class Tab3Component  implements OnInit  {
   
   }    
 
-  updateLegendName():string{
-    var legend = ''
-    switch (this.wantedKey){
-      case "genre":
-        legend = "le genre";
-        break;
-      case "parti":
-        legend = "le parti politique";
-        break;
-      case "province":
-        legend = "la province";
-        break;
-    } 
-    return legend;
+
+  generateBarChart(groupedArrays:any):void{
+    console.log("groupedArrays", groupedArrays)
+    
+    for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
+      this.generateOneBar(groupedArrays[key], key)
+    }
   }
 
+  generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
+    let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
+    preprocessTab3.transformWithCumulativeCount(tab)
+    console.log('tab',tab)
 
-    generateBarChart(groupedArrays:any):void{
-      console.log("groupedArrays", groupedArrays)
-      
-      for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
-        this.generateOneBar(groupedArrays[key], key)
-      }
-    }
+    // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
+    let xScale = this.xScale
+    let yScale = this.yScale
+    let colorScale = this.colorScale
+    let height = this.height
+    let tooltip = this.tooltip
+    let wantedKey = this.wantedKey
+    let wantedDate = this.wantedDate
+    let wantedInterventions = this.wantedInterventions
 
-    generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
-      let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
-      preprocessTab3.transformWithCumulativeCount(tab)
-      console.log('tab',tab)
+    // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
+    // on positionne le groupe sur l'axe des abscisses
+    const container = d3.select("#stackedBarChart")
+      .select("g")
+      .append("g")
+      .attr("class", "stackedBar")
+      .attr("width", 35) // a changer
+      .attr("transform", `translate(${xScale(xvalue)},0)`)
 
-      // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
-      let xScale = this.xScale
-      let yScale = this.yScale
-      let colorScale = this.colorScale
-      let height = this.height
-      let tooltip = this.tooltip
-      let wantedKey = this.wantedKey
-      let wantedDate = this.wantedDate
-      let wantedInterventions = this.wantedInterventions
+    // crée toutes les zones (une par KeyElement) pour cette barre
+    const stack = container.selectAll('.stack')
+      .data(tab)
+      .enter()
+      .append('g')
+      .attr('class', 'stack')
 
-      // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
-      // on positionne le groupe sur l'axe des abscisses
-      const container = d3.select("#stackedBarChart")
-        .select("g")
-        .append("g")
-        .attr("class", "stackedBar")
-        .attr("width", 35) // a changer
-        .attr("transform", `translate(${xScale(xvalue)},0)`)
+    // ajoute le rectangle à chaque zone
+    stack
+      .append('rect')
+      .attr('x', 0)
+      .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
+      .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
+      .attr('width', xScale.bandwidth())
+      .attr('fill', function(d) { return colorScale(d["KeyElement"])})
+      // Tooltip part
+      .on("mouseover", function(event, d) {
+        tooltip
+          .style("opacity", 1)
+          .style("left", (d3.pointer(event)[0]+70) + "px")
+          .style("top", (d3.pointer(event)[1]) + "px")
+          .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
+        d3.select(this)
+          .style("stroke", "black")
+      })
+      .on("mouseleave", function(d) {
+        tooltip.style("opacity", 0)
+        d3.select(this)
+          .style("stroke", "none")
+        });
+  }
 
-      // crée toutes les zones (une par KeyElement) pour cette barre
-      const stack = container.selectAll('.stack')
-        .data(tab)
-        .enter()
-        .append('g')
-        .attr('class', 'stack')
-
-      // ajoute le rectangle à chaque zone
-      stack
-        .append('rect')
-        .attr('x', 0)
-        .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
-        .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
-        .attr('width', xScale.bandwidth())
-        .attr('fill', function(d) { return colorScale(d["KeyElement"])})
-        // Tooltip part
-        .on("mouseover", function(event, d) {
-          tooltip
-            .style("opacity", 1)
-            .style("left", (d3.pointer(event)[0]+70) + "px")
-            .style("top", (d3.pointer(event)[1]) + "px")
-            .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
-          d3.select(this)
-            .style("stroke", "black")
-        })
-        .on("mouseleave", function(d) {
-          tooltip.style("opacity", 0)
-          d3.select(this)
-            .style("stroke", "none")
-          });
-    }
-
-    updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
-      if(date.value.start && date.value.end){
-        this.wantedDate = date;
-        this.updateView();
-      }
-    }
-
-    updateInterventionTypes(interventionTypes: string[]) {
-      console.log(interventionTypes)
-      this.wantedInterventions = interventionTypes;
+  updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
+    if(date.value.start && date.value.end){
+      this.wantedDate = date;
       this.updateView();
     }
+  }
+
+  updateInterventionTypes(interventionTypes: string[]) {
+    console.log(interventionTypes)
+    this.wantedInterventions = interventionTypes;
+    this.updateView();
+  }
 
 }
 function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: number) {
@@ -240,9 +230,9 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
     const words = text.text().split(/\s+/).reverse()
     let word
     let line:any = []
-    const lineHeight = 1.1 // Adjust this value for desired line height
-    const x = text.attr('x')
-    const y = text.attr('y')
+    const lineHeight = 1.1 
+    const x = text.attr('x') || 0
+    const y = text.attr('y') || 0
     const dy = parseFloat(text.attr('dy') || '0')
     const maxLines = 2
 
