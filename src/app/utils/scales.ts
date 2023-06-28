@@ -6,8 +6,8 @@ export const partyColorScale = d3.scaleOrdinal() // D3 Version 4
 
 
 export const genderColorScale = d3.scaleOrdinal() // D3 Version 4
-.domain(["H", "F"])
-.range(["#50BEB8","#772A93"]);
+.domain(["F", "H"])
+.range(["#772A93", "#50BEB8"]);
 
 export const provinceColorScale = d3.scaleOrdinal() // D3 Version 4
 .domain(["Alberta", "Colombie-Britannique", "Manitoba", "Ontario", "Provinces maritimes", "Québec", "Saskatchewan", "Territoires"])

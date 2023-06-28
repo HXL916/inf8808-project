@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as waffle from 'src/app/pages/tab2/waffle';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
-import { partyColorScale } from "../../utils/scales"
+import { partyColorScale, genderColorScale } from "../../utils/scales"
 import * as preproc from './preprocessTab2'
 
 
@@ -53,7 +53,7 @@ export class Tab2Component  implements OnInit   {
   process(data: { [key: string]: any }[]):{ [key: string]: any }[]{
     switch (this.wantedKey){
       case "genre":
-        this.colorScale = d3.scaleOrdinal().domain(["H","F"]).range(["#50BEB8","#772A93"]);
+        this.colorScale = genderColorScale;
         break;
       case "parti":
         //let affiliations = this.preprocessingService.getPartiesNames(data);
