@@ -82,17 +82,10 @@ export class Tab3Component  implements OnInit  {
   }
 
   // crée la base du graph: svg element, axes, titre?
-<<<<<<< HEAD
   createGraphBase(timeGroups: string[], Ymax:number) : void{
     var margin = {top: 10, right: 30, bottom: 30, left: 120},
     width = 1200- margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
-=======
-  createGraphBase(timeGroups: string[], Ymax: number): void {
-    var margin = { top: 10, right: 30, bottom: 50, left: 120 },
-      width = 1200 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
->>>>>>> fbc0da7c3c4a13224a79f24f051a719db61451a4
 
     this.height = height
 
@@ -100,7 +93,6 @@ export class Tab3Component  implements OnInit  {
     d3.selectAll("#stackedBarChart").remove();
 
     // append the svg object to the body of the page
-<<<<<<< HEAD
     var svg = d3.select("#zone-chart")
     .append("svg")
     .attr("id","stackedBarChart")
@@ -147,6 +139,23 @@ export class Tab3Component  implements OnInit  {
   
   }    
 
+  updateLegendName():string{
+    var legend = ''
+    switch (this.wantedKey){
+      case "genre":
+        legend = "le genre";
+        break;
+      case "parti":
+        legend = "le parti politique";
+        break;
+      case "province":
+        legend = "la province";
+        break;
+    } 
+    return legend;
+  }
+
+
     generateBarChart(groupedArrays:any):void{
       console.log("groupedArrays", groupedArrays)
       
@@ -154,49 +163,6 @@ export class Tab3Component  implements OnInit  {
         this.generateOneBar(groupedArrays[key], key)
       }
     }
-=======
-    var svg = d3
-      .select('#zone-chart')
-      .append('svg')
-      .attr('id', 'stackedBarChart')
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    this.xScale = d3
-      .scaleBand()
-      .domain(timeGroups)
-      .range([0, width])
-      .paddingInner(0.2);
-    svg
-      .append('g')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(d3.axisBottom(this.xScale).tickSizeOuter(0))
-      .append('text')
-      .attr('y', 30)
-      .attr('x', 525)
-      .attr('dy', '.71em')
-      .attr('dx', '.71em')
-      .attr('text-anchor', 'beginning')
-      .attr('font-size', '15px')
-      .attr('font-weight', 'bold')
-      .attr('fill', 'black')
-      .text('Mois');
-
-    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([0, height]);
-
-    svg
-      .append('g')
-      .call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([height, 0])))
-      .append('text')
-      .attr('class', 'axis-title')
-      .attr('y', -3)
-      .attr('x', -15)
-      .attr('dy', '.21em')
-      .attr('text-anchor', 'end')
-      .attr('fill', 'black')
-      .text('Millions de caractères*');
->>>>>>> fbc0da7c3c4a13224a79f24f051a719db61451a4
 
     generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
       let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
@@ -267,7 +233,6 @@ export class Tab3Component  implements OnInit  {
       this.updateView();
     }
 
-<<<<<<< HEAD
 }
 function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: number) {
   text.each(function (this: BaseType, d) {
@@ -316,11 +281,4 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
       }
   });
 }
-=======
-  updateInterventionTypes(interventionTypes: string[]) {
-    console.log(interventionTypes);
-    this.wantedInterventions = interventionTypes;
-    this.updateView();
-  }
->>>>>>> fbc0da7c3c4a13224a79f24f051a719db61451a4
 
