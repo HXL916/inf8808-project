@@ -58,6 +58,14 @@ app-intervention-type-toggle{
     font-size: 1.7em;
     font-weight: 500;
 }
+#titleBottom{
+    font-size: 1.7em;
+    font-weight: 500;
+    margin-left: 42em;
+    margin-right: 40em;
+    margin-bottom: 2em;
+    align-items: center;
+}
 
 /* #legendContainer{
     display: flex;
