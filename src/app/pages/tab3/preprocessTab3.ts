@@ -116,8 +116,8 @@ export function getCountsWithKey(
     }
   }
 
-  // Here we order the tabCount object by alphabetical order of the keys
-  const orderedKeys = Object.keys(tabCount).sort(); // TODO: Modify this if we want to change the order in which the keys are displayed
+  // Here we order the tabCount object by number of interventions in each category
+  const orderedKeys = Object.keys(tabCount).sort((a, b) => tabCount[b] - tabCount[a]);
   const summarizedData: { [key: string]: any }[] = [];
   orderedKeys.forEach((element) => {
     summarizedData.push({
