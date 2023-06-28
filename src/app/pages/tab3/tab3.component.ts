@@ -117,6 +117,7 @@ export class Tab3Component  implements OnInit  {
       .attr("font-weight", "bold")
       .attr("fill", "black")
       .text("Mois");*/
+<<<<<<< HEAD
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
     svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
@@ -138,6 +139,30 @@ export class Tab3Component  implements OnInit  {
     .html('TEST HERE')
   
   }    
+=======
+
+    this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
+    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
+    .attr("class", "axis-title")
+    .attr("y", -3)
+    .attr("dy", ".21em")
+    .attr('text-anchor', 'beginning')
+    .attr("fill", "black")
+    .text("Millions de caractères");
+
+    this.tooltip = svg.append("g")
+    .style("opacity", 1)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .html('TEST HERE')
+  
+  }    
+
+>>>>>>> 164d49a38a8b8c2d6f65f4aff4188199d53b5ebe
   updateLegendName():string{
     var legend = ''
     switch (this.wantedKey){
@@ -153,6 +178,11 @@ export class Tab3Component  implements OnInit  {
     } 
     return legend;
   }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 164d49a38a8b8c2d6f65f4aff4188199d53b5ebe
     generateBarChart(groupedArrays:any):void{
       console.log("groupedArrays", groupedArrays)
       
@@ -216,6 +246,7 @@ export class Tab3Component  implements OnInit  {
             .style("stroke", "none")
           });
     }
+<<<<<<< HEAD
 
     updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
       if(date.value.start && date.value.end){
@@ -224,6 +255,16 @@ export class Tab3Component  implements OnInit  {
       }
     }
 
+=======
+
+    updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
+      if(date.value.start && date.value.end){
+        this.wantedDate = date;
+        this.updateView();
+      }
+    }
+
+>>>>>>> 164d49a38a8b8c2d6f65f4aff4188199d53b5ebe
     updateInterventionTypes(interventionTypes: string[]) {
       console.log(interventionTypes)
       this.wantedInterventions = interventionTypes;
@@ -238,12 +279,18 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
     let word
     let line:any = []
     const lineHeight = 1.1 // Adjust this value for desired line height
+<<<<<<< HEAD
     const x = text.attr('x') || 0
     const y = text.attr('y') || 0
+=======
+    const x = text.attr('x')
+    const y = text.attr('y')
+>>>>>>> 164d49a38a8b8c2d6f65f4aff4188199d53b5ebe
     const dy = parseFloat(text.attr('dy') || '0')
     const maxLines = 2
 
     let tspan = text
+<<<<<<< HEAD
     .text(null)
     .append('tspan')
     .attr('x', x)
@@ -277,3 +324,40 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
     }
   });
 }
+=======
+      .text(null)
+      .append('tspan')
+      .attr('x', x)
+      .attr('y', y)
+      .attr('dy', dy + 'em')
+
+      let lineCount = 0;
+
+      while ((word = words.pop())) {
+        line.push(word);
+        tspan.text(line.join(' '));
+        if (tspan.node()!.getComputedTextLength() > width && line.length > 1) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = text
+            .append('tspan')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('dy', ++lineCount * lineHeight + dy + 'em')
+            .text(word);
+        }
+      }
+  
+      // Check if the maximum number of lines is reached
+      if (lineCount >= maxLines) {
+        // Append "..." at the end of the last line
+        const lastTspan = text.selectAll('tspan').filter(':last-child');
+        const lastLineText = lastTspan.text();
+        const truncatedText = lastLineText.slice(0, lastLineText.length - 3) + '...';
+        lastTspan.text(truncatedText);
+      }
+  });
+}
+
+>>>>>>> 164d49a38a8b8c2d6f65f4aff4188199d53b5ebe
