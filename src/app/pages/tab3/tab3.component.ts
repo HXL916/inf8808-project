@@ -218,13 +218,13 @@ export class Tab3Component  implements OnInit  {
       var legend = ''
       switch (this.wantedKey){
         case "genre":
-          legend = "du genre";
+          legend = "le genre";
           break;
         case "parti":
-          legend = "du parti politique";
+          legend = "le parti politique";
           break;
         case "province":
-          legend = "de la province";
+          legend = "la province";
           break;
       } 
       return legend;
