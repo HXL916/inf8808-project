@@ -83,7 +83,7 @@ export class Tab3Component  implements OnInit  {
 
   // crée la base du graph: svg element, axes, titre?
   createGraphBase(timeGroups: string[], Ymax:number) : void{
-    var margin = {top: 10, right: 30, bottom: 30, left: 120},
+    var margin = {top: 30, right: 30, bottom: 30, left: 120},
     width = 1200- margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -110,13 +110,20 @@ export class Tab3Component  implements OnInit  {
       .call(wrap,50);
 
     this.yScale = d3.scaleLinear().domain([0, Ymax]).range([ 0, height]);
-    svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
+    const axisTitle = svg.append("g").call(d3.axisLeft(d3.scaleLinear().domain([0, Ymax]).range([ height,0]))).append("text")
     .attr("class", "axis-title")
     .attr("y", -3)
     .attr("dy", ".21em")
     .attr('text-anchor', 'beginning')
+    .attr('font-size','1.2em')
     .attr("fill", "black")
-    .text("Millions de caractères");
+    .text(null)
+    axisTitle.append('tspan')
+      .attr('x', -5).attr('y', "0").attr('dy', '-1em')
+      .text('Millions de')
+    axisTitle.append('tspan')
+      .attr('x', -5).attr('y', "0").attr('dy', '0.2em')
+      .text('caractères*')
 
     this.tooltip = svg.append("g")
     .style("opacity", 1)

@@ -23,10 +23,11 @@ app-intervention-type-toggle {
   align-items: center;
 }
 
-#axis-title {
+.axis-title {
   display: flex;
   white-space: break-spaces;
   padding-right: 16px;
+  font-size: 1.2em;
 }
 
 #zone-chart {
