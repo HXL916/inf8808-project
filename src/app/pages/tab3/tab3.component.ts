@@ -245,6 +245,7 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
 
     let lineCount = 0;
 
+
     while ((word = words.pop())) {
       line.push(word);
       tspan.text(line.join(' '));
@@ -253,20 +254,21 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
         tspan.text(line.join(' '));
         line = [word];
         tspan = text
-        .append('tspan')
-        .attr('x', x)
-        .attr('y', y)
-        .attr('dy', ++lineCount * lineHeight + dy + 'em')
-        .text(word);
+          .append('tspan')
+          .attr('x', x)
+          .attr('y', y)
+          .attr('dy', ++lineCount * lineHeight + dy + 'em')
+          .text(word);
       }
     }
+
     // Check if the maximum number of lines is reached
     if (lineCount >= maxLines) {
-      // Append "..." at the end of the last line
-      const lastTspan = text.selectAll('tspan').filter(':last-child');
-      const lastLineText = lastTspan.text();
-      const truncatedText = lastLineText.slice(0, lastLineText.length - 3) + '...';
-      lastTspan.text(truncatedText);
+      // Append text of the third line to the second line
+      const secondLineTspan = text.selectAll('tspan').filter(':nth-child(2)');
+      const thirdLineTspan = text.selectAll('tspan').filter(':nth-child(3)');
+      secondLineTspan.text(secondLineTspan.text() + ' ' + thirdLineTspan.text());
+      thirdLineTspan.remove();
     }
   });
 }
