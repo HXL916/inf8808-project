@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as waffle from 'src/app/pages/tab2/waffle';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
-import { partyColorScale, genderColorScale } from "../../utils/scales"
+import { partyColorScale, genderColorScale, getColorScale } from "../../utils/scales"
 import * as preproc from './preprocessTab2'
 
 
@@ -60,8 +60,8 @@ export class Tab2Component  implements OnInit   {
         this.colorScale = partyColorScale//d3.scaleOrdinal().domain(affiliations).range(["#159CE1","#AAAAAA","#FF8514","#002395","#ED2E38","#30D506"]);
         break;
       case "province":
-        let provinces = data.map(obj => obj["province"]).sort();
-        this.colorScale = d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
+        let provinces = [... new Set(data.map(obj => obj["province"]))].sort();
+        this.colorScale = getColorScale(provinces)//d3.scaleOrdinal().domain(provinces).range(d3.schemeTableau10);
         break;
     } 
 

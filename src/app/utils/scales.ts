@@ -39,13 +39,28 @@ export const keyColors: { [key: string]: string } = {
   "NPD": "#FF8514",
   "PV": "#30D506",
   "Ind.": "#AAAAAA",
-  "Alberta": "#fadd36bb", 
-  "Colombie-Britannique": "#e7939c", 
-  "Manitoba":"#b46ebb", 
+  "Alberta": "#edc949", 
+  "Colombie-Britannique": "#e294de", 
+  "Manitoba": "#9c755f", 
   "Ontario":"#c94a4c", 
   "Provinces maritimes":"#65b3ac", 
   "Québec":"#124badf1", 
   "Saskatchewan":"#25bb4dde", 
   "Territoires": "#aa9a93"
+}
+
+//["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
+
+export function getColorScale(orderedKeys: string[]):d3.ScaleOrdinal<string, unknown, never>{
+  let range :string[] = []
+  orderedKeys.forEach(key=>{
+    if (keyColors.hasOwnProperty(key)){
+      range.push(keyColors[key])
+    } 
+    else range.push("#686868")
+  })
+  return d3.scaleOrdinal()
+    .domain(orderedKeys)
+    .range(range)
 }
 
