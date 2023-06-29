@@ -114,7 +114,6 @@ export class Tab2Component  implements OnInit   {
       }
     }
     const gElements = d3.select("#legendContainer").select(".legend").selectAll(".cell")
-    console.log("gelem:",gElements)
 
   // Update the text within each <text> element
   gElements.each(function () {

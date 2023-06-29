@@ -3,7 +3,6 @@ export function getInterventionsByDateRange(
   startDate: Date,
   endDate: Date
 ): { [key: string]: any }[] {
-  console.log(startDate, endDate);
 
   const filteredArray = data.filter((obj) => {
     const objDate = new Date(obj['année'], obj['mois'] - 1, obj['jour']); // attention, en objet Date de javascript, janvier=0
@@ -23,7 +22,6 @@ export function groupInterventionByMonth(data: { [key: string]: any }[]): any {
     acc[key].push(obj);
     return acc;
   }, {});
-  console.log(groupedArrays);
   return groupedArrays;
 }
 
@@ -182,7 +180,6 @@ export function getInterventionsByType(
 ) {
   const filteredData: { [key: string]: ObjectData[] } = {};
 
-  //console.log(interventionData["2021-11"])
 
   Object.entries(interventionData).forEach(([key, value]) => {
     const filteredItems = value.filter((item) =>

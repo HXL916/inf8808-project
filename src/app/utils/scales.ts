@@ -24,7 +24,6 @@ const monthScale = d3.scaleOrdinal()
 .range(['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']);
 
 export function translateDate(input:string):string{
-  console.log(input)
   let [year,month] = input.split('-')
   return monthScale(month)+" "+year
 }
@@ -49,6 +48,7 @@ export const keyColors: { [key: string]: string } = {
   "Territoires": "#aa9a93"
 }
 
+//Ci dessous les couleur de d3.Tableau10
 //["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
 
 export function getColorScale(orderedKeys: string[]):d3.ScaleOrdinal<string, unknown, never>{

@@ -25,7 +25,7 @@ export class Tab1Component implements OnInit  {
   flopMPs!: {}[]
   data:any;
 
-  constructor(private leg:Legend, private preprocessingService: PreprocessingService) {
+  constructor(private preprocessingService: PreprocessingService) {
   }
 
   ngOnInit(): void {

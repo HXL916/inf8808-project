@@ -179,7 +179,6 @@ export function getIncreaseWomen(previousMPs:{ [key: string]: any }[], newMPs:{ 
   const previousNumberOfWomen:number = previousMPs.filter(obj => obj["genre"] === "F").length;
   const newNumberOfWomen:number = newMPs.filter(obj => obj["genre"] === "F").length;
   const increase:number = newNumberOfWomen - previousNumberOfWomen;
-  console.log(previousNumberOfWomen, newNumberOfWomen)
   if(increase<0){
     return increase.toString();
   }
@@ -210,10 +209,8 @@ export function getPecentageActiveMP(listMPs: { [key: string]: any}[], intervent
 
   for(let legislature of possibleLegislature){
     let legislature_short: string = legislature.substring(0, 2)
-    console.log(legislature_short)
     let interventionLegislature = getInterventionsLegislature(interventionsData, legislature)
     let deputesLegislatures = getMPsLegislature(listMPs, legislature_short)
-    console.log(interventionLegislature, deputesLegislatures)
 
     // Regroupe les interventions par mois et par année
     // C'est compliqué à comprendre le reduce avec javascript, si besoin: https://www.digitalocean.com/community/tutorials/js-finally-understand-reduce

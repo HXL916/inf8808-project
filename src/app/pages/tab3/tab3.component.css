@@ -87,8 +87,9 @@ app-intervention-type-toggle {
   font-weight: 500;
   padding-bottom: 1em;
 }
-#titleBottom{
-    font-size: 1.7em;
+
+.titleBottomTab3{
+    font-size: 1.5em;
     font-weight: 500;
     align-items: center;
     margin-bottom: 1.5em;

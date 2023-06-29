@@ -39,15 +39,11 @@ export class Tab3Component  implements OnInit  {
       this.data = data
       // 44ème législature
       const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
-      //console.log(filterData)
       let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
       groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
-      //console.log("groupedArrays", groupedArrays)
       const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
       let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)/1000000
-      //console.log("Ymax", Ymax)
       const timeGroups = Object.keys(groupedArraysByType)
-      //console.log("time groups", timeGroups)
       
       this.createGraphBase(timeGroups, Ymax)
       this.generateBarChart(groupedArraysByType)
@@ -62,7 +58,6 @@ export class Tab3Component  implements OnInit  {
 
   updateWantedKey(key:string):void{
     this.wantedKey=key;
-    console.log(this.wantedKey)
 
     switch (this.wantedKey){
       case "genre":
@@ -155,7 +150,6 @@ export class Tab3Component  implements OnInit  {
 
 
   generateBarChart(groupedArrays:any):void{
-    console.log("groupedArrays", groupedArrays)
     
     for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
       this.generateOneBar(groupedArrays[key], key)
@@ -165,7 +159,6 @@ export class Tab3Component  implements OnInit  {
   generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
     let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
     preprocessTab3.transformWithCumulativeCount(tab)
-    console.log('tab',tab)
 
     // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
     let xScale = this.xScale
@@ -226,7 +219,6 @@ export class Tab3Component  implements OnInit  {
   }
 
   updateInterventionTypes(interventionTypes: string[]) {
-    console.log(interventionTypes)
     this.wantedInterventions = interventionTypes;
     this.updateView();
   }
