@@ -1,37 +1,29 @@
-<div id="graph-container" style="text-align:center;">
-    <div id="zone-buttons">
-        <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
-        <app-intervention-type-toggle (filterChange)="updateInterventionTypes($event)"></app-intervention-type-toggle>
-    </div>
+
+<div id="pageContainer">
+  <div id="zone-buttons">
+    <app-filter-button (filterChange)="updateWantedKey($event)"></app-filter-button>
+    <app-intervention-type-toggle (filterChange)="updateInterventionTypes($event)"></app-intervention-type-toggle>
+  </div>
+
+  <div id="graph-container" style="text-align:center;">
+
+      
+      <div id="zone-chart">
+        <p id="titleTop">Quantité d'interventions selon {{updateLegendName()}}</p>
+        <div class="tooltip"></div>
+      </div>
     
-    <div id="zone-chart">
-      <p id="titleTop">Quantité d'interventions selon {{updateLegendName()}}</p>
-      <div class="tooltip"></div>
+
+    <div id="titleBottom"><p>Mois</p></div>
+    <div class="dateContainer">
+      <app-date-picker (filterChange)="updateDateFilter($event)"></app-date-picker>
     </div>
   
-    <div id="zone-buttons">
-      <div id="legendContainer"></div>
-      <p ><i>*Les interventions sont quantifiées en fonction de leur nombre de caractères.</i></p>
+  </div>
+  <div id="right-zone">
+    <div id="legendContainer">
     </div>
-</div>
-<div id="titleBottom"><p>Mois</p></div>
-<div class="dateContainer">
-  <app-date-picker (filterChange)="updateDateFilter($event)"></app-date-picker>
-</div>
+    <p ><i>*Les interventions sont quantifiées en fonction de leur nombre de caractères.</i></p>
+  </div>
 
-
-<!-- PASSER LA VALEUR DU FILTER BUTTON SELECTIONNÉE DANS LE TITLE POUR QU'IL CHANGE EN FONCTION
-DU FILTRE -->
-<!-- <div class="title"> Quantité d'interventions en fonction du </div>
-<div class="buttons-container">
-    <app-filter-button class="filter-container"></app-filter-button>
-    <app-intervention-type-toggle class="intervention-container"></app-intervention-type-toggle>
 </div>
-<div class="stackedBar"> 
-    <svg id="stackedBarChart"></svg>
-</div>>
-<div id="graph-container"></div>
-<div class="graph"></div>
-<div class="legend-wrapper">
-    <div id="legendContainer"></div>
-</div> -->
