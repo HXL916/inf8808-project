@@ -7,7 +7,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class InterventionTypeToggleComponent implements OnInit {
   @Output() filterChange = new EventEmitter<string[]>();
-  //TODO: remplacer par ref au service de preprocessing.
+  
   interventionTypes: string[] = [
     'Déclarations de députés',
     'Questions orales',
