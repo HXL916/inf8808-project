@@ -6,6 +6,7 @@ import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseType } from 'd3';
+import {getTooltipContents} from 'src/app/pages/tab3/utilsTab3';
 
 @Component({
   selector: 'app-tab3',
@@ -24,7 +25,6 @@ export class Tab3Component  implements OnInit  {
   pourcent!: any;
   data:any;
   height!:number;
-  tooltip:any;
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = "genre";
@@ -117,16 +117,6 @@ export class Tab3Component  implements OnInit  {
     axisTitle.append('tspan')
       .attr('x', -5).attr('y', "0").attr('dy', '0.2em')
       .text('caractères*')
-
-    this.tooltip = svg.append("g")
-    .style("opacity", 1)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px")
-    .html('TEST HERE')
   
   }    
   updateLegendName():string{
@@ -162,10 +152,23 @@ export class Tab3Component  implements OnInit  {
     let yScale = this.yScale
     let colorScale = this.colorScale
     let height = this.height
-    let tooltip = this.tooltip
     let wantedKey = this.wantedKey
     let wantedDate = this.wantedDate
     let wantedInterventions = this.wantedInterventions
+
+    // Note: nous n'arivons pas à utiliser d3-tip avec Angular / typescript
+    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
+    var tooltip = d3.select("#graph-container")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("position","absolute") // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
+                                    // donc j'ai appliqué directement les éléments de style à la création des objets
+      .style("background-color", "rgba(0, 0, 0, 0.8)") // opacité du fond à 0.8
+      .style("color","rgba(255,255,255,0.8)")
+      .style('border-radius', '10px 10px 0px 10px')
+      .style("padding", "5px")
+      .style('pointer-events','none')
+      .style('visibility', 'hidden')
 
     // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
     // on positionne le groupe sur l'axe des abscisses
@@ -186,26 +189,30 @@ export class Tab3Component  implements OnInit  {
       // ajoute le rectangle à chaque zone
       stack
         .append('rect')
+        .attr('class','bar')
         .attr('x', 0)
         .attr('height', function(d) { return yScale(d["End"]/1000000 - d["Beginning"]/1000000)})
         .attr("y", function(d) {  return height - yScale(d["End"]/1000000)})
         .attr('width', xScale.bandwidth())
         .attr('fill', function(d) { return colorScale(d["KeyElement"])})
-        // Tooltip part
-        .on("mouseover", function(event, d) {
-          tooltip
-            .style("opacity", 1)
-            .style("left", (d3.pointer(event)[0]+70) + "px")
-            .style("top", (d3.pointer(event)[1]) + "px")
-            .html(translatePretty(d['KeyElement'])+" en "+translateDate(xvalue)+":<br> - "+d['Count']+" interventions <br> - "+d['CharCount']+" caractères dans ces interventions")
-          d3.select(this)
-            .style("stroke", "black")
-        })
-        .on("mouseleave", function(d) {
-          tooltip.style("opacity", 0)
-          d3.select(this)
-            .style("stroke", "none")
-          });
+
+       d3.selectAll(".bar")
+      .on("mouseover", function(event, d){
+        console.log(d)
+        d3.select(this).style("stroke", "black")
+        return tooltip.style("visibility", "visible");})
+      .on("mousemove", function(event, d:any){
+        const el = document.getElementById('zone-chart') as any;
+        var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
+        return tooltip
+          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px") // positionnement du tooltip, on a fait aussi bien que possible
+          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+          .html(getTooltipContents(d));
+      })
+      .on("mouseout", function(){
+        d3.select(this)
+        .style("stroke", "none"); // remet le siège sélectionné à la normale
+        return tooltip.style("visibility", "hidden");});
     }
 
   updateDateFilter(date: FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null>; }>) {
@@ -221,6 +228,8 @@ export class Tab3Component  implements OnInit  {
   }
 
 }
+
+
 function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: number) {
   text.each(function (this: BaseType, d) {
     const text = d3.select(this)
@@ -268,4 +277,5 @@ function wrap(text: d3.Selection<BaseType, unknown, SVGGElement, any>, width: nu
       thirdLineTspan.remove();
     }
   });
+  
 }
