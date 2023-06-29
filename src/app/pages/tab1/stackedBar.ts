@@ -49,7 +49,6 @@ export function createStackedBarChart (popularinterventions: { [key: string]: an
     stack
       .append('rect')
       .attr('x', 0)
-      .attr('width', (d) => x(d[1]) - x(d[0]))
       .attr('width', function(d) { return x(d["End"] - d["Beginning"])})
       .attr('height', height)
       .attr('fill', function(d) { return colorScale(d["TypeIntervention"])});
