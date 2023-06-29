@@ -229,9 +229,6 @@ export class Tab3Component implements OnInit {
     let yScale = this.yScale;
     let colorScale = this.colorScale;
     let height = this.height;
-    let wantedKey = this.wantedKey;
-    let wantedDate = this.wantedDate;
-    let wantedInterventions = this.wantedInterventions;
 
     // on crée un groupe stackedBar par mois, on stack le intervention de ce mois dans ce groupe
     // on positionne le groupe sur l'axe des abscisses

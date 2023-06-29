@@ -800,10 +800,9 @@ export class PreprocessingService {
     return maxSum;
   }
 
-  /** TODO: look this over please
-   * Adds "Beginning" and "End" field to the data. Bottom element begins at 0 and ends at the beginning of the next element,
-   * which begins at the end of the previous element, and ends at the beginning of the next element, etc.
-   *
+  /**
+   * Calculates a cumulative count by adding character counts to each object in the input array, and updates the 'Beginning' and 'End'
+   *  keys of each object to represent the cumulative count range.
    * @param {{[key: string]: any }[]} interventionData Intervention data for a single bar of the bar chart.
    */
   transformWithCumulativeCount(
