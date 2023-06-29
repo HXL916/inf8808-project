@@ -7,12 +7,11 @@ import { Tab3Component } from './pages/tab3/tab3.component';
 import { LoadingPageComponent } from './pages/loading-page/loading-page.component';
 
 const routes: Routes = [
-  { path: 'loading', component: LoadingPageComponent },
   { path: 'home', component: LoadingPageComponent },
   { path: 'tab1', component: Tab1Component },
   { path: 'tab2', component: Tab2Component },
   { path: 'tab3', component: Tab3Component },
-  { path: '', redirectTo: '/loading', pathMatch: 'full' },
+  { path: '', redirectTo: '/tab1', pathMatch: 'full' },
 ];
 
 @NgModule({
