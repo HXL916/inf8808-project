@@ -57,8 +57,10 @@ export class PreprocessingService {
       this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
       this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
       this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
-  
+      
+      this.sortedData = this.splitByLegislature(this.deputesLegislatures);
       this.dataIsLoaded.next(true); // Emit true to indicate that data is loaded
+      
     });
   }
 

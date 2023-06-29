@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit,AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as waffle from 'src/app/pages/tab2/waffle';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
@@ -12,22 +12,30 @@ import * as preproc from './preprocessTab2'
   templateUrl: './tab2.component.html',
   styleUrls: ['./tab2.component.css']
 })
-export class Tab2Component  implements OnInit   {
+export class Tab2Component  implements OnInit,AfterViewInit    {
   colorScale!: any;
   wantedKey:string;
   wantedLegislature:number;
-  sortedData:any;
+  
   
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = "genre";
     this.wantedLegislature = 44;
+    this.colorScale = genderColorScale;
+
   }
 
   ngOnInit(): void { 
-      this.sortedData = this.preprocessingService.splitByLegislature(this.preprocessingService.deputesLegislatures);
-      this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-      const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
-      this.addCountToLegend(count)
+    console.log("init")
+   
+    this.createGraph(this.process(this.preprocessingService.sortedData));
+
+    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.preprocessingService.sortedData[this.wantedLegislature], this.wantedKey)
+    this.addCountToLegend(count)
+  }
+  ngAfterViewInit(): void {
+    console.log("after view init")
+    this.updateView();
   }
 
   updateWantedKey(key:string):void{
@@ -39,8 +47,8 @@ export class Tab2Component  implements OnInit   {
     this.updateView();
   }
   updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
-    this.createGraph(this.process(this.sortedData[this.wantedLegislature]));
-    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.sortedData[this.wantedLegislature], this.wantedKey)
+    this.createGraph(this.process(this.preprocessingService.sortedData[this.wantedLegislature]));
+    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.preprocessingService.sortedData[this.wantedLegislature], this.wantedKey)
     this.addCountToLegend(count)
   }
 
@@ -115,20 +123,22 @@ export class Tab2Component  implements OnInit   {
     }
     const gElements = d3.select("#legendContainer").select(".legend").selectAll(".cell")
 
-  // Update the text within each <text> element
-  gElements.each(function () {
-    const textElement = d3.select(this).select('text')
-    const keyText = textElement.text()
-    if(countData.hasOwnProperty(keyText)){
-      const newText = `${keyText} (${countData[keyText]}/${total})`
-      textElement.text(newText)
+    // Update the text within each <text> element
+    gElements.each(function () {
+      const textElement = d3.select(this).select('text')
+      const keyText = textElement.text()
+      if(countData.hasOwnProperty(keyText)){
+        console.log(keyText)
+        const newText = `${keyText} (${countData[keyText]}/${total})`
+        textElement.text(newText)
+      }
+      else{
+        console.log('else'+ keyText)
+        const newText = `${keyText} (0/${total})`
+        textElement.text(newText)
+      }
+    })
     }
-    else{
-      const newText = `${keyText} (0/${total})`
-      textElement.text(newText)
-    }
-  })
-  }
 
 
   
