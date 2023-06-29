@@ -27,32 +27,19 @@ export class Tab3Component  implements OnInit  {
   tooltip:any;
 
   constructor(private preprocessingService: PreprocessingService) {
-    this.updateWantedKey("genre");
+    this.wantedKey = "genre";
+    this.colorScale = genderColorScale;
     this.wantedDate = new FormGroup({start: new FormControl<Date | null>(new Date(2021, 10, 22)), end: new FormControl<Date | null>(new Date(2023, 0, 1))});
     this.wantedInterventions = ["Déclarations de députés", "Questions orales", "Affaires courantes", "Ordres émanant du gouvernement", "Recours au Règlement", "Travaux des subsides", "Affaires émanant des députés", "Autre"]
 
   }
 
   ngOnInit(): void {
-    d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType).then( (data) => {
-      this.data = data
-      // 44ème législature
-      const filterData = preprocessTab3.getInterventionsByDateRange(data, this.wantedDate.value.start!, this.wantedDate.value.end!)
-      let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
-      groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
-      const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
-      let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)/1000000
-      const timeGroups = Object.keys(groupedArraysByType)
-      
-      this.createGraphBase(timeGroups, Ymax)
-      this.generateBarChart(groupedArraysByType)
-      waffle1.drawWaffleLegend(this.colorScale)
-
+      this.updateView();
       // Idee: reprendre le principe du bar chart du tab 1 pour chaque élément dans groupedArrays
       // Genre applere une fonction addBarOneMonth(groupedArray[month], month)
       // Y a juste besoin du groupedArray[month] (avec un peu de processing derrière) pour créer la barre
       // et month permet de positionner sur l'axe des abscisses 
-    })
   }
 
   updateWantedKey(key:string):void{
@@ -72,7 +59,18 @@ export class Tab3Component  implements OnInit  {
     this.updateView();
   }
   updateView():void{         //importer data une fois seulement à place de le refaire à chaque changement  
-    this.ngOnInit();
+          // 44ème législature
+    const filterData = preprocessTab3.getInterventionsByDateRange(this.preprocessingService.debats, this.wantedDate.value.start!, this.wantedDate.value.end!)
+    let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData)
+    groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays)
+    const groupedArraysByType = preprocessTab3.getInterventionsByType(groupedArrays, this.wantedInterventions)
+    let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType)/1000000
+    const timeGroups = Object.keys(groupedArraysByType)
+    
+    this.createGraphBase(timeGroups, Ymax)
+    this.generateBarChart(groupedArraysByType)
+    waffle1.drawWaffleLegend(this.colorScale)
+    
   }
 
   // crée la base du graph: svg element, axes, titre?
