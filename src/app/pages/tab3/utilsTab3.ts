@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {translatePretty, translateDate } from "../../utils/scales"
+import { translatePretty } from "../../utils/scales"
 
 // Renvoie le div (sous forme de string) à rajouter au DOM pour afficher le contenu du tooltip
 // Note: je n'ai pas réussi à appliquer les styles en définissant juste une classe et en écrivant le style dans le csv
@@ -25,14 +25,14 @@ export function getTooltipContents(d:any):string{
       .text(d["nom"]);
 
       tooltipTextDiv.append('div')
-        .text(translatePretty(d['KeyElement'])+" en"); //"+translateDate(d['xValue'])+":"); A FINIR ICI
+        .text(translatePretty(d['KeyElement'])+" en " + translateDateToolTip(d['Date']) + ":");
     
   
       tooltipTextDiv.append('div')
         .text(d['Count']+" interventions");
         
       tooltipTextDiv.append('div')
-      .text(d['CharCount']+" caractères dans ces interventions");
+      .text("pour un total de " + d['CharCount'] + " caractères");
   
     const tooltipNode = tooltipDiv.node();
     if (tooltipNode) {
@@ -41,3 +41,10 @@ export function getTooltipContents(d:any):string{
   
     return '';
   }
+function translateDateToolTip(date: string){
+  const month = date.split("-")[0]
+  const year = date.split("-")[1]
+  const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+  return monthNames[Number(month)-1]+" "+year
+}

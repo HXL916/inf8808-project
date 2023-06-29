@@ -204,11 +204,13 @@ export class Tab3Component  implements OnInit  {
         var y = d3.select(this).attr('y');
         const el = document.getElementById('zone-chart') as any;
         var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
+        console.log("pointer:", event)
+        console.log("offset: ", viewportOffset["x"])
         return tooltip
           //.style("top", (y+10)+"px")  // autre possibilité pour tooltip, mais ça le met sur les boutons de gauche
           //.style("left",(x+10)+"px")
           .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])+"px") // positionnement du tooltip, on a fait aussi bien que possible
-          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+          .style("left",(event.clientX - viewportOffset["x"] + 25)+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
           .html(getTooltipContents(d));
       })
       .on("mouseout", function(){
