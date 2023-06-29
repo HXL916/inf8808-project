@@ -212,7 +212,8 @@ export class Tab3Component implements OnInit {
     let tab: { [key: string]: any }[] = preprocessTab3.getCountsWithKey(
       interventionData,
       this.wantedKey,
-      this.rankingPartyProvince
+      this.rankingPartyProvince,
+      xvalue
     );
     preprocessTab3.transformWithCumulativeCount(tab);
 

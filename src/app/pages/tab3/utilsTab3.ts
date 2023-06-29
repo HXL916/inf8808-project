@@ -41,12 +41,45 @@ export function getTooltipContents(d:any):string{
   
     return '';
   }
-function translateDateToolTip(date: string){
-  const month = date.split("-")[0]
-  const year = date.split("-")[1]
-  const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+// old version
+// function translateDateToolTip(date: string){
+//   const month = date.split("-")[0]
+//   const year = date.split("-")[1]
+//   const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
 
-  return monthNames[Number(month)-1]+" "+year
+//   return monthNames[Number(month)-1]+" "+year
+// }
+
+// Fonction pour enlever les abréviations de mois dans les dates à afficher en tooltip
+function translateDateToolTip(date: string){
+  // Pour toutes les abréviations de mois utilisées, on associe le mot entier
+  const monthFullNames : {[key:string]:string} = {"Jan":"Janvier", "Fev":"Février", "Avr":"Avril","Juil":"Juillet",
+                            "Sep":"Septembre","Oct":"Octobre","Nov":"Novembre","Dec":"Décembre"}
+  let finalDate:string = ""
+  if(date.includes("-")){ // Si on a groupé plusieurs mois
+    const date1 = date.split("-")[0]
+    const date2 = date.split("-")[1]
+    // Pour chacune des 2 dates, on va transformer l'abréviation du mois en nom de mois entier (si mois abrégé)
+    date1.split(" ").forEach(part=>{
+      if(monthFullNames.hasOwnProperty(part)) finalDate+=monthFullNames[part]
+      else finalDate+=part
+      finalDate+=" "
+    })
+    finalDate+="-" // On sépare les deux dates par un -
+    date2.split(" ").forEach(part=>{
+      finalDate+=" "
+      if(monthFullNames.hasOwnProperty(part)) finalDate+=monthFullNames[part]
+      else finalDate+=part
+    })
+  }
+  else{ // On a qu'un seul mois. Si le mois est abrégé, on met le mot entier et on garde l'année telle quelle
+    date.split(" ").forEach(part=>{
+      if(monthFullNames.hasOwnProperty(part)) finalDate+=monthFullNames[part]
+      else finalDate+=part
+      finalDate+=" "
+    })
+  }
+  return finalDate
 }
 
 function separateThousands(x: number) {

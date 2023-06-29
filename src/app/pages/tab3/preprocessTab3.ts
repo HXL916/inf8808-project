@@ -97,11 +97,11 @@ function simplifyKeyNames(data: { [key: string]: any }): {
 export function getCountsWithKey(
   data: { [key: string]: any }[],
   wantedKey: string,
-  ranking: {[key: string]:any}
+  ranking: {[key: string]:any},
+  date: any
 ): { [key: string]: any }[] {
   const tabCount: { [key: string]: number } = {};
   const tabCharCount: { [key: string]: number } = {};
-  const monthYear: { [key: string]: string } = {}; // Added monthYear object
   for (const obj of data) {
     if (obj.hasOwnProperty(wantedKey)) {
       const keyElement = obj[wantedKey];
@@ -111,14 +111,6 @@ export function getCountsWithKey(
       } else {
         tabCount[keyElement] = 1;
         tabCharCount[keyElement] = obj['nbCaracteres'];
-      }
-
-      // Add month and year to monthYear object
-      const month = obj['mois'];
-      const year = obj['année'];
-      const formattedDate = `${month}-${year}`;
-      if (!monthYear.hasOwnProperty(keyElement)) {
-        monthYear[keyElement] = formattedDate;
       }
     }
   }
@@ -158,7 +150,7 @@ export function getCountsWithKey(
         "KeyElement": element,
         "Count": tabCount[element],
         "CharCount": tabCharCount[element],
-        "Date": monthYear[element] // Retrieve the date from monthYear object
+        "Date": date
       });
     }
   });
