@@ -73,8 +73,8 @@ export function drawSquares(//Main arguments
         const el = document.getElementById('zone-chart') as any;
         var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
         return tooltip
-          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px") // positionnement du tooltip, on a fait aussi bien que possible
-          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+          .style("top", (event.clientY - 120)+"px") // positionnement du tooltip, on a fait aussi bien que possible
+          .style("left",(event.clientX - 270)+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
           .html(getTooltipContents(d));
       })
       .on("mouseout", function(){

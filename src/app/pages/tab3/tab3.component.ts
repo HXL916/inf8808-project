@@ -209,7 +209,7 @@ export class Tab3Component  implements OnInit  {
         return tooltip
           //.style("top", (y+10)+"px")  // autre possibilité pour tooltip, mais ça le met sur les boutons de gauche
           //.style("left",(x+10)+"px")
-          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])+"px") // positionnement du tooltip, on a fait aussi bien que possible
+          .style("top", (event.clientY-viewportOffset["y"])+"px") // positionnement du tooltip, on a fait aussi bien que possible
           .style("left",(event.clientX - viewportOffset["x"] + 25)+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
           .html(getTooltipContents(d));
       })
