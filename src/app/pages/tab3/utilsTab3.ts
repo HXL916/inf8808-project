@@ -66,7 +66,6 @@ function translateDateToolTip(date: string) {
     Dec: 'Décembre',
   };
   let finalDate: string = '';
-  console.log(date);
   if (date.includes('-')) {
     // Si on a groupé plusieurs mois
     const date1 = date.split('-')[0];

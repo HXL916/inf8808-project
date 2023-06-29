@@ -500,17 +500,6 @@ export class PreprocessingService {
   //###############################
   // TAB 3 PREPROCESSING FUNCTIONS
 
-  // TODO: add description
-  getInterventionsYear(
-    data: { [key: string]: any }[],
-    annee: number
-  ): { [key: string]: any }[] {
-    const filteredData: { [key: string]: any }[] = data.filter(
-      (obj) => obj['année'] === annee
-    );
-    return filteredData;
-  }
-
   /**
    * Gets the number of intervention by specific period for each type of intervention.
    *
@@ -518,10 +507,9 @@ export class PreprocessingService {
    * @param {number} year The year for which the intervention type should be retrieved
    * @param {number} month The month for which the intervention type should be retrieved
    * @param { string } wantedKey The data to analyze
-   * @returns { [key: string]: any }[]  A table of objects with keys 'TypeIntervention',  containing
+   * @returns {{[key: string]: any }[]}  A table of objects with keys 'TypeIntervention',  containing
    * the name of the number of interventions for each party in the dataset, and 'Count' containing the number of interventions
    */
-  //  getTypeInterventionCountsByPeriod(data: { [key: string]: any }[], year: number, month: number, wantedKey: string): { [key: string]: any }[] {
   getTypeInterventionCountsByPeriod(
     data: { [key: string]: any }[]
   ): { [key: string]: any }[] {
@@ -545,17 +533,38 @@ export class PreprocessingService {
     return summarizedData;
   }
 
-  // TODO: add description
+  /**
+   * Filters the interventions according to the types of interventions the user toggles with the interventionTypeToggle
+   *
+   * @param {{ [key: string]: ObjectData[] }} interventionData Key-value dictionary containing dates and an array of interventions within each date ('Month Year':[...])
+   * @param {string[]} wantedInterventions Array of intervention types to filter by (['Déclarations de députés', 'Questions orales', ..])
+   * @returns {{ [key: string]: ObjectData[] }} interventionData with only the interventions in each value matching the wantedInterventions
+   */
   getInterventionsByType(
-    data: { [key: string]: any }[],
-    interventionType: string
-  ): { [key: string]: any }[] {
-    const filteredData: { [key: string]: any }[] = data.filter(
-      (obj) => obj['typeIntervention'] === interventionType
-    );
+    interventionData: { [key: string]: ObjectData[] },
+    wantedInterventions: string[]
+  ): {[key: string]: ObjectData[]} {
+    const filteredData: { [key: string]: ObjectData[] } = {};
+  
+    Object.entries(interventionData).forEach(([key, value]) => {
+      const filteredItems = value.filter((item) =>
+        wantedInterventions.includes(item.typeIntervention)
+      );
+      if (filteredItems.length > 0) {
+        filteredData[key] = filteredItems;
+      }
+    });
+
     return filteredData;
   }
 
+  
+  /**
+   * Ranks parties and provinces based on the total number of characters in the interventions, so we can use that order for our tab 3 chart.
+   *
+   * @param {{ [key: string]: any }[]} interventionData Array containing every single intervention in our dataset as objects
+   * @returns {{ [key: string]: number }} object containing two rankings: one for parties and one for provinces, based on total number of characters in the intervention
+   */
   getRankingProvinceParty(interventionData: { [key: string]: any }[]): {
     [key: string]: number;
   } {
@@ -593,4 +602,236 @@ export class PreprocessingService {
     rankings['province'] = rankingsProvince;
     return rankings;
   }
+
+  /**
+   * Filters the data to keep only the interventions that correspond to the picked date range
+   *
+   * @param {{ [key: string]: any }[]} data Array containing every single intervention in our dataset as objects
+   * @param {Date} startDate Start Date for the chart specified by the DatePicker
+   * @param {Date} endDate End Date for the chart specified by the DatePicker
+   * @returns {{ [key: string]: any }} Array containing every single intervention in our dataset that corresponds to the picked date range as objects
+   */ 
+  getInterventionsByDateRange(
+    data: { [key: string]: any }[],
+    startDate: Date,
+    endDate: Date
+  ): { [key: string]: any }[] {
+    const filteredArray = data.filter((obj) => {
+      const objDate = new Date(obj['année'], obj['mois'] - 1, obj['jour']); // attention, en objet Date de javascript, janvier = 0
+      return objDate >= startDate && objDate <= endDate;
+    });
+    return filteredArray;
+  }
+
+  /**
+   * Groups interventions by month and year
+   *
+   * @param {{ [key: string]: any }[]} data Array of interventions filtered for the selected time period
+   * @returns {any} Dictionary of objects with key-value pairs of year-month and an array of interventions for that year-month (numerical)
+   */ 
+  groupInterventionByMonth(data: { [key: string]: any }[]): any {
+    const groupedArrays = data.reduce<{
+      [key: string]: { [key: string]: any }[];
+    }>((acc, obj) => {
+      const key = `${obj['année']}-${obj['mois']}`;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(obj);
+      return acc;
+    }, {});
+    return groupedArrays;
+  }  
+
+  /**
+   * Groups months together according to the length of the time period selected by the user in the date range picker
+   *
+   * @param {{ [key: string]: any }} data Dictionary of objects with key-value pairs of year-month and an array of interventions for that year-month
+   * @returns {{ [key: string]: any }} Dictionary of objects with key-value pairs of [year-month year-month] representing a range of months and an array
+   * of interventions for that month-year (numerical)
+   */ 
+  groupSeveralMonths(data: { [key: string]: any }): {
+    [key: string]: any;
+  } {
+    let groupedData: { [key: string]: any[] } = {};
+    const months = Object.keys(data);
+  
+    const step: number = Math.max(1, Math.ceil((months.length - 6) / 12));
+    for (let i = 0; i < months.length; i += step) {
+      const group = months.slice(i, i + step);
+      const groupKey = `${group[0]} ${group[group.length - 1]}`;
+      const groupValues: any[] = [];
+  
+      for (const month of group) {
+        if (data.hasOwnProperty(month)) {
+          groupValues.push(...data[month]);
+        }
+      }
+  
+      groupedData[groupKey] = groupValues;
+    }
+    groupedData = this.simplifyKeyNames(groupedData);
+    return groupedData;
+  }
+
+  /**
+   * Changes the name of the keys in the grouped data to be more readable
+   *
+   * @param {{ [key: string]: any }} data Dictionary of objects with key-value pairs of [year-month year-month] (numerical) and an array of interventions for that range
+   * @returns {{ [key: string]: any }} Dictionary of objects with key-value pairs of [month-year month-year] (string) and an array of interventions for that range,
+   * but now with months as abbreviations of the month to display under each tick on the X axis.
+   */ 
+  private simplifyKeyNames(data: { [key: string]: any }): {
+    [key: string]: any;
+  } {
+    const simplifiedData: { [key: string]: any } = {};
+    const monthTranslate: { [key: number]: string } = {
+      1: 'Jan',
+      2: 'Fev',
+      3: 'Mars',
+      4: 'Avr',
+      5: 'Mai',
+      6: 'Juin',
+      7: 'Juil',
+      8: 'Aout',
+      9: 'Sep',
+      10: 'Oct',
+      11: 'Nov',
+      12: 'Dec',
+    };
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const [startDate, endDate] = key.split(' ');
+  
+        const [startYear, startMonth] = startDate.split('-');
+        const [endYear, endMonth] = endDate.split('-');
+  
+        const startMonthName = monthTranslate[parseInt(startMonth)];
+        const endMonthName = monthTranslate[parseInt(endMonth)];
+  
+        if (startYear === endYear) {
+          if (startMonth === endMonth) {
+            const simplifiedKey = `${startMonthName} ${startYear}`;
+            simplifiedData[simplifiedKey] = data[key];
+          } else {
+            const simplifiedKey = `${startMonthName}-${endMonthName} ${startYear}`;
+            simplifiedData[simplifiedKey] = data[key];
+          }
+        } else {
+          const simplifiedKey = `${startMonthName} ${startYear} - ${endMonthName} ${endYear}`;
+          simplifiedData[simplifiedKey] = data[key];
+        }
+      }
+    }
+    return simplifiedData;
+  }
+
+    /**
+   * This function creates summarized data for one bar of the bar chart, to put data information to display in the tooltip.
+   *
+   * @param {{ [key: string]: any }[]} data Array of interventions within a specific bar (subsection of the selected time-frame)
+   * @param {string} wantedKey The key selected by the user ('genre', 'parti', 'province')
+   * @param {{[key: string]: any}} ranking Object containing two rankings: one for parties and one for provinces, based on total number of characters in the intervention
+   * @param {any} date Simplified date, as a 'month-year' string
+   * @returns {{ [key: string]: any }[]} Summarized data for one bar of the bar chart, containing information for the tooltip.
+   */ 
+  getCountsWithKey(
+    data: { [key: string]: any }[],
+    wantedKey: string,
+    ranking: { [key: string]: any },
+    date: any
+  ): { [key: string]: any }[] {
+    const tabCount: { [key: string]: number } = {};
+    const tabCharCount: { [key: string]: number } = {};
+    for (const obj of data) {
+      if (obj.hasOwnProperty(wantedKey)) {
+        const keyElement = obj[wantedKey];
+        if (tabCount.hasOwnProperty(keyElement)) {
+          tabCount[keyElement]++;
+          tabCharCount[keyElement] += obj['nbCaracteres'];
+        } else {
+          tabCount[keyElement] = 1;
+          tabCharCount[keyElement] = obj['nbCaracteres'];
+        }
+      }
+    }
+  
+    let specificOrder: string[];
+    if (wantedKey == 'genre') specificOrder = ['H', 'F'];
+    else {
+      specificOrder = Object.keys(ranking[wantedKey]).sort((a, b) => {
+        return ranking[wantedKey][a] - ranking[wantedKey][b];
+      });
+    }
+  
+    // Here we order the tabCount object based on the specific order of keys
+    const summarizedData: { [key: string]: any }[] = [];
+    specificOrder.forEach((element) => {
+      if (tabCount.hasOwnProperty(element)) {
+        summarizedData.push({
+          KeyElement: element,
+          Count: tabCount[element],
+          CharCount: tabCharCount[element],
+          Date: date,
+        });
+      }
+    });
+    return summarizedData;
+  }
+
+
+  /**
+   * Gets maximum Y for the chart for scaling purposes.
+   *
+   * @param {any} groupedArrays Intervention data grouped by month and year (string), with an array of interventions for each month.
+   * @returns {number} Maximum value for the total number of characters in the interventions for a given bar of the bar chart.
+   */ 
+  getMaxCharCounts(groupedArrays: any): number {
+    let maxSum: number = 0;
+    for (const key in groupedArrays) {
+      if (Object.prototype.hasOwnProperty.call(groupedArrays, key)) {
+        const sum = groupedArrays[key].reduce(
+          (acc: number, obj: any) => acc + obj['nbCaracteres'],
+          0
+        );
+        if (sum > maxSum) {
+          maxSum = sum;
+        }
+      }
+    }
+    return maxSum;
+  }
+
+  /** TODO: look this over please
+   * Adds "Beginning" and "End" field to the data. Bottom element begins at 0 and ends at the beginning of the next element, 
+   * which begins at the end of the previous element, and ends at the beginning of the next element, etc.
+   *
+   * @param {{[key: string]: any }[]} interventionData Intervention data for a single bar of the bar chart.
+   */ 
+  transformWithCumulativeCount(
+    interventionData: { [key: string]: any }[]
+  ): void {
+    let cumulative_count: number = 0;
+    interventionData.forEach((d) => {
+      d['Beginning'] = cumulative_count;
+      cumulative_count = cumulative_count + d['CharCount'];
+      d['End'] = cumulative_count;
+    });
+  }
+}
+
+// TAB 3 PREPROCESSING INTERFACE (used for some functions)
+interface ObjectData {
+  legislature: string;
+  hansard: number;
+  année: number;
+  mois: number;
+  jour: number;
+  idIntervention: number;
+  typeIntervention: string;
+  nom: string;
+  genre: string;
+  parti: string;
+  nbCaracteres: number;
+  province: string;
 }

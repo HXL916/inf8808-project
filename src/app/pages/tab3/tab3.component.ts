@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { getColorScale } from '../../utils/scales';
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
-import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseType } from 'd3';
@@ -98,18 +97,18 @@ export class Tab3Component implements OnInit {
   }
   updateView(): void {
     // 44ème législature
-    const filterData = preprocessTab3.getInterventionsByDateRange(
+    const filterData = this.preprocessingService.getInterventionsByDateRange(
       this.preprocessingService.debats,
       this.wantedDate.value.start!,
       this.wantedDate.value.end!
     );
-    let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData);
-    groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays);
-    const groupedArraysByType = preprocessTab3.getInterventionsByType(
+    let groupedArrays = this.preprocessingService.groupInterventionByMonth(filterData);
+    groupedArrays = this.preprocessingService.groupSeveralMonths(groupedArrays);
+    const groupedArraysByType = this.preprocessingService.getInterventionsByType(
       groupedArrays,
       this.wantedInterventions
     );
-    let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType) / 1000000;
+    let Ymax = this.preprocessingService.getMaxCharCounts(groupedArraysByType) / 1000000;
     const timeGroups = Object.keys(groupedArraysByType);
 
     this.createGraphBase(timeGroups, Ymax);
@@ -217,13 +216,13 @@ export class Tab3Component implements OnInit {
     xvalue: any,
     tooltip: any
   ): void {
-    let tab: { [key: string]: any }[] = preprocessTab3.getCountsWithKey(
+    let tab: { [key: string]: any }[] = this.preprocessingService.getCountsWithKey(
       interventionData,
       this.wantedKey,
       this.rankingPartyProvince,
       xvalue
     );
-    preprocessTab3.transformWithCumulativeCount(tab);
+    this.preprocessingService.transformWithCumulativeCount(tab);
 
     // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
     let xScale = this.xScale;
