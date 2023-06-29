@@ -104,7 +104,8 @@ export class Tab2Component implements OnInit {
 
   /**
    * Réarrange les sièges pour donner l'allure de la Chambre des Communes avec un trou entre deux rangées.
-   * Sièges supplémentaires dans une ligne supplémentaire pour députés ayant démissionné en cours de mandat.
+   * Rearrange the seats to look like the House of Commons with a gap between two rows.
+   * Additional seats under the two rows for MPs that left the House during the legislature and that were replaced before the end of the legislature.
    */
   lookLikeHouseOfCommons(nbBlocCol = 4, nbBlocRow = 5): void {
     let bigGap = 10,
@@ -133,7 +134,7 @@ export class Tab2Component implements OnInit {
     }
   }
 
-  // Ajoute à la légende le nombre de députés dans chaque groupe / le nombre total de députés pour cette législature
+  // Add to the legend the number of MPs in each group / the total number of MPs for this legislature
   addCountToLegend(countData: { [key: string]: number }): void {
     let total: number = 0;
     for (const key in countData) {
@@ -146,7 +147,7 @@ export class Tab2Component implements OnInit {
       .select('#legendContainer')
       .select('.legend')
       .selectAll('.cell');
-    // Mettre à jour le texte dans chaque élément <text>.
+    // Update the text in each <text> element.
     gElements.each(function () {
       const textElement = d3.select(this).select('text');
       const keyText = textElement.text();

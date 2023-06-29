@@ -96,7 +96,7 @@ export class Tab3Component implements OnInit {
     this.updateView();
   }
   updateView(): void {
-    // 44ème législature
+    // 44th legislature
     const filterData = this.preprocessingService.getInterventionsByDateRange(
       this.preprocessingService.debats,
       this.wantedDate.value.start!,
@@ -116,7 +116,7 @@ export class Tab3Component implements OnInit {
     waffle1.drawWaffleLegend(this.colorScale);
   }
 
-  // crée la base du graph: svg element, axes, titre?
+  // Creates basis of the graph: svg element, axes, title, etc.
   createGraphBase(timeGroups: string[], Ymax: number): void {
     var margin = { top: 30, right: 30, bottom: 30, left: 120 },
       width = 1200 - margin.left - margin.right,
@@ -192,8 +192,7 @@ export class Tab3Component implements OnInit {
   }
 
   generateBarChart(groupedArrays: any): void {
-    // Note: nous n'arrivons pas à utiliser d3-tip avec Angular / typescript
-    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
+    // We couldn' use d3-tip with Angular / TypeScript so we created our own tooltip from scratch, but it's imperfect
     var tooltip = d3
       .select('#zone-chart')
       .append('div')
@@ -224,14 +223,14 @@ export class Tab3Component implements OnInit {
     );
     this.preprocessingService.transformWithCumulativeCount(tab);
 
-    // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
+    // Affecting local variables to the function because this. in functions called with d3 loses the reference to the component
     let xScale = this.xScale;
     let yScale = this.yScale;
     let colorScale = this.colorScale;
     let height = this.height;
 
-    // on crée un groupe stackedBar par mois, on stack le intervention de ce mois dans ce groupe
-    // on positionne le groupe sur l'axe des abscisses
+    // Create a stackedBar group for each month, stack the interventions of this month in this group
+    // position the group on the x axis
     const container = d3
       .select('#stackedBarChart')
       .select('g')
@@ -240,7 +239,7 @@ export class Tab3Component implements OnInit {
       .attr('width', 35) // a changer
       .attr('transform', `translate(${xScale(xvalue)},0)`);
 
-    // crée toutes les zones (une par KeyElement) pour cette barre
+    // Creates every zone (stack) for each month
     const stack = container
       .selectAll('.stack')
       .data(tab)
@@ -248,7 +247,7 @@ export class Tab3Component implements OnInit {
       .append('g')
       .attr('class', 'stack');
 
-    // ajoute le rectangle à chaque zone
+    // add the rectangle to every zone
     stack
       .append('rect')
       .attr('class', 'bar')
@@ -270,13 +269,11 @@ export class Tab3Component implements OnInit {
         return tooltip.style('visibility', 'visible');
       })
       .on('mousemove', function (event, d: any) {
-        var x = d3.select(this).attr('x');
-        var y = d3.select(this).attr('y');
         const el = document.getElementById('zone-chart') as any;
-        var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
+        var viewportOffset = el.getBoundingClientRect(); // Positioning the tooltip relative to the viewport
         return (
           tooltip
-            //.style("top", (y+10)+"px")  // autre possibilité pour tooltip statique
+            //.style("top", (y+10)+"px")  // Other possibility for static toolbar
             //.style("left",(x+10)+"px")
             .style('top', event.clientY - viewportOffset['y'] + 'px')
             .style('left', event.clientX - viewportOffset['x'] + 25 + 'px')
@@ -284,7 +281,7 @@ export class Tab3Component implements OnInit {
         );
       })
       .on('mouseout', function () {
-        d3.select(this).style('stroke', 'none'); // remet le siège sélectionné à la normale
+        d3.select(this).style('stroke', 'none'); // Selected bar to normal
         return tooltip.style('visibility', 'hidden');
       });
   }
@@ -316,7 +313,7 @@ function wrap(
     const words = text.text().split(/\s+/).reverse();
     let word;
     let line: any = [];
-    const lineHeight = 1.1; // Ajuster cette valeur pour la hauteur désirée entre les lignes
+    const lineHeight = 1.1; // Adjust this value to change line spacing
     const x = text.attr('x') || 0;
     const y = text.attr('y') || 0;
     const dy = parseFloat(text.attr('dy') || '0');
@@ -348,7 +345,6 @@ function wrap(
     }
 
     if (lineCount >= maxLines) {
-      // Rajouter le texte de la troisième ligne à la deuxième ligne
       const secondLineTspan = text.selectAll('tspan').filter(':nth-child(2)');
       const thirdLineTspan = text.selectAll('tspan').filter(':nth-child(3)');
       secondLineTspan.text(

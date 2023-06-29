@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { translatePretty } from '../../utils/scales';
 
-// Renvoie le div (sous forme de string) à rajouter au DOM pour afficher le contenu du tooltip
+// Send back the div (as a string) to add to the DOM to display the tooltip content
 export function getTooltipContents(d: any): string {
   const tooltipDiv = d3
     .create('div')
@@ -52,9 +52,9 @@ export function getTooltipContents(d: any): string {
   return '';
 }
 
-// Fonction pour enlever les abréviations de mois dans les dates à afficher en tooltip
+// Function to remove month abbreviations in dates to display in tooltip
 function translateDateToolTip(date: string) {
-  // Pour toutes les abréviations de mois utilisées, on associe le mot entier
+  // For every month abbreviation used, we associate the full word
   const monthFullNames: { [key: string]: string } = {
     Jan: 'Janvier',
     Fev: 'Février',
@@ -67,17 +67,17 @@ function translateDateToolTip(date: string) {
   };
   let finalDate: string = '';
   if (date.includes('-')) {
-    // Si on a groupé plusieurs mois
+    // If we grouped multiple months
     const date1 = date.split('-')[0];
     const date2 = date.split('-')[1];
-    // Pour chacune des 2 dates, on va transformer l'abréviation du mois en nom de mois entier (si mois abrégé)
+    // For every 2 dates, we transform the month abbreviation into the full month name (if abbreviated)
     date1.split(' ').forEach((part) => {
       if (monthFullNames.hasOwnProperty(part))
         finalDate += monthFullNames[part];
       else finalDate += part;
       finalDate += ' ';
     });
-    finalDate += '-'; // On sépare les deux dates par un -
+    finalDate += '-'; // Separator between the 2 dates
     date2.split(' ').forEach((part) => {
       finalDate += ' ';
       if (monthFullNames.hasOwnProperty(part))
@@ -85,7 +85,7 @@ function translateDateToolTip(date: string) {
       else finalDate += part;
     });
   } else {
-    // On a qu'un seul mois. Si le mois est abrégé, on met le mot entier et on garde l'année telle quelle
+    // If we only have one month, we transform the month abbreviation into the full month name (if abbreviated)
     date.split(' ').forEach((part) => {
       if (monthFullNames.hasOwnProperty(part))
         finalDate += monthFullNames[part];
