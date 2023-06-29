@@ -63,6 +63,11 @@ export class Tab3Component implements OnInit {
     }
   }
 
+  /**
+    * Updates the wanted key used for sorting and color scaling in the view.
+    *
+    * @param {string} key - The new key value to set.
+    */
   updateWantedKey(key: string): void {
     this.wantedKey = key;
     let sortedKeys;
@@ -95,6 +100,10 @@ export class Tab3Component implements OnInit {
     }
     this.updateView();
   }
+
+    /**
+    * Updates the view by filtering and grouping intervention data based on selected date range, intervention types, and generating a graph.
+    */
   updateView(): void {
     // 44th legislature
     const filterData = this.preprocessingService.getInterventionsByDateRange(
@@ -116,7 +125,12 @@ export class Tab3Component implements OnInit {
     waffle1.drawWaffleLegend(this.colorScale);
   }
 
-  // Creates basis of the graph: svg element, axes, title, etc.
+    /**
+    * Creates the base of the stacked bar chart by setting up the SVG element and scales.
+    * 
+    * @param {string[]} timeGroups - An array of time groups used for the x-axis domain.
+    * @param {number} Ymax - The maximum value for the y-axis domain.
+    */
   createGraphBase(timeGroups: string[], Ymax: number): void {
     var margin = { top: 30, right: 30, bottom: 30, left: 120 },
       width = 1200 - margin.left - margin.right,
@@ -175,6 +189,12 @@ export class Tab3Component implements OnInit {
       .attr('dy', '0.2em')
       .text('caractères*');
   }
+
+    /**
+    * Gets formatted name of the selected key for the legend.
+    * 
+    * @returns {string} Returns the legend name based on the selected key.
+    */
   updateLegendName(): string {
     var legend = '';
     switch (this.wantedKey) {
@@ -191,6 +211,11 @@ export class Tab3Component implements OnInit {
     return legend;
   }
 
+    /**
+    * Gets formatted name of the selected key for the legend.
+    * 
+    * @param {any} groupedArrays - The grouped arrays containing the data for each bar.
+    */
   generateBarChart(groupedArrays: any): void {
     // We couldn' use d3-tip with Angular / TypeScript so we created our own tooltip from scratch, but it's imperfect
     var tooltip = d3
@@ -210,6 +235,13 @@ export class Tab3Component implements OnInit {
     }
   }
 
+    /**
+    * Generates a single bar in the bar chart for the given intervention data and x-value.
+    *
+    * @param {Object[]} interventionData - The intervention data for the bar.
+    * @param {any} xvalue - The x-value of the bar.
+    * @param {Object} tooltip - The tooltip object used for displaying information on mouseover.
+    */
   generateOneBar(
     interventionData: { [key: string]: any }[],
     xvalue: any,
@@ -286,6 +318,11 @@ export class Tab3Component implements OnInit {
       });
   }
 
+    /**
+    * Checks if the chosen range is valid and updates the view according to it if yes.
+    * 
+    * @param {FormGroup<{start: FormControl<Date | null>; end: FormControl<Date | null>;}>} date - A form group containing the start and end dates of the wanted date range.
+    */ 
   updateDateFilter(
     date: FormGroup<{
       start: FormControl<Date | null>;
@@ -298,12 +335,23 @@ export class Tab3Component implements OnInit {
     }
   }
 
+    /**
+    * Updates the wanted intervention types and updates the view when toggling between different intervention types.
+    * 
+    * @param {string[]} interventionTypes - An array of the wanted intervention types.
+    */ 
   updateInterventionTypes(interventionTypes: string[]) {
     this.wantedInterventions = interventionTypes;
     this.updateView();
   }
 }
 
+  /**
+  * Wraps text within a given width by splitting it into multiple lines.
+  * 
+  * @param {d3.Selection<BaseType, unknown, SVGGElement, any>} text - The text element to wrap.
+  * @param {number} width - The maximum width for each line.
+  */ 
 function wrap(
   text: d3.Selection<BaseType, unknown, SVGGElement, any>,
   width: number
