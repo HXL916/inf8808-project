@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Subject,forkJoin  } from 'rxjs';
+import { Observable, Subject,filter,forkJoin, of, take  } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 
 const WAFFLE_SCALE = 500;
@@ -10,6 +10,7 @@ const WAFFLE_SCALE = 500;
 })
 export class PreprocessingService {
   // This service is used to preprocess the data before displaying it in the graphs
+  // We use it intensively for the first page (Accueil) since all the graphs and statistics there are static
   // The following attributes store the preprocessing results and accessed in the three tabs
   parties!: string[];
   topMPs!: any;
@@ -24,43 +25,66 @@ export class PreprocessingService {
   listeDeputes43!: any;
   increaseWomen!: string;
   changesLegislature44!: any;
+  percentageActiveMP!: number;
   nbInterventionsByType!: { [key: string]: any }[];
   dataIsLoaded = new BehaviorSubject<boolean>(false);
   sortedData: any;
   debats: any;
+  private initialized = false;
+  private initializationSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {
-    this.dataIsLoaded = new BehaviorSubject<boolean>(false); // Initialize with false
-  
+    this.initialize();
+  }
+
+  private async initialize() {
     const csv1Promise = d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType);
     const csv2Promise = d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType);
     const csv3Promise = d3.csv('./assets/data/listedeputes.csv', d3.autoType);
-  
-    forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
-      // Process the data
-      this.debats = debats;
-      this.nbInterventionsByParty = this.getPartyCounts(debats);
-      this.parties = this.getPartiesNames(debats);
-      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
-      this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
-      this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
-      this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
-      
-      this.deputesLegislatures = deputesLegislatures;
-      this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
-      this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
-      this.topMPs = this.interestingMPs['topMPs'];
-      this.flopMPs = this.interestingMPs['flopMPs'];
-      this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
-      this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
-      
-      this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
-  
-      console.log('PreprocessingService created');
-      this.dataIsLoaded.next(true); // Emit true to indicate that data is loaded
-    });
+
+    try {
+      forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
+
+        // Process the data
+        this.debats = debats;
+        this.nbInterventionsByParty = this.getPartyCounts(debats);
+        this.parties = this.getPartiesNames(debats);
+        this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
+        this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
+        this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
+        this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
+        
+        this.deputesLegislatures = deputesLegislatures;
+        this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
+        this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
+        this.topMPs = this.interestingMPs['topMPs'];
+        this.flopMPs = this.interestingMPs['flopMPs'];
+        this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
+        this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
+        this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
+        this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
+        
+        this.sortedData = this.splitByLegislature(this.deputesLegislatures);
+        this.initialized = true;
+        this.initializationSubject.next(true);
+      });
+    } catch (error) {
+      console.error('Error occurred during service initialization:', error);
+      // Handle error if needed
+    }
   }
 
+  isInitialized(): Observable<boolean> {
+    if (this.initialized) {
+      return of(true);
+    } else {
+      return this.initializationSubject.asObservable().pipe(filter((initialized: boolean) => initialized === true), take(1));
+    }
+  }
+
+  
+
+  // ######################################
   // TAB 1 PREPROCESSING FUNCTIONS
 
   /**
@@ -76,39 +100,18 @@ export class PreprocessingService {
     parties = parties.filter(
       (value, index, array) => array.indexOf(value) === index
     );
-    /*
-    console.log('before sort:', parties)
-    parties.sort((x,y)=>x.localeCompare(y))
-    console.log('after sort:', parties)
-    */
     return parties;
   }
-
-    /**
-   * Gets the names of the provinces (as written in debatsCommunes.csv).
-   *
-   * @param {object[]} data The data to analyze
-   * @returns {string[]} The names of the parties in the data set
-   */
-    getProvinces(data: { [key: string]: any }[]): string[] {
-      let parties: string[] = [];
-      parties = data.map((obj) => obj['province']);
-      // Filter it to avoid duplicates
-      parties = parties.filter(
-        (value, index, array) => array.indexOf(value) === index
-      );
-      return parties;
-    }
 
   /**
    * Gets the number of intervention for each political party.
    *
-   * @param {{ [key: string]: any }[]} data The data to analyze
-   * @returns {{ [key: string]: any }[]}  A table of objects with keys 'parti',  containing
-   * the name of the number of interventions for each party in the dataset
+   * @param {{ [key: string]: any }[]} data The data to analyze (interventions)
+   * @returns {{ [key: string]: any }[]}  A list of js objects with keys 'parti' and 'count'
+   * cointains the number of interventions for each party in the dataset
    */
   getPartyCounts(data: { [key: string]: any }[]): { [key: string]: any }[] {
-    const partyCounts: { [key: string]: number } = {};
+    const partyCounts: { [key: string]: number } = {}; // JS object { "BQ":128, "PCC:543",...}
     for (const obj of data) {
       if (obj.hasOwnProperty('parti')) {
         const partyName = obj['parti'];
@@ -119,13 +122,14 @@ export class PreprocessingService {
         }
       }
     }
-
+    // transform into a list of JS objects, easier to plot
     const summarizedData: { [key: string]: any }[] = [];
     Object.keys(partyCounts).forEach((element) => {
       summarizedData.push({ Parti: element, Count: partyCounts[element] });
     });
     return summarizedData;
   }
+
 
   /**
    * Gets the number of intervention for each type of intervention.
@@ -148,7 +152,7 @@ export class PreprocessingService {
         }
       }
     }
-
+    // transform into a list of JS objects, easier to plot
     const summarizedData: { [key: string]: any }[] = [];
     Object.keys(typeInterventionCount).forEach((element) => {
       summarizedData.push({
@@ -158,6 +162,7 @@ export class PreprocessingService {
     });
     return summarizedData;
   }
+
 
   /**
    * Adapts a list of [{'parti','count'}] to the waffle function from utils,
@@ -182,14 +187,13 @@ export class PreprocessingService {
     }
     let otherParties = ['BQ','PV','Ind.'];
     summarizedData.push(allData.filter((d)=>otherParties.indexOf(d['Parti']) > -1));
-    
     return summarizedData;
   }
 
   getScale():number{return WAFFLE_SCALE}
 
   /**
-   * Gets the 5 types of interventions with the most intervention, merge the others in "Autres" type
+   * Gets the 5 types of interventions with the most interventions, merge the others in "Autres" type
    *
    * @param {{[key: string]: any}[]} summarizedData The data to analyze, has to have keys 'TypeIntervention' and 'Count' for each object
    * @returns {string[]} An array of objects like in summerizedData, but with only top 6 TypeIntervention + 'Autres'
@@ -204,7 +208,7 @@ export class PreprocessingService {
       .slice(6)
       .reduce((sum, data) => sum + data['Count'], 0);
 
-    // Create the new array with the top parties and the "Other" party
+    // Create the new array with the top parties and the "Autres" party
     const newData = [
       ...topParties,
       { TypeIntervention: 'Autres', Count: otherCount },
@@ -248,6 +252,7 @@ export class PreprocessingService {
 
   /**
    * Preprocessing for Top & Flop
+   * Look for the most active MPs and those with few interventions
    *
    * @param {{ [key: string]: any }[]} listeDeputes the list of MPs (for one legislature)
    * @param {{ [key: string]: any }[]} interventionsData All the interventions for the same legislature
@@ -282,7 +287,7 @@ export class PreprocessingService {
   }
 
   /**
-   * Preprocessing for stat : increase in the number of women
+   * Preprocessing for stat : increase in the number of women between previous and current legislature
    *
    * @param {{ [key: string]: any }[]} previousMPs the list of MPs (for one legislature)
    * @param {{ [key: string]: any }[]} newMPs the list of MPs (for another legislature)
@@ -301,7 +306,7 @@ export class PreprocessingService {
     const increase: number = newNumberOfWomen - previousNumberOfWomen;
     if (increase < 0) {
       return increase.toString();
-    } else {
+    } else { // if it's positice, we had the symbol "+"
       return '+' + increase.toString();
     }
   }
@@ -323,7 +328,81 @@ export class PreprocessingService {
     return filteredData;
   }
 
+  /**
+ * Preprocessing for stat 1: Proportion of active MPs for each month and then average
+ * 
+ * @param {{ [key: string]: any }[]} listMPs the list of MPs (data we got by ourselves, deputesLegislatures)
+ * @param {{ [key: string]: any }[]} interventionsData list of all the interventions
+ * @returns {number} the statistic we want
+ */
+  getPecentageActiveMP(listMPs: { [key: string]: any}[], interventionsData:{ [key: string]: any }[] ){
+
+    let possibleLegislature : string[] = ["42-1", "43-1", "44-1"]
+    let percentageArray : number[] = []
+
+    for(let legislature of possibleLegislature){
+      let legislature_short: string = legislature.substring(0, 2)
+      let interventionLegislature = this.getInterventionsLegislature(interventionsData, legislature)
+      let deputesLegislatures = this.getMPsLegislature(listMPs, legislature_short)
+
+      // Regroupe les interventions par mois et par année
+      // C'est compliqué à comprendre le reduce avec javascript, si besoin: https://www.digitalocean.com/community/tutorials/js-finally-understand-reduce
+      // Aussi, <{ [key: string]: { [key: string]: any}[] }> c'est le type dans groupedArray il me semble
+      const groupedArrays = interventionLegislature.reduce<{ [key: string]: { [key: string]: any}[] }>((acc, obj) => {
+        const key = `${obj["année"]}-${obj["mois"]}`
+        if (!acc[key]) {
+          acc[key] = []
+        }
+        acc[key].push(obj)
+        return acc
+      }, {})
+
+      // On itère sur tous les arrays (un array = les interventions pour un mois donné)
+      for (const key in groupedArrays) {
+        if (groupedArrays.hasOwnProperty(key)) {
+          const interventionMois = groupedArrays[key];
+          // On va considérer que ce n'est pas significatif si moins de 1000 interventions dans un mois (arrive souvent vers décembre janvier)
+          // Mais la plupart des autres ont entre 2000 et 4000 interventions
+          if (interventionMois.length > 1000) {
+            // On ajouter au tableau la proportion de députés ayant parlé
+            percentageArray.push(this.getPecentageActiveMPoneMonth(deputesLegislatures, interventionMois))
+          }
+        }
+      }
+    }
+    const sum = percentageArray.reduce((a, b) => a + b, 0);
+    const avg = (sum / percentageArray.length) || 0;
+    return Math.round(avg*1000)/10; //retourne le pourcentage avec un chiffre après la virgule
+  }
+
+  /**
+   * Inside getPecentageActiveMP, get the percentage of MPs who were active for a given month
+   * 
+   * @param {{ [key: string]: any }[]} listMPs the list of MPs during the legislature for this month
+   * @param {{ [key: string]: any }[]} interventionsMois list of all the interventions for 1 month
+   * @returns {number} the statistic we want
+   */
+  getPecentageActiveMPoneMonth(listMPs: { [key: string]: any}[], interventionsMois:{ [key: string]: any }[] ) :number{
+    // On regarde tous les noms uniques qui apparaissent dans les interventions du mois
+    const uniqueNamesSet = new Set(interventionsMois.map(obj => obj["nom"]));
+    // On regarde combien de députés apparaissent dans cette liste de noms (au cas où il y aurait des non-députés qui parlent)
+    const matchingNames = listMPs
+      .map(obj => obj["nom"])
+      .filter(name => uniqueNamesSet.has(name));
+    // on retourne le ratio de députés ayant parlé
+    return matchingNames.length / listMPs.length
+  }
+
+  // ###########################################
   // TAB 2 PREPROCESSING FUNCTIONS
+
+
+    /**
+   * Takes the list of MPs with their legislature, and split it in separates lists, one for each legislature
+   * 
+   * @param {{ [key: string]: any }[]} data the list of MPs (deputesLegislatures)
+   * @returns {{ [key: string]: any }[] } a JS object, the keys being the legislatures and the values the list of MPs for this leg
+   */
   splitByLegislature(data: { [key: string]: any }[]): { [key: number]: { [key: string]: any }[] } {
     const dataByLegislature: { [key: number]: { [key: string]: any }[] } = {};
   
@@ -361,6 +440,8 @@ export class PreprocessingService {
     )
   }
 
+
+  //###############################
   // TAB 3 PREPROCESSING FUNCTIONS
 
   // TODO: add description

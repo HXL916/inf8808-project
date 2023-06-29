@@ -101,7 +101,6 @@ export class DatePickerComponent {
   }
 
   updateDatePicker() {
-    console.log(this.range.value)
     this.filterChange.emit(this.range);
   }
 }
