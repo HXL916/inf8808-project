@@ -1,29 +1,28 @@
 body {
   background-color: #fffcf9;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
-
-#graph-container{
+#graph-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
-#zone-tooltip{
-  flex:1;
+#zone-tooltip {
+  flex: 1;
   display: flex;
   flex-direction: row;
   color: black;
   width: 25em;
   height: 10em;
-  box-shadow: 2px 3px 12px #4A6A4A;
+  box-shadow: 2px 3px 12px #4a6a4a;
 
   /* Aesthetic */
-  opacity:0;
+  opacity: 0;
   border: none;
-  background-color: #8AB476;
+  background-color: #8ab476;
   padding: 16px 32px;
   text-align: center;
   text-decoration: none;
@@ -33,44 +32,43 @@ body {
   margin-left: 50px;
   border-radius: 10px;
 }
-#avatar{
-  max-width:90px;
-  max-height:150px;
+#avatar {
+  max-width: 90px;
+  max-height: 150px;
   object-fit: scale-down;
   border-radius: 10px;
   margin-left: 4px;
 }
-#tooltip-details{
+#tooltip-details {
   flex: 1;
 }
-#p-name{
+#p-name {
   font-size: 1.5em;
   font-weight: 700;
-  padding : 0.1em;
-  margin : 0.1em;
+  padding: 0.1em;
+  margin: 0.1em;
   margin-bottom: 1em;
 }
 
-#svgContainer{
-  display:flex;
-  flex:3;
+#svgContainer {
+  display: flex;
+  flex: 3;
   margin: auto;
   justify-content: center;
-
 }
 
-#zone-chart{
+#zone-chart {
   display: block;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 16px 32px;
-  width:600px;
+  width: 600px;
   margin-left: 20%;
 }
 
-#zone-buttons{
-  flex:1;
+#zone-buttons {
+  flex: 1;
   display: flex;
   flex-direction: column;
   width: 25em;
@@ -82,18 +80,16 @@ body {
   border-radius: 10px;
 }
 
-
-
-#tooltip{
-  opacity:0;
-  background-color:"#8AB476";
-  border-radius:"25px";
-  padding:"20px";
+#tooltip {
+  opacity: 0;
+  background-color: "#8AB476";
+  border-radius: "25px";
+  padding: "20px";
 }
 
-.tooltip{
-  background-color:"#8AB476";
-  opacity:70%;
+.tooltip {
+  background-color: "#8AB476";
+  opacity: 70%;
 
   position: absolute;
   border: solid;
@@ -101,12 +97,9 @@ body {
   border-radius: 5px;
 }
 
-
-
-
 /* Legend */
 
-#legendContainer{
+#legendContainer {
   display: flex;
   width: 100%;
   height: 300px;
@@ -114,12 +107,11 @@ body {
   justify-content: center;
 }
 
-#smallTitle{
-  font-size:1.3em;
+#smallTitle {
+  font-size: 1.3em;
   font-weight: 600;
   padding-bottom: 1.5em;
 }
-
 
 .slideContainer {
   margin-left: 10%;
@@ -132,12 +124,12 @@ body {
   -webkit-appearance: none;
   width: 75%;
   height: 5px;
-  border-radius: 5px;  
-  background: #000000;      
+  border-radius: 5px;
+  background: #000000;
   outline: none;
   opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
 }
 
 .slider::-webkit-slider-thumb {
@@ -145,8 +137,8 @@ body {
   appearance: none;
   width: 25px;
   height: 25px;
-  border-radius: 50%; 
-  background: #000000;        /*Insert background url to put an image on the cursor*/
+  border-radius: 50%;
+  background: #000000;
   cursor: pointer;
 }
 
@@ -159,31 +151,20 @@ body {
 }
 
 .slider-values {
-
   width: 75%;
   height: 5px;
   display: flex;
   justify-content: space-between;
-  margin-top: -50px; /* Adjust as needed */
+  margin-top: -50px;
 }
 
 .slider-value {
-  font-size: 20px; /* Adjust as needed */
+  font-size: 20px;
   transform: translateX(-50%);
 }
 
-.slider-value:first-child {
-
-}
-
-.slider-value:last-child {
-
-}
-
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
-.legend{
-  float:right;  /*Ne fonctionne pas, à modifier pour mieux positionner la légende*/
-}
-

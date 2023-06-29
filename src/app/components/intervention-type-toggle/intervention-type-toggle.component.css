@@ -1,65 +1,65 @@
 .intervention-title {
-    margin-left: 10px;
+  margin-left: 10px;
 }
-img{
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    position: relative;
+img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: relative;
 }
-.flex-container{
-    display: flex;
-    flex-direction: row;
-    text-align: center;
-    flex-direction: column;
-    flex-wrap: wrap;
-}
-
-.flex-container > button:hover{
-    background-color: rgba(138, 180, 118, 0.5);
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  flex-direction: column;
+  flex-wrap: wrap;
 }
 
-.active-class{
-    margin: 0 5px;
-    /* Aesthetic */
-    border: none;
-    color: white;
-    background-color: #8AB476;
-    padding: 8px 5px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 4px 2px;
-    margin-right:5%;
-    margin-left:5%;
-    border-radius: 10px;
-
-    /* Hover */
-    transition-duration: 0.4s;
-    cursor: pointer;
+.flex-container > button:hover {
+  background-color: rgba(138, 180, 118, 0.5);
 }
 
-.no-active-class{
-    margin: 0 5px;
-    /* Aesthetic */
-    border: none;
-    color: white;
-    background-color: rgba(138, 180, 118, 0.5);
-    padding: 8px 5px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 4px 2px;
-    margin-right:5%;
-    margin-left:5%;
-    border-radius: 10px;
+.active-class {
+  margin: 0 5px;
+  /* Aesthetic */
+  border: none;
+  color: white;
+  background-color: #8ab476;
+  padding: 8px 5px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 5%;
+  margin-left: 5%;
+  border-radius: 10px;
 
-    /* Hover */
-    transition-duration: 0.4s;
-    cursor: pointer;
+  /* Hover */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.no-active-class {
+  margin: 0 5px;
+  /* Aesthetic */
+  border: none;
+  color: white;
+  background-color: rgba(138, 180, 118, 0.5);
+  padding: 8px 5px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 5%;
+  margin-left: 5%;
+  border-radius: 10px;
+
+  /* Hover */
+  transition-duration: 0.4s;
+  cursor: pointer;
 }
 
 .flex-container > div {
-    flex-wrap: wrap;
-    margin: 10 10px;
+  flex-wrap: wrap;
+  margin: 10 10px;
 }

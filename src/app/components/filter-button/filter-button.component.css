@@ -1,32 +1,31 @@
 .button-group button {
-    /* Aesthetic */
-    border: none;
-    color: white;
-    background-color: #8AB476;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin: 4px 2px;
-    margin-right: 50px;
-    margin-left: 50px;
-    padding: 16px 32px;
-    border-radius: 10px;
-  
-    /* Hover */
-    transition-duration: 0.4s;
-    cursor: pointer;
-  }
-  .button-group button:hover {
-    background-color: #3D7021;
-  }
-  .button-group button:focus {
-    background-color: #3D7021;
-  }
+  /* Aesthetic */
+  border: none;
+  color: white;
+  background-color: #8ab476;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  margin-right: 50px;
+  margin-left: 50px;
+  padding: 16px 32px;
+  border-radius: 10px;
 
-  .flex-container{
-    display: flex;
-    justify-content: flex-start;  /* Buttons on the left side of the container */  
-    flex-direction: column;       /* Vertical Placement */
-    flex: 1 auto;                 /* Width adapts button content*/
-  
-  }
+  /* Hover */
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+.button-group button:hover {
+  background-color: #3d7021;
+}
+.button-group button:focus {
+  background-color: #3d7021;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: flex-start; /* Buttons on the left side of the container */
+  flex-direction: column;      /* Vertical Placement */
+  flex: 1 auto;                /* Width adapts button content*/
+}

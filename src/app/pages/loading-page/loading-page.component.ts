@@ -13,7 +13,6 @@ export class LoadingPageComponent {
   
     constructor(private router: Router, private preprocessing:PreprocessingService) { 
       this.preprocessing.dataIsLoaded.subscribe((loaded: boolean) => {
-        //console.log("loaded", loaded)
         if (loaded)
           this.router.navigate(['/tab1']);
       });

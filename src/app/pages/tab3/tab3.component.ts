@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {getColorScale} from '../../utils/scales';
+import { getColorScale } from '../../utils/scales';
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
-import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
 import { PreprocessingService } from 'src/app/services/preprocessing.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BaseType } from 'd3';
@@ -21,7 +20,7 @@ export class Tab3Component implements OnInit {
   }>;
   wantedInterventions!: string[];
   colorScale!: any;
-  rankingPartyProvince!: {[key:string]:any};
+  rankingPartyProvince!: { [key: string]: any };
   itemList!: any;
   color!: any;
   xScale!: any;
@@ -33,7 +32,7 @@ export class Tab3Component implements OnInit {
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = 'genre';
-    this.colorScale = getColorScale(["H","F"]);
+    this.colorScale = getColorScale(['H', 'F']);
     this.wantedDate = new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 10, 22)),
       end: new FormControl<Date | null>(new Date(2023, 0, 1)),
@@ -64,42 +63,61 @@ export class Tab3Component implements OnInit {
     }
   }
 
+  /**
+    * Updates the wanted key used for sorting and color scaling in the view.
+    *
+    * @param {string} key - The new key value to set.
+    */
   updateWantedKey(key: string): void {
     this.wantedKey = key;
     let sortedKeys;
     switch (this.wantedKey) {
       case 'genre':
-        this.colorScale = getColorScale(["H","F"]);
+        this.colorScale = getColorScale(['H', 'F']);
         break;
       case 'parti':
-        sortedKeys = Object.keys(this.rankingPartyProvince['parti']).sort((a, b) => {
-          return this.rankingPartyProvince['parti'][a] - this.rankingPartyProvince['parti'][b];
-        });
-        this.colorScale = getColorScale(sortedKeys)
+        sortedKeys = Object.keys(this.rankingPartyProvince['parti']).sort(
+          (a, b) => {
+            return (
+              this.rankingPartyProvince['parti'][a] -
+              this.rankingPartyProvince['parti'][b]
+            );
+          }
+        );
+        this.colorScale = getColorScale(sortedKeys);
         break;
       case 'province':
-        sortedKeys = Object.keys(this.rankingPartyProvince['province']).sort((a, b) => {
-          return this.rankingPartyProvince['province'][a] - this.rankingPartyProvince['province'][b];
-        });
-        this.colorScale = getColorScale(sortedKeys)
+        sortedKeys = Object.keys(this.rankingPartyProvince['province']).sort(
+          (a, b) => {
+            return (
+              this.rankingPartyProvince['province'][a] -
+              this.rankingPartyProvince['province'][b]
+            );
+          }
+        );
+        this.colorScale = getColorScale(sortedKeys);
         break;
     }
     this.updateView();
   }
+
+    /**
+    * Updates the view by filtering and grouping intervention data based on selected date range, intervention types, and generating a graph.
+    */
   updateView(): void {
-    // 44ème législature
-    const filterData = preprocessTab3.getInterventionsByDateRange(
+    // 44th legislature
+    const filterData = this.preprocessingService.getInterventionsByDateRange(
       this.preprocessingService.debats,
       this.wantedDate.value.start!,
       this.wantedDate.value.end!
     );
-    let groupedArrays = preprocessTab3.groupInterventionByMonth(filterData);
-    groupedArrays = preprocessTab3.groupSeveralMonths(groupedArrays);
-    const groupedArraysByType = preprocessTab3.getInterventionsByType(
+    let groupedArrays = this.preprocessingService.groupInterventionByMonth(filterData);
+    groupedArrays = this.preprocessingService.groupSeveralMonths(groupedArrays);
+    const groupedArraysByType = this.preprocessingService.getInterventionsByType(
       groupedArrays,
       this.wantedInterventions
     );
-    let Ymax = preprocessTab3.getMaxCharCounts(groupedArraysByType) / 1000000;
+    let Ymax = this.preprocessingService.getMaxCharCounts(groupedArraysByType) / 1000000;
     const timeGroups = Object.keys(groupedArraysByType);
 
     this.createGraphBase(timeGroups, Ymax);
@@ -107,7 +125,12 @@ export class Tab3Component implements OnInit {
     waffle1.drawWaffleLegend(this.colorScale);
   }
 
-  // crée la base du graph: svg element, axes, titre?
+    /**
+    * Creates the base of the stacked bar chart by setting up the SVG element and scales.
+    * 
+    * @param {string[]} timeGroups - An array of time groups used for the x-axis domain.
+    * @param {number} Ymax - The maximum value for the y-axis domain.
+    */
   createGraphBase(timeGroups: string[], Ymax: number): void {
     var margin = { top: 30, right: 30, bottom: 30, left: 120 },
       width = 1200 - margin.left - margin.right,
@@ -166,6 +189,12 @@ export class Tab3Component implements OnInit {
       .attr('dy', '0.2em')
       .text('caractères*');
   }
+
+    /**
+    * Gets formatted name of the selected key for the legend.
+    * 
+    * @returns {string} Returns the legend name based on the selected key.
+    */
   updateLegendName(): string {
     var legend = '';
     switch (this.wantedKey) {
@@ -182,15 +211,18 @@ export class Tab3Component implements OnInit {
     return legend;
   }
 
+    /**
+    * Gets formatted name of the selected key for the legend.
+    * 
+    * @param {any} groupedArrays - The grouped arrays containing the data for each bar.
+    */
   generateBarChart(groupedArrays: any): void {
-    // Note: nous n'arrivons pas à utiliser d3-tip avec Angular / typescript
-    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
+    // We couldn' use d3-tip with Angular / TypeScript so we created our own tooltip from scratch, but it's imperfect
     var tooltip = d3
       .select('#zone-chart')
       .append('div')
       .attr('class', 'tooltip')
-      .style('position', 'absolute') // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
-      // donc j'ai appliqué directement les éléments de style à la création des objets
+      .style('position', 'absolute')
       .style('background-color', 'rgba(0, 0, 0, 0.8)') // opacité du fond à 0.8
       .style('color', 'rgba(255,255,255,0.8)')
       .style('border-radius', '10px 10px 0px 10px')
@@ -199,35 +231,38 @@ export class Tab3Component implements OnInit {
       .style('visibility', 'hidden');
 
     for (const key in groupedArrays) {
-      // here key = date YYYY-M (ex: 2016-1)
       this.generateOneBar(groupedArrays[key], key, tooltip);
     }
   }
 
+    /**
+    * Generates a single bar in the bar chart for the given intervention data and x-value.
+    *
+    * @param {Object[]} interventionData - The intervention data for the bar.
+    * @param {any} xvalue - The x-value of the bar.
+    * @param {Object} tooltip - The tooltip object used for displaying information on mouseover.
+    */
   generateOneBar(
     interventionData: { [key: string]: any }[],
     xvalue: any,
     tooltip: any
   ): void {
-    let tab: { [key: string]: any }[] = preprocessTab3.getCountsWithKey(
+    let tab: { [key: string]: any }[] = this.preprocessingService.getCountsWithKey(
       interventionData,
       this.wantedKey,
       this.rankingPartyProvince,
       xvalue
     );
-    preprocessTab3.transformWithCumulativeCount(tab);
+    this.preprocessingService.transformWithCumulativeCount(tab);
 
-    // on affecte a des variables locales à la fonction parce que this. dans les fonctions qu'on appelle avec d3 perd la référence au composant
+    // Affecting local variables to the function because this. in functions called with d3 loses the reference to the component
     let xScale = this.xScale;
     let yScale = this.yScale;
     let colorScale = this.colorScale;
     let height = this.height;
-    let wantedKey = this.wantedKey;
-    let wantedDate = this.wantedDate;
-    let wantedInterventions = this.wantedInterventions;
 
-    // on crée un groupe stackedBar par mois, on stack le intervention de ce mois dans ce groupe
-    // on positionne le groupe sur l'axe des abscisses
+    // Create a stackedBar group for each month, stack the interventions of this month in this group
+    // position the group on the x axis
     const container = d3
       .select('#stackedBarChart')
       .select('g')
@@ -236,7 +271,7 @@ export class Tab3Component implements OnInit {
       .attr('width', 35) // a changer
       .attr('transform', `translate(${xScale(xvalue)},0)`);
 
-    // crée toutes les zones (une par KeyElement) pour cette barre
+    // Creates every zone (stack) for each month
     const stack = container
       .selectAll('.stack')
       .data(tab)
@@ -244,7 +279,7 @@ export class Tab3Component implements OnInit {
       .append('g')
       .attr('class', 'stack');
 
-    // ajoute le rectangle à chaque zone
+    // add the rectangle to every zone
     stack
       .append('rect')
       .attr('class', 'bar')
@@ -266,25 +301,28 @@ export class Tab3Component implements OnInit {
         return tooltip.style('visibility', 'visible');
       })
       .on('mousemove', function (event, d: any) {
-        var x = d3.select(this).attr('x');
-        var y = d3.select(this).attr('y');
         const el = document.getElementById('zone-chart') as any;
-        var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
+        var viewportOffset = el.getBoundingClientRect(); // Positioning the tooltip relative to the viewport
         return (
           tooltip
-            //.style("top", (y+10)+"px")  // autre possibilité pour tooltip, mais ça le met sur les boutons de gauche
+            //.style("top", (y+10)+"px")  // Other possibility for static toolbar
             //.style("left",(x+10)+"px")
-            .style('top', event.clientY - viewportOffset['y'] + 'px') // positionnement du tooltip, on a fait aussi bien que possible
-            .style('left', event.clientX - viewportOffset['x'] + 25 + 'px') // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+            .style('top', event.clientY - viewportOffset['y'] + 'px')
+            .style('left', event.clientX - viewportOffset['x'] + 25 + 'px')
             .html(getTooltipContents(d))
         );
       })
       .on('mouseout', function () {
-        d3.select(this).style('stroke', 'none'); // remet le siège sélectionné à la normale
+        d3.select(this).style('stroke', 'none'); // Selected bar to normal
         return tooltip.style('visibility', 'hidden');
       });
   }
 
+    /**
+    * Checks if the chosen range is valid and updates the view according to it if yes.
+    * 
+    * @param {FormGroup<{start: FormControl<Date | null>; end: FormControl<Date | null>;}>} date - A form group containing the start and end dates of the wanted date range.
+    */ 
   updateDateFilter(
     date: FormGroup<{
       start: FormControl<Date | null>;
@@ -297,12 +335,23 @@ export class Tab3Component implements OnInit {
     }
   }
 
+    /**
+    * Updates the wanted intervention types and updates the view when toggling between different intervention types.
+    * 
+    * @param {string[]} interventionTypes - An array of the wanted intervention types.
+    */ 
   updateInterventionTypes(interventionTypes: string[]) {
     this.wantedInterventions = interventionTypes;
     this.updateView();
   }
 }
 
+  /**
+  * Wraps text within a given width by splitting it into multiple lines.
+  * 
+  * @param {d3.Selection<BaseType, unknown, SVGGElement, any>} text - The text element to wrap.
+  * @param {number} width - The maximum width for each line.
+  */ 
 function wrap(
   text: d3.Selection<BaseType, unknown, SVGGElement, any>,
   width: number
@@ -312,7 +361,7 @@ function wrap(
     const words = text.text().split(/\s+/).reverse();
     let word;
     let line: any = [];
-    const lineHeight = 1.1; // Adjust this value for desired line height
+    const lineHeight = 1.1; // Adjust this value to change line spacing
     const x = text.attr('x') || 0;
     const y = text.attr('y') || 0;
     const dy = parseFloat(text.attr('dy') || '0');
@@ -343,9 +392,7 @@ function wrap(
       }
     }
 
-    // Check if the maximum number of lines is reached
     if (lineCount >= maxLines) {
-      // Append text of the third line to the second line
       const secondLineTspan = text.selectAll('tspan').filter(':nth-child(2)');
       const thirdLineTspan = text.selectAll('tspan').filter(':nth-child(3)');
       secondLineTspan.text(
