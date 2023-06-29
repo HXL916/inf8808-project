@@ -29,10 +29,10 @@ export function getTooltipContents(d:any):string{
     
   
       tooltipTextDiv.append('div')
-        .text(d['Count']+" interventions");
+        .text("• " + separateThousands(d['Count']) + " interventions").style('text-align', 'left');
         
       tooltipTextDiv.append('div')
-      .text("pour un total de " + d['CharCount'] + " caractères");
+      .text("• "+ separateThousands(d['CharCount']) + " caractères").style('text-align', 'left');
   
     const tooltipNode = tooltipDiv.node();
     if (tooltipNode) {
@@ -47,4 +47,8 @@ function translateDateToolTip(date: string){
   const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
 
   return monthNames[Number(month)-1]+" "+year
+}
+
+function separateThousands(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
