@@ -108,7 +108,8 @@ export class Tab1Component implements OnInit  {
     const statSpan1: HTMLSpanElement | null = document.getElementById("stat1") as HTMLSpanElement;
     if (statSpan1) {
       // get the statistic already preprocessed in the service (it's static: we compute it only once)
-      const percentActiveMPs:number = preproc.getPecentageActiveMP(listeDeputes, interventionData)
+      //const percentActiveMPs:number = preproc.getPecentageActiveMP(listeDeputes, interventionData)
+      const percentActiveMPs:number = this.preprocessingService.percentageActiveMP;
       // Inject the value into the <span> element
       statSpan1.textContent = percentActiveMPs.toString();
     }
@@ -132,7 +133,7 @@ export class Tab1Component implements OnInit  {
       }
       else if(changesLegislature44.length == 1){ // if only one MP changed his party, we diplay his name
         innerStatSpan.textContent = "1" // this text will be bold
-        const textAfter: Text = document.createTextNode("députe ("+changesLegislature44[0]["nom"]+") a") // this text will be normal
+        const textAfter: Text = document.createTextNode("député ("+changesLegislature44[0]["nom"]+") a") // this text will be normal
         statSpan2.appendChild(innerStatSpan)
         statSpan2.appendChild(textAfter)
       }
