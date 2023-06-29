@@ -50,8 +50,6 @@ export function drawSquares(//Main arguments
 }
 
 export function drawWaffleLegend(colorScale:any, scale?:number):void{
-  const width = 10 // à voir si on peut utiliser une variable globale pour ça, width du waffle chart (faudra peut etre soustraire quelque chose ici)
-  // j'ajoute directement au svg du waffle chart puis je crée un groupe (g) legend
   d3.select("#legendContainer").selectAll('svg').remove();
   
   var container = d3.select("#legendContainer")
@@ -59,7 +57,7 @@ export function drawWaffleLegend(colorScale:any, scale?:number):void{
 
   container.append('g')
      .attr('class', 'legend')
-     .attr('transform', 'translate(' + width + ',+20)') 
+     .attr('transform', 'translate(10,+20)') 
 
   var legend = d3Legend.legendColor()
     .shape('path', d3.symbol().type(d3.symbolSquare).size(250)()!) // mettre point d'exclamation à la fin parce qu'on sait que c'est non null

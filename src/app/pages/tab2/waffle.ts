@@ -23,11 +23,13 @@ export function drawSquares(//Main arguments
     const svg = container.select('svg');
     svg.selectAll('rect').remove();
 
-
+    // Note: nous n'arivons pas à utiliser d3-tip avec Angular / typescript
+    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
     var tooltip = d3.select("#graph-container")
       .append("div")
       .attr("class", "tooltip")
-      .style("position","absolute") // je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
+      .style("position","absolute") // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
+                                    // donc j'ai appliqué directement les éléments de style à la création des objets
       .style("background-color", "rgba(138, 180, 118, 0.8)") // opacité du fond à 0.8
       .style('border-radius', '10px 10px 0px 10px')
       .style("padding", "5px")
@@ -64,20 +66,20 @@ export function drawSquares(//Main arguments
       .on("mouseover", function(event, d){
         var color = d3.select(this).attr('fill');
         d3.select(this)
-          .style("stroke", color)
+          .style("stroke", color) // donne l'impression que le siège hovered est plus gros
           .style("stroke-width",3) ;
         return tooltip.style("visibility", "visible");})
       .on("mousemove", function(event, d:any){
         const el = document.getElementById('zone-chart') as any;
-        var viewportOffset = el.getBoundingClientRect();
+        var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
         return tooltip
-          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px")
-          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px")
+          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px") // positionnement du tooltip, on a fait aussi bien que possible
+          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
           .html(getTooltipContents(d));
       })
       .on("mouseout", function(){
         d3.select(this)
-        .style("stroke", "none");
+        .style("stroke", "none"); // remet le siège sélectionné à la normale
         return tooltip.style("visibility", "hidden");});
 }
 
