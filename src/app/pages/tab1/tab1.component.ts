@@ -27,8 +27,9 @@ export class Tab1Component implements OnInit  {
   constructor(private preprocessingService: PreprocessingService) {
   }
 
-  ngOnInit(): void {
-      
+  async ngOnInit() {
+    try {
+      await this.preprocessingService.isInitialized().toPromise();
       this.createWaffleGraph();
       
       // BAR CHART
@@ -57,6 +58,12 @@ export class Tab1Component implements OnInit  {
       // KEY VALUES with listedeputes.csv : number of changes since beginning legislature
         const changesLegislature44 : { [key: string]: any }[] = this.preprocessingService.changesLegislature44
         this.addingStatChangeLegislature(changesLegislature44)
+    } catch (error) {
+      console.error(
+        'Error while initializing preprocessingService on tab3: ',
+        error
+      );
+    }
   }
 
   

@@ -12,7 +12,7 @@ import * as preproc from './preprocessTab2'
   templateUrl: './tab2.component.html',
   styleUrls: ['./tab2.component.css']
 })
-export class Tab2Component  implements OnInit,AfterViewInit    {
+export class Tab2Component  implements OnInit    {
   colorScale!: any;
   wantedKey:string;
   wantedLegislature:number;
@@ -25,16 +25,16 @@ export class Tab2Component  implements OnInit,AfterViewInit    {
 
   }
 
-  ngOnInit(): void { 
-    console.log("init")
-    this.updateView();
-    
-  }
-  ngAfterViewInit(): void {
-    console.log("after view init")
-
-    
-    //this.updateView();
+  async ngOnInit() { 
+    try {
+      await this.preprocessingService.isInitialized().toPromise();
+      this.updateView();
+    } catch (error) {
+      console.error(
+        'Error while initializing preprocessingService on tab3: ',
+        error
+      );
+    }
   }
 
   updateWantedKey(key:string):void{
