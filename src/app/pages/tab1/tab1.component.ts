@@ -23,13 +23,14 @@ export class Tab1Component implements OnInit  {
   topMPs!: {}[]
   flopMPs!: {}[]
   data:any;
-
+  loading = true;
   constructor(private preprocessingService: PreprocessingService) {
   }
 
   async ngOnInit() {
     try {
       await this.preprocessingService.isInitialized().toPromise();
+      this.loading = false;
       this.createWaffleGraph();
       
       // BAR CHART
