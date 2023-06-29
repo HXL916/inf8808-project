@@ -42,10 +42,10 @@ export const keyColors: { [key: string]: string } = {
   "Colombie-Britannique": "#e294de", 
   "Manitoba": "#9c755f", 
   "Ontario":"#c94a4c", 
-  "Provinces maritimes":"#65b3ac", 
+  "Provinces maritimes":"#53aab1", 
   "Québec":"#124badf1", 
   "Saskatchewan":"#25bb4dde", 
-  "Territoires": "#aa9a93"
+  "Territoires": "#9ba1a0"
 }
 
 //Ci dessous les couleur de d3.Tableau10

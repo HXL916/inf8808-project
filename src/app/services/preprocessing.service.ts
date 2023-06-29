@@ -27,6 +27,7 @@ export class PreprocessingService {
   changesLegislature44!: any;
   percentageActiveMP!: number;
   nbInterventionsByType!: { [key: string]: any }[];
+  ranking!: { [key:string]:any}
   dataIsLoaded = new BehaviorSubject<boolean>(false);
   sortedData: any;
   debats: any;
@@ -63,7 +64,7 @@ export class PreprocessingService {
         this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
         this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
         this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
-        
+        this.ranking = this.getRankingProvinceParty(debats)
         this.sortedData = this.splitByLegislature(this.deputesLegislatures);
         this.initialized = true;
         this.initializationSubject.next(true);
@@ -505,5 +506,41 @@ export class PreprocessingService {
   getInterventionsByType(data: { [key: string]: any }[], interventionType: string):{ [key: string]: any }[]{
       const filteredData: { [key: string]: any }[] = data.filter(obj => obj["typeIntervention"] === interventionType);
       return filteredData;
+  }
+
+  getRankingProvinceParty(interventionData: { [key: string]: any }[]):{ [key:string]:number} {
+    const partySums: { [party: string]: number } = {};
+    const provinceSums: { [region: string]: number } = {};
+    // Get the sums of nb_char for each party and each province
+    for (const data of interventionData) {
+      const nbChar:number = data["nbCaracteres"] 
+      const party:string = data["parti"]
+      const province:string = data["province"]
+      partySums[party] = (partySums[party] || 0) + nbChar;
+      provinceSums[province] = (provinceSums[province] || 0) + nbChar;
+    }
+    // Sort party and region sums in descending order
+    const sortedParties = Object.entries(partySums).sort(
+      ([, sumA], [, sumB]) => sumB - sumA
+    );
+    const sortedRegions = Object.entries(provinceSums).sort(
+      ([, sumA], [, sumB]) => sumB - sumA
+    );
+    
+    // Create a new objects for rankings
+    const rankingsParty: { [party: string]: number } = {};
+    const rankingsProvince: { [province: string]: number } = {};
+    const rankings: {[key:string]:any} = {}
+    // Assign rankings to parties based on sums
+    sortedParties.forEach(([party], index) => {
+      rankingsParty[party] = index + 1;
+    });
+    // Assign rankings to regions based on sums
+    sortedRegions.forEach(([region], index) => {
+      rankingsProvince[region] = index + 1;
+    });
+    rankings["parti"] = rankingsParty
+    rankings["province"] = rankingsProvince
+    return rankings;
   }
 }
