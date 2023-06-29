@@ -543,9 +543,9 @@ export class PreprocessingService {
   getInterventionsByType(
     interventionData: { [key: string]: ObjectData[] },
     wantedInterventions: string[]
-  ): {[key: string]: ObjectData[]} {
+  ): { [key: string]: ObjectData[] } {
     const filteredData: { [key: string]: ObjectData[] } = {};
-  
+
     Object.entries(interventionData).forEach(([key, value]) => {
       const filteredItems = value.filter((item) =>
         wantedInterventions.includes(item.typeIntervention)
@@ -558,7 +558,6 @@ export class PreprocessingService {
     return filteredData;
   }
 
-  
   /**
    * Ranks parties and provinces based on the total number of characters in the interventions, so we can use that order for our tab 3 chart.
    *
@@ -610,7 +609,7 @@ export class PreprocessingService {
    * @param {Date} startDate Start Date for the chart specified by the DatePicker
    * @param {Date} endDate End Date for the chart specified by the DatePicker
    * @returns {{ [key: string]: any }} Array containing every single intervention in our dataset that corresponds to the picked date range as objects
-   */ 
+   */
   getInterventionsByDateRange(
     data: { [key: string]: any }[],
     startDate: Date,
@@ -628,7 +627,7 @@ export class PreprocessingService {
    *
    * @param {{ [key: string]: any }[]} data Array of interventions filtered for the selected time period
    * @returns {any} Dictionary of objects with key-value pairs of year-month and an array of interventions for that year-month (numerical)
-   */ 
+   */
   groupInterventionByMonth(data: { [key: string]: any }[]): any {
     const groupedArrays = data.reduce<{
       [key: string]: { [key: string]: any }[];
@@ -641,7 +640,7 @@ export class PreprocessingService {
       return acc;
     }, {});
     return groupedArrays;
-  }  
+  }
 
   /**
    * Groups months together according to the length of the time period selected by the user in the date range picker
@@ -649,25 +648,25 @@ export class PreprocessingService {
    * @param {{ [key: string]: any }} data Dictionary of objects with key-value pairs of year-month and an array of interventions for that year-month
    * @returns {{ [key: string]: any }} Dictionary of objects with key-value pairs of [year-month year-month] representing a range of months and an array
    * of interventions for that month-year (numerical)
-   */ 
+   */
   groupSeveralMonths(data: { [key: string]: any }): {
     [key: string]: any;
   } {
     let groupedData: { [key: string]: any[] } = {};
     const months = Object.keys(data);
-  
+
     const step: number = Math.max(1, Math.ceil((months.length - 6) / 12));
     for (let i = 0; i < months.length; i += step) {
       const group = months.slice(i, i + step);
       const groupKey = `${group[0]} ${group[group.length - 1]}`;
       const groupValues: any[] = [];
-  
+
       for (const month of group) {
         if (data.hasOwnProperty(month)) {
           groupValues.push(...data[month]);
         }
       }
-  
+
       groupedData[groupKey] = groupValues;
     }
     groupedData = this.simplifyKeyNames(groupedData);
@@ -680,7 +679,7 @@ export class PreprocessingService {
    * @param {{ [key: string]: any }} data Dictionary of objects with key-value pairs of [year-month year-month] (numerical) and an array of interventions for that range
    * @returns {{ [key: string]: any }} Dictionary of objects with key-value pairs of [month-year month-year] (string) and an array of interventions for that range,
    * but now with months as abbreviations of the month to display under each tick on the X axis.
-   */ 
+   */
   private simplifyKeyNames(data: { [key: string]: any }): {
     [key: string]: any;
   } {
@@ -702,13 +701,13 @@ export class PreprocessingService {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const [startDate, endDate] = key.split(' ');
-  
+
         const [startYear, startMonth] = startDate.split('-');
         const [endYear, endMonth] = endDate.split('-');
-  
+
         const startMonthName = monthTranslate[parseInt(startMonth)];
         const endMonthName = monthTranslate[parseInt(endMonth)];
-  
+
         if (startYear === endYear) {
           if (startMonth === endMonth) {
             const simplifiedKey = `${startMonthName} ${startYear}`;
@@ -726,7 +725,7 @@ export class PreprocessingService {
     return simplifiedData;
   }
 
-    /**
+  /**
    * This function creates summarized data for one bar of the bar chart, to put data information to display in the tooltip.
    *
    * @param {{ [key: string]: any }[]} data Array of interventions within a specific bar (subsection of the selected time-frame)
@@ -734,7 +733,7 @@ export class PreprocessingService {
    * @param {{[key: string]: any}} ranking Object containing two rankings: one for parties and one for provinces, based on total number of characters in the intervention
    * @param {any} date Simplified date, as a 'month-year' string
    * @returns {{ [key: string]: any }[]} Summarized data for one bar of the bar chart, containing information for the tooltip.
-   */ 
+   */
   getCountsWithKey(
     data: { [key: string]: any }[],
     wantedKey: string,
@@ -755,7 +754,7 @@ export class PreprocessingService {
         }
       }
     }
-  
+
     let specificOrder: string[];
     if (wantedKey == 'genre') specificOrder = ['H', 'F'];
     else {
@@ -763,7 +762,7 @@ export class PreprocessingService {
         return ranking[wantedKey][a] - ranking[wantedKey][b];
       });
     }
-  
+
     // Here we order the tabCount object based on the specific order of keys
     const summarizedData: { [key: string]: any }[] = [];
     specificOrder.forEach((element) => {
@@ -779,13 +778,12 @@ export class PreprocessingService {
     return summarizedData;
   }
 
-
   /**
    * Gets maximum Y for the chart for scaling purposes.
    *
    * @param {any} groupedArrays Intervention data grouped by month and year (string), with an array of interventions for each month.
    * @returns {number} Maximum value for the total number of characters in the interventions for a given bar of the bar chart.
-   */ 
+   */
   getMaxCharCounts(groupedArrays: any): number {
     let maxSum: number = 0;
     for (const key in groupedArrays) {
@@ -803,11 +801,11 @@ export class PreprocessingService {
   }
 
   /** TODO: look this over please
-   * Adds "Beginning" and "End" field to the data. Bottom element begins at 0 and ends at the beginning of the next element, 
+   * Adds "Beginning" and "End" field to the data. Bottom element begins at 0 and ends at the beginning of the next element,
    * which begins at the end of the previous element, and ends at the beginning of the next element, etc.
    *
    * @param {{[key: string]: any }[]} interventionData Intervention data for a single bar of the bar chart.
-   */ 
+   */
   transformWithCumulativeCount(
     interventionData: { [key: string]: any }[]
   ): void {
