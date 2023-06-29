@@ -137,13 +137,26 @@ export class Tab3Component  implements OnInit  {
 
 
   generateBarChart(groupedArrays:any):void{
+    // Note: nous n'arrivons pas à utiliser d3-tip avec Angular / typescript
+    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
+    var tooltip = d3.select("#zone-chart")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("position","absolute") // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
+                                    // donc j'ai appliqué directement les éléments de style à la création des objets
+      .style("background-color", "rgba(0, 0, 0, 0.8)") // opacité du fond à 0.8
+      .style("color","rgba(255,255,255,0.8)")
+      .style('border-radius', '10px 10px 0px 10px')
+      .style("padding", "5px")
+      .style('pointer-events','none')
+      .style('visibility', 'hidden')
     
     for (const key in groupedArrays) {                // here key = date YYYY-M (ex: 2016-1)
-      this.generateOneBar(groupedArrays[key], key)
+      this.generateOneBar(groupedArrays[key], key, tooltip)
     }
   }
 
-  generateOneBar(interventionData: { [key: string]: any }[], xvalue:any):void{
+  generateOneBar(interventionData: { [key: string]: any }[], xvalue:any, tooltip:any):void{
     let tab:{ [key: string]: any }[] = preprocessTab3.getCountsWithKey(interventionData, this.wantedKey)
     preprocessTab3.transformWithCumulativeCount(tab)
 
@@ -155,20 +168,6 @@ export class Tab3Component  implements OnInit  {
     let wantedKey = this.wantedKey
     let wantedDate = this.wantedDate
     let wantedInterventions = this.wantedInterventions
-
-    // Note: nous n'arivons pas à utiliser d3-tip avec Angular / typescript
-    // On a donc créé notre propre tooltip from scratch, mais c'est imparfait
-    var tooltip = d3.select("#graph-container")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("position","absolute") // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
-                                    // donc j'ai appliqué directement les éléments de style à la création des objets
-      .style("background-color", "rgba(0, 0, 0, 0.8)") // opacité du fond à 0.8
-      .style("color","rgba(255,255,255,0.8)")
-      .style('border-radius', '10px 10px 0px 10px')
-      .style("padding", "5px")
-      .style('pointer-events','none')
-      .style('visibility', 'hidden')
 
     // on crée un groupe stackedBar par moi, on stack le intervention de ce mois dans ce groupe
     // on positionne le groupe sur l'axe des abscisses
@@ -198,15 +197,18 @@ export class Tab3Component  implements OnInit  {
 
        d3.selectAll(".bar")
       .on("mouseover", function(event, d){
-        console.log(d)
         d3.select(this).style("stroke", "black")
         return tooltip.style("visibility", "visible");})
       .on("mousemove", function(event, d:any){
+        var x = d3.select(this).attr('x');
+        var y = d3.select(this).attr('y');
         const el = document.getElementById('zone-chart') as any;
         var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
         return tooltip
-          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])-95+"px") // positionnement du tooltip, on a fait aussi bien que possible
-          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])-240+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+          //.style("top", (y+10)+"px")  // autre possibilité pour tooltip, mais ça le met sur les boutons de gauche
+          //.style("left",(x+10)+"px")
+          .style("top", (d3.pointer(event)[1]*1.05+viewportOffset["y"])+"px") // positionnement du tooltip, on a fait aussi bien que possible
+          .style("left",(d3.pointer(event)[0]*1.05+viewportOffset["x"])+"px") // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
           .html(getTooltipContents(d));
       })
       .on("mouseout", function(){
