@@ -27,15 +27,14 @@ export class Tab2Component  implements OnInit,AfterViewInit    {
 
   ngOnInit(): void { 
     console.log("init")
-   
-    this.createGraph(this.process(this.preprocessingService.sortedData));
-
-    const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.preprocessingService.sortedData[this.wantedLegislature], this.wantedKey)
-    this.addCountToLegend(count)
+    this.updateView();
+    
   }
   ngAfterViewInit(): void {
     console.log("after view init")
-    this.updateView();
+
+    
+    //this.updateView();
   }
 
   updateWantedKey(key:string):void{
@@ -46,8 +45,8 @@ export class Tab2Component  implements OnInit,AfterViewInit    {
     this.wantedLegislature=Number((event.target as HTMLInputElement).value);
     this.updateView();
   }
-  updateView():void{         //importer data une fois seulment à place de le refaire à chaque changement
-    this.createGraph(this.process(this.preprocessingService.sortedData[this.wantedLegislature]));
+  async updateView():Promise<void>{         //importer data une fois seulment à place de le refaire à chaque changement
+    await this.createGraph(this.process(this.preprocessingService.sortedData[this.wantedLegislature]));
     const count : { [key:string]: number } = this.preprocessingService.getCountByKey(this.preprocessingService.sortedData[this.wantedLegislature], this.wantedKey)
     this.addCountToLegend(count)
   }
@@ -82,13 +81,13 @@ export class Tab2Component  implements OnInit,AfterViewInit    {
  *
  * @param {object[]} data The data to use
  */
-  createGraph(data: { [key: string]: any }[]): void {
+  async createGraph(data: { [key: string]: any }[]): Promise<void> {
     // Draw each seat 
-    waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
+    await waffle.drawSquares(data, '#graph-container',this.colorScale,this.wantedKey);
 
     // Rearrange the seats to make it looks more like the house 
     this.lookLikeHouseOfCommons();
-    waffle1.drawWaffleLegend(this.colorScale);
+    await waffle1.drawWaffleLegend(this.colorScale);
          
   }
 
@@ -122,18 +121,15 @@ export class Tab2Component  implements OnInit,AfterViewInit    {
       }
     }
     const gElements = d3.select("#legendContainer").select(".legend").selectAll(".cell")
-
     // Update the text within each <text> element
     gElements.each(function () {
       const textElement = d3.select(this).select('text')
       const keyText = textElement.text()
       if(countData.hasOwnProperty(keyText)){
-        console.log(keyText)
         const newText = `${keyText} (${countData[keyText]}/${total})`
         textElement.text(newText)
       }
       else{
-        console.log('else'+ keyText)
         const newText = `${keyText} (0/${total})`
         textElement.text(newText)
       }

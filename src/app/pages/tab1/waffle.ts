@@ -51,10 +51,8 @@ export function drawSquares(//Main arguments
 
 export function drawWaffleLegend(colorScale:any, scale?:number):void{
   d3.select("#legendContainer").selectAll('svg').remove();
-  
   var container = d3.select("#legendContainer")
     .append("svg");
-
   container.append('g')
      .attr('class', 'legend')
      .attr('transform', 'translate(10,+20)') 

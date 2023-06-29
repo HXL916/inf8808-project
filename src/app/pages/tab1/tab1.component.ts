@@ -28,17 +28,8 @@ export class Tab1Component implements OnInit  {
   }
 
   ngOnInit(): void {
-      // WAFFLE CHART
-      // Preprocess
-      let dataWaffle = this.preprocessingService.dataWaffle
-      // Viz
-      for (let index=0; index<dataWaffle.length;index++){
-        waffle.drawSquares(dataWaffle[index], '#waffleContainerInner', partyColorScale, 'Parti',index);
-      }
-      this.waffleLookNice(dataWaffle.length);
-      waffle.drawWaffleLegend(partyColorScale, this.preprocessingService.getScale());
-
-    
+      
+      this.createWaffleGraph();
       
       // BAR CHART
       // Preprocess
@@ -69,7 +60,15 @@ export class Tab1Component implements OnInit  {
   }
 
   
-
+  async createWaffleGraph():Promise<void>{
+    let dataWaffle = this.preprocessingService.dataWaffle
+    // Viz
+    for (let index=0; index<dataWaffle.length;index++){
+      await waffle.drawSquares(dataWaffle[index], '#waffleContainerInner', partyColorScale, 'Parti',index);
+    }
+    await this.waffleLookNice(dataWaffle.length);
+    await waffle.drawWaffleLegend(partyColorScale, this.preprocessingService.getScale());
+  }    
   /**
  * Rearrange the waffle chart to git it the looks of the House Of Commons, with an alley in the middle
  */
