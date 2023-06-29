@@ -373,6 +373,14 @@ export class PreprocessingService {
 
   // ###########################################
   // TAB 2 PREPROCESSING FUNCTIONS
+
+
+    /**
+   * Takes the list of MPs with their legislature, and split it in separates lists, one for each legislature
+   * 
+   * @param {{ [key: string]: any }[]} data the list of MPs (deputesLegislatures)
+   * @returns {{ [key: string]: any }[] } a JS object, the keys being the legislatures and the values the list of MPs for this leg
+   */
   splitByLegislature(data: { [key: string]: any }[]): { [key: number]: { [key: string]: any }[] } {
     const dataByLegislature: { [key: number]: { [key: string]: any }[] } = {};
   
@@ -410,6 +418,8 @@ export class PreprocessingService {
     )
   }
 
+
+  //###############################
   // TAB 3 PREPROCESSING FUNCTIONS
 
   // TODO: add description
