@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Subject,forkJoin  } from 'rxjs';
+import { Observable, Subject,filter,forkJoin, of, take  } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 
 const WAFFLE_SCALE = 500;
@@ -30,39 +30,89 @@ export class PreprocessingService {
   dataIsLoaded = new BehaviorSubject<boolean>(false);
   sortedData: any;
   debats: any;
+  private initialized = false;
+  private initializationSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {
-    this.dataIsLoaded = new BehaviorSubject<boolean>(false); // Initialize with false
-  
+    this.initialize();
+  }
+
+  private async initialize() {
     const csv1Promise = d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType);
     const csv2Promise = d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType);
     const csv3Promise = d3.csv('./assets/data/listedeputes.csv', d3.autoType);
-  
-    forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
-      // Process the data
-      this.debats = debats;
-      this.nbInterventionsByParty = this.getPartyCounts(debats);
-      this.parties = this.getPartiesNames(debats);
-      this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
-      this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
-      this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
-      this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
-      
-      this.deputesLegislatures = deputesLegislatures;
-      this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
-      this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
-      this.topMPs = this.interestingMPs['topMPs'];
-      this.flopMPs = this.interestingMPs['flopMPs'];
-      this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
-      this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
-      this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
-      this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
-      
-      this.sortedData = this.splitByLegislature(this.deputesLegislatures);
-      this.dataIsLoaded.next(true); // Emit true to indicate that data is loaded
-      
-    });
+
+    try {
+      forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
+
+        // Process the data
+        this.debats = debats;
+        this.nbInterventionsByParty = this.getPartyCounts(debats);
+        this.parties = this.getPartiesNames(debats);
+        this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
+        this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
+        this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
+        this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
+        
+        this.deputesLegislatures = deputesLegislatures;
+        this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
+        this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
+        this.topMPs = this.interestingMPs['topMPs'];
+        this.flopMPs = this.interestingMPs['flopMPs'];
+        this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
+        this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
+        this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
+        this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
+        
+        this.sortedData = this.splitByLegislature(this.deputesLegislatures);
+        this.initialized = true;
+        this.initializationSubject.next(true);
+      });
+    } catch (error) {
+      console.error('Error occurred during service initialization:', error);
+      // Handle error if needed
+    }
   }
+
+  isInitialized(): Observable<boolean> {
+    if (this.initialized) {
+      return of(true);
+    } else {
+      return this.initializationSubject.asObservable().pipe(filter((initialized: boolean) => initialized === true), take(1));
+    }
+  }
+  // constructor() {
+  //   this.dataIsLoaded = new BehaviorSubject<boolean>(false); // Initialize with false
+  
+  //   const csv1Promise = d3.csv('./assets/data/debatsCommunesNotext.csv', d3.autoType);
+  //   const csv2Promise = d3.csv('./assets/data/deputesLegislatures.csv', d3.autoType);
+  //   const csv3Promise = d3.csv('./assets/data/listedeputes.csv', d3.autoType);
+  
+  //   forkJoin([csv1Promise, csv2Promise, csv3Promise]).subscribe(([debats, deputesLegislatures, listedeputes]) => {
+  //     // Process the data
+  //     this.debats = debats;
+  //     this.nbInterventionsByParty = this.getPartyCounts(debats);
+  //     this.parties = this.getPartiesNames(debats);
+  //     this.dataWaffle = this.convertToWaffleCompatible(this.nbInterventionsByParty, WAFFLE_SCALE);
+  //     this.nbInterventionsByType = this.getTypeInterventionCounts(debats);
+  //     this.popularInterventions = this.getPopularInterventionTypes(this.nbInterventionsByType);
+  //     this.recentInterventions = this.getInterventionsLegislature(debats, '44-1');
+      
+  //     this.deputesLegislatures = deputesLegislatures;
+  //     this.listeDeputes44 = this.getMPsLegislature(deputesLegislatures, '44');
+  //     this.interestingMPs = this.getInterestingMPs(this.listeDeputes44, this.recentInterventions);
+  //     this.topMPs = this.interestingMPs['topMPs'];
+  //     this.flopMPs = this.interestingMPs['flopMPs'];
+  //     this.listeDeputes43 = this.getMPsLegislature(deputesLegislatures, '43');
+  //     this.increaseWomen = this.getIncreaseWomen(this.listeDeputes43, this.listeDeputes44);
+  //     this.percentageActiveMP = this.getPecentageActiveMP(deputesLegislatures, debats)
+  //     this.changesLegislature44 = this.getNbChangesLegislature(listedeputes, '441');
+      
+  //     this.sortedData = this.splitByLegislature(this.deputesLegislatures);
+  //     this.dataIsLoaded.next(true); // Emit true to indicate that data is loaded
+      
+  //   });
+  // }
 
   // ######################################
   // TAB 1 PREPROCESSING FUNCTIONS
