@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {translatePretty, translateDate } from "../../utils/scales"
+import { translatePretty } from "../../utils/scales"
 
 // Renvoie le div (sous forme de string) à rajouter au DOM pour afficher le contenu du tooltip
 // Note: je n'ai pas réussi à appliquer les styles en définissant juste une classe et en écrivant le style dans le csv
@@ -25,7 +25,7 @@ export function getTooltipContents(d:any):string{
       .text(d["nom"]);
 
       tooltipTextDiv.append('div')
-        .text(translatePretty(d['KeyElement'])+" en " + translateDateToolTip(d['Date']) + ":"); //"+translateDate(d['xValue'])+":"); A FINIR ICI
+        .text(translatePretty(d['KeyElement'])+" en " + translateDateToolTip(d['Date']) + ":");
     
   
       tooltipTextDiv.append('div')
