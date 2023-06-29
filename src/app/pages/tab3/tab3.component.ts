@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Legend } from './../../utils/legend';
 import { genderColorScale, partyColorScale, provinceColorScale, translatePretty, translateDate } from "../../utils/scales"
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
