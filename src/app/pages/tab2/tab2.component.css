@@ -168,3 +168,7 @@ body {
 *:after {
   box-sizing: border-box;
 }
+
+#disclaimer {
+  padding-top: 10px;
+}
