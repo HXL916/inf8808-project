@@ -79,7 +79,7 @@ function translateDateToolTip(date: string){
       finalDate+=" "
     })
   }
-  return finalDate
+  return finalDate.toLocaleLowerCase()
 }
 
 function separateThousands(x: number) {
