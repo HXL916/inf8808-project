@@ -8,7 +8,7 @@ Débatoscope is a website built with Angular 16 and D3 that allows users to visu
 
 The first tab acts as a landing screen, focusing on the number of interventions by each party, some key stats, intervention type distribution, and a top-flop of the MPs that spoke the most in the House since September 2021.
 
-### 🪑 Tab 2:Composition de la chambre
+### 🪑 Tab 2: Composition de la chambre
 
 This tab allows users to view the MPs that have been elected in the house during a given legislature, and view them with three key metrics: gender, political party and province.
 Please do note that since some MPs have left their seat during a legislature and been replaced by a byelection, the number of MPs during a legislature can be higher than 338.
@@ -53,5 +53,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Débatoscope uses the following MIT License-protected toolsets: [Angular](https://angular.io/license), [Angular Material](https://github.com/angular/components/blob/main/LICENSE), [DefinitelyTyped(d3)](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/LICENSE).
 
 Débatoscope is also available under [MIT License](https://github.com/HXL916/inf8808-project/blob/master/LICENSE).
+
+## Special Thanks ❣
+
+The team would like to thank Jean-Hugues Roy, who provided the initial dataset and much wisdom, as well as Olivia Gélinas, lecturer at Polytechnique Montréal for the course INF8808E
 
 Enjoy exploring and visualizing interventions with Débatoscope! 🎉💡
