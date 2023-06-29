@@ -7,24 +7,25 @@
     <app-intervention-type-toggle (filterChange)="updateInterventionTypes($event)"></app-intervention-type-toggle>
   </div>
 
-  <div id="graph-container" style="text-align:center;">
-
-      
-      <div id="zone-chart">
-        <p id="titleTop">Quantité d'interventions selon {{updateLegendName()}}</p>
-      </div>
-    
+  <div id="graph-container" style="text-align: center">
+    <div id="zone-chart">
+      <p id="titleTop">
+        Quantité d'interventions selon {{ updateLegendName() }}
+      </p>
+    </div>
 
     <div class="titleBottomTab3"><p>Mois</p></div>
     <div class="dateContainer">
       <app-date-picker (filterChange)="updateDateFilter($event)"></app-date-picker>
     </div>
-  
   </div>
   <div id="right-zone">
-    <div id="legendContainer">
-    </div>
-    <p ><i>*Les interventions sont quantifiées en fonction de leur nombre de caractères.</i></p>
+    <div id="legendContainer"></div>
+    <p>
+      <i>
+        *Les interventions sont quantifiées en fonction de leur nombre de
+        caractères.
+      </i>
+    </p>
   </div>
-
 </div>

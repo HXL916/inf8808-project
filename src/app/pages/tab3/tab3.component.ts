@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {getColorScale} from '../../utils/scales';
+import { getColorScale } from '../../utils/scales';
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
@@ -21,7 +21,7 @@ export class Tab3Component implements OnInit {
   }>;
   wantedInterventions!: string[];
   colorScale!: any;
-  rankingPartyProvince!: {[key:string]:any};
+  rankingPartyProvince!: { [key: string]: any };
   itemList!: any;
   color!: any;
   xScale!: any;
@@ -33,7 +33,7 @@ export class Tab3Component implements OnInit {
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = 'genre';
-    this.colorScale = getColorScale(["H","F"]);
+    this.colorScale = getColorScale(['H', 'F']);
     this.wantedDate = new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 10, 22)),
       end: new FormControl<Date | null>(new Date(2023, 0, 1)),
@@ -69,19 +69,29 @@ export class Tab3Component implements OnInit {
     let sortedKeys;
     switch (this.wantedKey) {
       case 'genre':
-        this.colorScale = getColorScale(["H","F"]);
+        this.colorScale = getColorScale(['H', 'F']);
         break;
       case 'parti':
-        sortedKeys = Object.keys(this.rankingPartyProvince['parti']).sort((a, b) => {
-          return this.rankingPartyProvince['parti'][a] - this.rankingPartyProvince['parti'][b];
-        });
-        this.colorScale = getColorScale(sortedKeys)
+        sortedKeys = Object.keys(this.rankingPartyProvince['parti']).sort(
+          (a, b) => {
+            return (
+              this.rankingPartyProvince['parti'][a] -
+              this.rankingPartyProvince['parti'][b]
+            );
+          }
+        );
+        this.colorScale = getColorScale(sortedKeys);
         break;
       case 'province':
-        sortedKeys = Object.keys(this.rankingPartyProvince['province']).sort((a, b) => {
-          return this.rankingPartyProvince['province'][a] - this.rankingPartyProvince['province'][b];
-        });
-        this.colorScale = getColorScale(sortedKeys)
+        sortedKeys = Object.keys(this.rankingPartyProvince['province']).sort(
+          (a, b) => {
+            return (
+              this.rankingPartyProvince['province'][a] -
+              this.rankingPartyProvince['province'][b]
+            );
+          }
+        );
+        this.colorScale = getColorScale(sortedKeys);
         break;
     }
     this.updateView();
@@ -189,8 +199,7 @@ export class Tab3Component implements OnInit {
       .select('#zone-chart')
       .append('div')
       .attr('class', 'tooltip')
-      .style('position', 'absolute') // je sais pas pourquoi, je n'ai pas réussi à appliquer les styles juste en mettant une classe tooltip dans le css
-      // donc j'ai appliqué directement les éléments de style à la création des objets
+      .style('position', 'absolute')
       .style('background-color', 'rgba(0, 0, 0, 0.8)') // opacité du fond à 0.8
       .style('color', 'rgba(255,255,255,0.8)')
       .style('border-radius', '10px 10px 0px 10px')
@@ -199,7 +208,6 @@ export class Tab3Component implements OnInit {
       .style('visibility', 'hidden');
 
     for (const key in groupedArrays) {
-      // here key = date YYYY-M (ex: 2016-1)
       this.generateOneBar(groupedArrays[key], key, tooltip);
     }
   }
@@ -272,10 +280,10 @@ export class Tab3Component implements OnInit {
         var viewportOffset = el.getBoundingClientRect(); // positionement du graph dans le viewport
         return (
           tooltip
-            //.style("top", (y+10)+"px")  // autre possibilité pour tooltip, mais ça le met sur les boutons de gauche
+            //.style("top", (y+10)+"px")  // autre possibilité pour tooltip statique
             //.style("left",(x+10)+"px")
-            .style('top', event.clientY - viewportOffset['y'] + 'px') // positionnement du tooltip, on a fait aussi bien que possible
-            .style('left', event.clientX - viewportOffset['x'] + 25 + 'px') // sans d3-tip, mais décalage si on scroll (uniquement possible si zoom sur la page)
+            .style('top', event.clientY - viewportOffset['y'] + 'px')
+            .style('left', event.clientX - viewportOffset['x'] + 25 + 'px')
             .html(getTooltipContents(d))
         );
       })
@@ -312,7 +320,7 @@ function wrap(
     const words = text.text().split(/\s+/).reverse();
     let word;
     let line: any = [];
-    const lineHeight = 1.1; // Adjust this value for desired line height
+    const lineHeight = 1.1; // Ajuster cette valeur pour la hauteur désirée entre les lignes
     const x = text.attr('x') || 0;
     const y = text.attr('y') || 0;
     const dy = parseFloat(text.attr('dy') || '0');
@@ -343,9 +351,8 @@ function wrap(
       }
     }
 
-    // Check if the maximum number of lines is reached
     if (lineCount >= maxLines) {
-      // Append text of the third line to the second line
+      // Rajouter le texte de la troisième ligne à la deuxième ligne
       const secondLineTspan = text.selectAll('tspan').filter(':nth-child(2)');
       const thirdLineTspan = text.selectAll('tspan').filter(':nth-child(3)');
       secondLineTspan.text(

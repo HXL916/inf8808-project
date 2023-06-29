@@ -3,9 +3,8 @@ export function getInterventionsByDateRange(
   startDate: Date,
   endDate: Date
 ): { [key: string]: any }[] {
-
   const filteredArray = data.filter((obj) => {
-    const objDate = new Date(obj['année'], obj['mois'] - 1, obj['jour']); // attention, en objet Date de javascript, janvier=0
+    const objDate = new Date(obj['année'], obj['mois'] - 1, obj['jour']); // attention, en objet Date de javascript, janvier = 0
     return objDate >= startDate && objDate <= endDate;
   });
   return filteredArray;
@@ -97,7 +96,7 @@ function simplifyKeyNames(data: { [key: string]: any }): {
 export function getCountsWithKey(
   data: { [key: string]: any }[],
   wantedKey: string,
-  ranking: {[key: string]:any},
+  ranking: { [key: string]: any },
   date: any
 ): { [key: string]: any }[] {
   const tabCount: { [key: string]: number } = {};
@@ -115,28 +114,9 @@ export function getCountsWithKey(
     }
   }
 
-  // Define the specific order of keys
-  // const specificOrder = [
-  //   "H",
-  //   "F",
-  //   "PCC",
-  //   "NPD",
-  //   "PLC",
-  //   "BQ",
-  //   "PV",
-  //   "Ind.",
-  //   "Québec",
-  //   "Ontario",
-  //   "Colombie-Britannique",
-  //   "Alberta",
-  //   "Provinces maritimes",
-  //   "Manitoba",
-  //   "Saskatchewan",
-  //   "Territoires"
-  // ];
-  let specificOrder:string[]
-  if(wantedKey=="genre") specificOrder = ["H","F"]
-  else{
+  let specificOrder: string[];
+  if (wantedKey == 'genre') specificOrder = ['H', 'F'];
+  else {
     specificOrder = Object.keys(ranking[wantedKey]).sort((a, b) => {
       return ranking[wantedKey][a] - ranking[wantedKey][b];
     });
@@ -147,10 +127,10 @@ export function getCountsWithKey(
   specificOrder.forEach((element) => {
     if (tabCount.hasOwnProperty(element)) {
       summarizedData.push({
-        "KeyElement": element,
-        "Count": tabCount[element],
-        "CharCount": tabCharCount[element],
-        "Date": date
+        KeyElement: element,
+        Count: tabCount[element],
+        CharCount: tabCharCount[element],
+        Date: date,
       });
     }
   });
@@ -205,7 +185,6 @@ export function getInterventionsByType(
 ) {
   const filteredData: { [key: string]: ObjectData[] } = {};
 
-
   Object.entries(interventionData).forEach(([key, value]) => {
     const filteredItems = value.filter((item) =>
       wantedInterventions.includes(item.typeIntervention)
@@ -216,21 +195,4 @@ export function getInterventionsByType(
   });
 
   return filteredData;
-}
-
-function getAllTypeInterventions(interventionData: {
-  [key: string]: ObjectData[];
-}): string[] {
-  // TODO: use to initialize the buttons
-  const typeInterventionsSet = new Set<string>();
-
-  // Iterate over the dataset and collect unique typeIntervention values
-  Object.values(interventionData).forEach((items) => {
-    items.forEach((item) => {
-      typeInterventionsSet.add(item.typeIntervention);
-    });
-  });
-
-  // Convert the Set to an array and return the result
-  return Array.from(typeInterventionsSet);
 }

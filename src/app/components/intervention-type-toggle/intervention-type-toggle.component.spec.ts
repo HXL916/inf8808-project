@@ -8,9 +8,8 @@ describe('InterventionTypeToggleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InterventionTypeToggleComponent ]
-    })
-    .compileComponents();
+      declarations: [InterventionTypeToggleComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

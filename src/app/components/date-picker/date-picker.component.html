@@ -3,14 +3,14 @@
         <mat-label>Période</mat-label>
         <mat-select [(value)]="selectedPeriod">
             <mat-option (click)="updateRangePickerState()">Définir manuellement</mat-option>
-          <mat-option *ngFor="let period of periods" value="{{period}}" (click)="updateRangePickerState()">{{period}}</mat-option>
+            <mat-option *ngFor="let period of periods" value="{{period}}" (click)="updateRangePickerState()">{{period}}</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field>
         <mat-label>Sélectionnez plage</mat-label>
         <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [disabled]="!rangePickerEnabled">
-        <input matStartDate formControlName="start" placeholder="Date début">
-        <input matEndDate formControlName="end" placeholder="Date fin" (dateChange)="updateDatePicker()">
+            <input matStartDate formControlName="start" placeholder="Date début">
+            <input matEndDate formControlName="end" placeholder="Date fin" (dateChange)="updateDatePicker()">
         </mat-date-range-input>
         <mat-hint>AAAA/MM/JJ – AAAA/MM/JJ</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
