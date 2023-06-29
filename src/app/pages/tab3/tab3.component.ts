@@ -34,6 +34,7 @@ export class Tab3Component implements OnInit {
   pourcent!: any;
   data: any;
   height!: number;
+  loading: boolean = true;
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = 'genre';
@@ -57,6 +58,7 @@ export class Tab3Component implements OnInit {
   async ngOnInit() {
     try {
       await this.preprocessingService.isInitialized().toPromise();
+      this.loading = false;
       this.updateView();
     } catch (error) {
       console.error(

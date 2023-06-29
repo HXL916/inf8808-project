@@ -1,4 +1,8 @@
-<div id="graph-container" style="text-align:center; padding: 2em;">
+<div *ngIf="loading">
+  <app-loading-page></app-loading-page>
+</div>
+
+<div hidden="loading" id="graph-container" style="text-align:center; padding: 2em;">
   <div id="svgContainer">
     <svg id="zone-chart" class="waffle" width="525" height="560">
     </svg>

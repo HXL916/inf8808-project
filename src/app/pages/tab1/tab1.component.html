@@ -1,4 +1,9 @@
-<div id="topPart">
+
+<div *ngIf="loading">
+    <app-loading-page></app-loading-page>
+  </div>
+  
+<div hidden="loading" id="topPart">
     <div id="graphContainer">
         <div id="waffleContainerOuter">
             <div id="waffleContainerInner">
