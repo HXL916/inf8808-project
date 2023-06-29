@@ -1,11 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  genderColorScale,
-  partyColorScale,
-  provinceColorScale,
-  translatePretty,
-  translateDate,
-} from '../../utils/scales';
+import {getColorScale} from '../../utils/scales';
 import * as d3 from 'd3';
 import * as waffle1 from 'src/app/pages/tab1/waffle';
 import * as preprocessTab3 from 'src/app/pages/tab3/preprocessTab3';
@@ -27,6 +21,7 @@ export class Tab3Component implements OnInit {
   }>;
   wantedInterventions!: string[];
   colorScale!: any;
+  rankingPartyProvince!: {[key:string]:any};
   itemList!: any;
   color!: any;
   xScale!: any;
@@ -38,7 +33,7 @@ export class Tab3Component implements OnInit {
 
   constructor(private preprocessingService: PreprocessingService) {
     this.wantedKey = 'genre';
-    this.colorScale = genderColorScale;
+    this.colorScale = getColorScale(["H","F"]);
     this.wantedDate = new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 10, 22)),
       end: new FormControl<Date | null>(new Date(2023, 0, 1)),
@@ -58,6 +53,7 @@ export class Tab3Component implements OnInit {
   async ngOnInit() {
     try {
       await this.preprocessingService.isInitialized().toPromise();
+      this.rankingPartyProvince = this.preprocessingService.ranking;
       this.loading = false;
       this.updateView();
     } catch (error) {
@@ -70,16 +66,22 @@ export class Tab3Component implements OnInit {
 
   updateWantedKey(key: string): void {
     this.wantedKey = key;
-
+    let sortedKeys;
     switch (this.wantedKey) {
       case 'genre':
-        this.colorScale = genderColorScale;
+        this.colorScale = getColorScale(["H","F"]);
         break;
       case 'parti':
-        this.colorScale = partyColorScale;
+        sortedKeys = Object.keys(this.rankingPartyProvince['parti']).sort((a, b) => {
+          return this.rankingPartyProvince['parti'][a] - this.rankingPartyProvince['parti'][b];
+        });
+        this.colorScale = getColorScale(sortedKeys)
         break;
       case 'province':
-        this.colorScale = provinceColorScale;
+        sortedKeys = Object.keys(this.rankingPartyProvince['province']).sort((a, b) => {
+          return this.rankingPartyProvince['province'][a] - this.rankingPartyProvince['province'][b];
+        });
+        this.colorScale = getColorScale(sortedKeys)
         break;
     }
     this.updateView();
@@ -209,7 +211,8 @@ export class Tab3Component implements OnInit {
   ): void {
     let tab: { [key: string]: any }[] = preprocessTab3.getCountsWithKey(
       interventionData,
-      this.wantedKey
+      this.wantedKey,
+      this.rankingPartyProvince
     );
     preprocessTab3.transformWithCumulativeCount(tab);
 

@@ -96,7 +96,8 @@ function simplifyKeyNames(data: { [key: string]: any }): {
 
 export function getCountsWithKey(
   data: { [key: string]: any }[],
-  wantedKey: string
+  wantedKey: string,
+  ranking: {[key: string]:any}
 ): { [key: string]: any }[] {
   const tabCount: { [key: string]: number } = {};
   const tabCharCount: { [key: string]: number } = {};
@@ -123,24 +124,31 @@ export function getCountsWithKey(
   }
 
   // Define the specific order of keys
-  const specificOrder = [
-    "H",
-    "F",
-    "PCC",
-    "NPD",
-    "PLC",
-    "BQ",
-    "PV",
-    "Ind.",
-    "Québec",
-    "Ontario",
-    "Colombie-Britannique",
-    "Alberta",
-    "Provinces maritimes",
-    "Manitoba",
-    "Saskatchewan",
-    "Territoires"
-  ];
+  // const specificOrder = [
+  //   "H",
+  //   "F",
+  //   "PCC",
+  //   "NPD",
+  //   "PLC",
+  //   "BQ",
+  //   "PV",
+  //   "Ind.",
+  //   "Québec",
+  //   "Ontario",
+  //   "Colombie-Britannique",
+  //   "Alberta",
+  //   "Provinces maritimes",
+  //   "Manitoba",
+  //   "Saskatchewan",
+  //   "Territoires"
+  // ];
+  let specificOrder:string[]
+  if(wantedKey=="genre") specificOrder = ["H","F"]
+  else{
+    specificOrder = Object.keys(ranking[wantedKey]).sort((a, b) => {
+      return ranking[wantedKey][a] - ranking[wantedKey][b];
+    });
+  }
 
   // Here we order the tabCount object based on the specific order of keys
   const summarizedData: { [key: string]: any }[] = [];
