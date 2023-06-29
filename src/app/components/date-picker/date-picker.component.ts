@@ -46,7 +46,7 @@ export class DatePickerComponent {
     }),
     new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 10, 22)), // 44ème législature
-      end: new FormControl<Date | null>(new Date(2023, 0, 1)),
+      end: new FormControl<Date | null>(new Date(2023, 4, 4)),
     }),
     new FormGroup({
       start: new FormControl<Date | null>(null),

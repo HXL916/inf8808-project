@@ -35,7 +35,7 @@ export class Tab3Component implements OnInit {
     this.colorScale = getColorScale(['H', 'F']);
     this.wantedDate = new FormGroup({
       start: new FormControl<Date | null>(new Date(2021, 10, 22)),
-      end: new FormControl<Date | null>(new Date(2023, 0, 1)),
+      end: new FormControl<Date | null>(new Date(2023, 4, 4)),
     });
     this.wantedInterventions = [
       'Déclarations de députés',
