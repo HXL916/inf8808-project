@@ -50,7 +50,7 @@ export function drawSquares( //Main arguments
 
 export function drawWaffleLegend(colorScale: any, scale?: number): void {
   d3.select('#legendContainer').selectAll('svg').remove();
-  d3.select('#legendContainer').style('height', '275px')
+  d3.select('#legendContainer').style('height', '350px')
   var container = d3.select('#legendContainer').append('svg');
   d3.select('#legendContainer').style('padding-bottom', '0px')
   container
@@ -60,7 +60,7 @@ export function drawWaffleLegend(colorScale: any, scale?: number): void {
 
   var legend = d3Legend
     .legendColor()
-    .shape('path', d3.symbol().type(d3.symbolSquare).size(275)()!) // mettre point d'exclamation à la fin parce qu'on sait que c'est non null
+    .shape('path', d3.symbol().type(d3.symbolSquare).size(277)()!) // mettre point d'exclamation à la fin parce qu'on sait que c'est non null
     .title('Légende:')
     .shapePadding(10)
     .cells(6)
