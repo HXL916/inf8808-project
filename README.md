@@ -1,5 +1,9 @@
 # Débatoscope 📚💬
 
+![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=HXL916_inf8808-project&metric=alert_status)
+![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=HXL916_inf8808-project&metric=coverage)
+![Bugs](https://sonarcloud.io/api/project_badges/measure?project=HXL916_inf8808-project&metric=bugs)
+
 Débatoscope is a website built with Angular 16 and D3 that allows users to visualize interventions at the House of Commons of Canada. The website is structured under three tabs, each serving a specific purpose. Let's take a closer look:
 
 ## Tabs Structure
@@ -10,13 +14,11 @@ The first tab acts as a landing screen, focusing on the number of interventions 
 
 ### 🪑 Tab 2: Composition de la chambre
 
-This tab allows users to view the MPs that have been elected in the house during a given legislature, and view them with three key metrics: gender, political party and province.
-Please do note that since some MPs have left their seat during a legislature and been replaced by a byelection, the number of MPs during a legislature can be higher than 338.
+This tab allows users to view the MPs that have been elected in the house during a given legislature, and view them with three key metrics: gender, political party and province. Please do note that since some MPs have left their seat during a legislature and been replaced by a byelection, the number of MPs during a legislature can be higher than 338.
 
 ### 📊 Tab 3: Distribution des débats
 
-In this tab, users can explore a bar chart visualization of the interventions based on the selected date range. The visualizations are created using D3, a powerful data visualization library. Users can interact with the chart to gain insights and understand patterns in the interventions. They can view them by three key metrics; gender, political party and province, and can toggle specific intervention types on or off.
-For the date range picker, the user can select from existing preselected ranges, or can set their own range manually through an interactive calendar or through the text field (format: AAAA-MM-JJ)
+In this tab, users can explore a bar chart visualization of the interventions based on the selected date range. The visualizations are created using D3, a powerful data visualization library. Users can interact with the chart to gain insights and understand patterns in the interventions. They can view them by three key metrics; gender, political party and province, and can toggle specific intervention types on or off. For the date range picker, the user can select from existing preselected ranges, or can set their own range manually through an interactive calendar or through the text field (format: AAAA-MM-JJ)
 
 ## To run Débatoscope on your local machine, follow these steps:
 
@@ -56,6 +58,6 @@ Débatoscope is also available under [MIT License](https://github.com/HXL916/inf
 
 ## Special Thanks ❣
 
-The team would like to thank Jean-Hugues Roy, who provided the initial dataset and much wisdom, as well as Olivia Gélinas, lecturer at Polytechnique Montréal for the course INF8808E
+The team would like to thank Jean-Hugues Roy, who provided the initial dataset and much wisdom, as well as Olivia Gélinas, lecturer at Polytechnique Montréal for the course INF8808E.
 
 Enjoy exploring and visualizing interventions with Débatoscope! 🎉💡
